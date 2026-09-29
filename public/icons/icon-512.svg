@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002b49"/>
+      <stop offset="50%" stop-color="#0b1b3a"/>
+      <stop offset="100%" stop-color="#040d1a"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- App Rounded Icon Container -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)"/>
+  
+  <!-- Outer Border Ring -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="url(#goldGrad)" stroke-width="6" opacity="0.65"/>
+  
+  <!-- Subtle Brazilian Federal Arc -->
+  <path d="M 64 256 A 192 192 0 0 1 448 256" fill="none" stroke="url(#greenGrad)" stroke-width="8" stroke-dasharray="16 8" opacity="0.7"/>
+
+  <!-- Federal Shield Backing -->
+  <circle cx="256" cy="240" r="148" fill="#00182b" stroke="url(#goldGrad)" stroke-width="4"/>
+
+  <!-- Airplane Soaring (Interiorização Flight) -->
+  <path d="M 170 300 L 256 120 L 342 300 L 256 260 Z" fill="#ffffff" filter="url(#glow)"/>
+  <path d="M 256 120 L 256 260 L 342 300 Z" fill="#e2e8f0"/>
+  <path d="M 200 270 L 140 290 L 180 240 Z" fill="#cbd5e1"/>
+  <path d="M 312 270 L 372 290 L 332 240 Z" fill="#94a3b8"/>
+
+  <!-- Golden Stars of Brazil / Humanitarian Hope -->
+  <polygon points="256,70 262,85 278,85 265,94 270,110 256,100 242,110 247,94 234,85 250,85" fill="url(#goldGrad)"/>
+  <polygon points="150,150 154,160 166,160 156,167 160,178 150,171 140,178 144,167 134,160 146,160" fill="url(#goldGrad)" opacity="0.8"/>
+  <polygon points="362,150 366,160 378,160 368,167 372,178 362,171 352,178 356,167 346,160 358,160" fill="url(#goldGrad)" opacity="0.8"/>
+
+  <!-- Shelter Tent Icon at Center Bottom -->
+  <path d="M 220 330 L 256 280 L 292 330 Z" fill="url(#goldGrad)"/>
+  <path d="M 244 330 L 256 308 L 268 330 Z" fill="#00182b"/>
+
+  <!-- Typography Banner -->
+  <rect x="80" y="385" width="352" height="60" rx="16" fill="#001f3f" stroke="#0284c7" stroke-width="2"/>
+  <text x="256" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="3">OPERAÇÃO ACOLHIDA</text>
+  <text x="256" y="435" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="#fbbf24" text-anchor="middle" letter-spacing="2">SUFAI • INTERIORIZAÇÃO</text>
+</svg>

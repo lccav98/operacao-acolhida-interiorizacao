@@ -1,0 +1,32 @@
+{
+  "name": "operacao-acolhida-interiorizacao",
+  "version": "1.0.0",
+  "description": "Sistema de automação para a Estratégia de Interiorização da Operação Acolhida - SUFAI",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/demo.ts",
+    "serve": "node dist/server.js",
+    "test": "ts-node src/demo.ts",
+    "security:audit": "npm audit --audit-level=moderate"
+  },
+  "dependencies": {
+    "@types/multer": "^2.2.0",
+    "@typesafe-ai/sdk": "^0.6.0",
+    "cors": "^2.8.6",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "helmet": "^8.3.0",
+    "multer": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
+}

@@ -1,0 +1,2822 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OPERAÇÃO ACOLHIDA | Sistema Federal de Automação da Interiorização (SIGA-Acolhida)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            govblue: '#0c2340',
+            govblueLight: '#1e3a8a',
+            govgreen: '#047857',
+            govyellow: '#d97706',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .tab-active {
+      border-bottom: 3px solid #047857;
+      color: #047857;
+      font-weight: 700;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans">
+
+  <!-- Top Federal Gov Bar -->
+  <div class="bg-govblue text-white text-xs py-1.5 px-4 flex justify-between items-center border-b border-blue-900">
+    <div class="flex items-center space-x-3">
+      <span class="font-bold tracking-wider">BRASIL</span>
+      <span class="text-slate-400">|</span>
+      <span>SUBCOMITÊ FEDERAL PARA ABRIGAMENTO E INTERIORIZAÇÃO (SUFAI)</span>
+      <span class="text-slate-400">|</span>
+      <span class="text-slate-300">OPERAÇÃO ACOLHIDA</span>
+    </div>
+    <div class="flex items-center space-x-4">
+      <span class="flex items-center"><i class="fa-solid fa-microchip text-emerald-400 mr-1.5"></i> Motor de IA Federal (SUFAI)</span>
+      <span class="flex items-center"><i class="fa-solid fa-shield-halved text-amber-400 mr-1.5"></i> SCDP / TCU Integrado</span>
+      <span class="bg-emerald-800 text-emerald-200 px-2 py-0.5 rounded text-[10px] font-semibold">100% Autônomo OIM 2026</span>
+    </div>
+  </div>
+
+  <!-- Main Platform Header -->
+  <header class="bg-white border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-govblue to-govblueLight flex items-center justify-center text-white text-2xl shadow-md">
+          <i class="fa-solid fa-plane-departure"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            SIGA-Acolhida
+            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200">v2.5 - Produção</span>
+          </h1>
+          <p class="text-xs text-slate-500 font-medium">Plataforma Federal Inteligente de Gestão, Logística Aérea e Interiorização de Refugiados e Migrantes</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Direct Link to Migrant Mobile App (PWA) -->
+        <a href="/app" target="_blank" class="px-3.5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition flex items-center gap-1.5 border border-emerald-500">
+          <i class="fa-solid fa-mobile-screen-button"></i> <span>📱 Aplicativo do Migrante (App / PWA)</span>
+        </a>
+        <button onclick="carregarMetricas()" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-300 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrows-rotate"></i> Atualizar Dados
+        </button>
+        <span class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Servidor Ativo (Porta 3000)
+        </span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 flex space-x-2 md:space-x-6 border-t border-slate-200 overflow-x-auto text-sm font-medium">
+      <button onclick="trocarAba('visao-geral')" id="tab-btn-visao-geral" class="py-3 px-2 tab-active transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-chart-pie"></i> Visão Geral & Transição OIM
+      </button>
+      <button onclick="trocarAba('abrigados')" id="tab-btn-abrigados" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-campground"></i> População Abrigada & Relatório Diário
+      </button>
+      <button onclick="trocarAba('simulador')" id="tab-btn-simulador" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-brain"></i> Simulador & Match com IA Federal
+      </button>
+      <button onclick="trocarAba('anti-absenteismo')" id="tab-btn-anti-absenteismo" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-brands fa-whatsapp"></i> Anti-Absenteísmo & Meta WhatsApp API
+      </button>
+      <button onclick="trocarAba('decisao-aerea')" id="tab-btn-decisao-aerea" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-plane"></i> Decisão Aérea & Trava Erário
+      </button>
+      <button onclick="trocarAba('scdp')" id="tab-btn-scdp" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-file-shield"></i> SCDP & Auditoria TCU/CGU
+      </button>
+      <button onclick="trocarAba('seguranca-resiliencia')" id="tab-btn-seguranca-resiliencia" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-600"></i> Sentinela LGPD & Resiliência
+      </button>
+    </div>
+  </header>
+
+  <!-- Key Metrics Ribbon -->
+  <section class="max-w-7xl mx-auto px-4 mt-6 w-full">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <!-- Metric 1: População Abrigada nos 5 Centros -->
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Abrigados nos Centros</p>
+          <p id="kpi-abrigados" class="text-xl font-extrabold text-slate-800">2.840</p>
+          <span class="text-[10px] text-emerald-600 font-semibold flex items-center" title="Rondon 1, Rondon 5, Tuaranoko, Anexo Rondon 1 e BV-8">
+            <i class="fa-solid fa-hotel mr-1"></i> 5 Abrigos Oficiais SUFAI
+          </span>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-users"></i>
+        </div>
+      </div>
+      <!-- Metric 2 -->
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Ocupação de Voos</p>
+          <p id="kpi-ocupacao" class="text-xl font-extrabold text-emerald-700">100%</p>
+          <span class="text-[10px] text-emerald-600 font-semibold flex items-center"><i class="fa-solid fa-arrow-trend-up mr-1"></i> Banco Reserva Ativo</span>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-plane-circle-check"></i>
+        </div>
+      </div>
+      <!-- Metric 3 -->
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Dano ao Erário Evitado</p>
+          <p id="kpi-economia" class="text-xl font-extrabold text-amber-700">R$ 142.350</p>
+          <span class="text-[10px] text-amber-600 font-semibold flex items-center"><i class="fa-solid fa-shield mr-1"></i> Trava Financeira</span>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+        </div>
+      </div>
+      <!-- Metric 4 -->
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Processos SCDP</p>
+          <p id="kpi-scdp" class="text-xl font-extrabold text-purple-700">184</p>
+          <span class="text-[10px] text-purple-600 font-semibold flex items-center"><i class="fa-solid fa-certificate mr-1"></i> Bilhetes Emitidos</span>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-ticket"></i>
+        </div>
+      </div>
+      <!-- Metric 5 -->
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between col-span-2 md:col-span-1">
+        <div>
+          <p class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Transição OIM</p>
+          <p id="kpi-oim" class="text-sm font-bold text-slate-800">100% Autônoma</p>
+          <span class="text-[10px] text-emerald-600 font-semibold flex items-center"><i class="fa-solid fa-circle-check mr-1"></i> Zero Gargalo Nov/26</span>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Area -->
+  <main class="max-w-7xl mx-auto px-4 py-6 w-full flex-1">
+
+    <!-- ========================================== -->
+    <!-- ABA 1: VISÃO GERAL & TRANSIÇÃO OIM         -->
+    <!-- ========================================== -->
+    <div id="aba-visao-geral" class="space-y-6">
+      <!-- Welcome Banner -->
+      <div class="bg-gradient-to-r from-govblue to-govblueLight text-white rounded-2xl p-6 shadow-md relative overflow-hidden">
+        <div class="relative z-10 max-w-3xl">
+          <div class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3 py-1 rounded-full text-xs font-semibold mb-3">
+            <i class="fa-solid fa-shield-halved"></i> Estratégia de Interiorização - Diretrizes e Procedimentos Federais 2021
+          </div>
+          <h2 class="text-2xl font-extrabold mb-2">Automação de Ponta a Ponta para a Operação Acolhida</h2>
+          <p class="text-slate-200 text-sm leading-relaxed mb-4">
+            A plataforma automatiza todo o ciclo das <strong>3 fases</strong> (Pré-Deslocamento, Deslocamento e Pós-Deslocamento) e das <strong>4 modalidades</strong> (Institucional, Reunificação Familiar, Reunião Social e Vaga de Emprego Sinalizada - VES), utilizando o <strong>Motor de Inteligência Artificial Federal</strong> para raciocínio determinístico e estruturado.
+          </p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm border border-white/10">
+              <span class="font-bold text-white block">1. Pré-Deslocamento</span>
+              <span class="text-slate-300 text-[11px]">Validação documental, triagem médica FFT e vacinas.</span>
+            </div>
+            <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm border border-white/10">
+              <span class="font-bold text-white block">2. Deslocamento</span>
+              <span class="text-slate-300 text-[11px]">Logística aérea (Sideral/FAB/Comercial) e Sala de Situação.</span>
+            </div>
+            <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm border border-white/10">
+              <span class="font-bold text-white block">3. Pós-Deslocamento</span>
+              <span class="text-slate-300 text-[11px]">Acolhida pelo NURIN, emissão de CPF e monitoramento 30-90d.</span>
+            </div>
+            <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm border border-white/10">
+              <span class="font-bold text-white block">4. Inteligência Integrada</span>
+              <span class="text-slate-300 text-[11px]">Prevenção de No-Show, SCDP/TCU e Match de Vagas.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action: Mobile Registration Gateway -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl shrink-0">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Portal Mobile de Autoatendimento do Migrante</h3>
+            <p class="text-xs text-slate-500">Interface em espanhol/português pela qual o refugiado ou migrante cadastra suas informações pelo próprio celular.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <a href="/portal-migrante.html" target="_blank" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-sm">
+            <span>Acessar Portal no Celular</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- OIM Transition Card & 4 Modalities -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- OIM Transition Status -->
+        <div class="md:col-span-1 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-hourglass-end text-amber-500"></i> Plano de Transição OIM
+              </h3>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Término: Nov/2026</span>
+            </div>
+            <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+              Com o término orçamentário da OIM no final de novembro de 2026, 100% das etapas antes conduzidas manualmente por seus membros foram transferidas para automação robótica:
+            </p>
+            <ul class="space-y-2 text-xs text-slate-700">
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span><strong>Revisão Documental Acolhedor:</strong> Validação automática com PF e Receita Federal.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span><strong>Orientação Pré-Embarque:</strong> Sessão digital interativa no WhatsApp em espanhol.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span><strong>Bilhetagem & Quorum:</strong> Motor de decisão automático entre Sideral, FAB e voos comerciais.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span><strong>Relatório SUFAI Mensal:</strong> Consolidação e envio autônomo aos ministérios.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md block text-center">
+              Status: Operação Autônoma Garantida (Sem Descontinuidade)
+            </span>
+          </div>
+        </div>
+
+        <!-- 4 Modalidades Grid -->
+        <div class="md:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-arrows-split-up-and-left text-blue-600"></i> As 4 Modalidades de Interiorização Automatizadas
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- Modalidade 1 -->
+            <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50/50 hover:bg-white hover:border-blue-300 transition">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="font-bold text-xs text-blue-900">1. Institucional (AI)</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-semibold bg-blue-100 text-blue-800">Abrigo a Abrigo</span>
+              </div>
+              <p class="text-xs text-slate-600">
+                Transferência de abrigos de Boa Vista para abrigos federais, municipais ou da sociedade civil no destino com vaga confirmada.
+              </p>
+            </div>
+            <!-- Modalidade 2 -->
+            <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50/50 hover:bg-white hover:border-emerald-300 transition">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="font-bold text-xs text-emerald-900">2. Reunificação Familiar (RF)</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-semibold bg-emerald-100 text-emerald-800">Vínculo Parentesco</span>
+              </div>
+              <p class="text-xs text-slate-600">
+                Reencontro com cônjuge, pais, filhos ou irmãos com residência comprovada. Inclui cruzamento inteligente para oferta de emprego local.
+              </p>
+            </div>
+            <!-- Modalidade 3 -->
+            <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50/50 hover:bg-white hover:border-amber-300 transition">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="font-bold text-xs text-amber-900">3. Reunião Social (RS)</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-semibold bg-amber-100 text-amber-800">Rede de Amizade</span>
+              </div>
+              <p class="text-xs text-slate-600">
+                Reagrupamento com amigos ou conhecidos idôneos com moradia e capacidade de apoio garantidos.
+              </p>
+            </div>
+            <!-- Modalidade 4 -->
+            <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50/50 hover:bg-white hover:border-purple-300 transition">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="font-bold text-xs text-purple-900">4. Vaga de Emprego (VES)</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-semibold bg-purple-100 text-purple-800">Emprego Formal</span>
+              </div>
+              <p class="text-xs text-slate-600">
+                Deslocamento para contratação direta com CLT, moradia inicial e auditoria rigorosa de óbices trabalhistas (CEIS/CNEP/Trabalho Escravo).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ABA 2: POPULAÇÃO ABRIGADA & RELATÓRIO DIÁRIO-->
+    <!-- ========================================== -->
+    <div id="aba-abrigados" class="hidden space-y-6">
+
+      <!-- MÓDULO DE INGESTÃO DE PLANILHAS & RELATÓRIOS DE ABRIGAMENTO (NOVO) -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+          <div>
+            <span class="inline-flex items-center gap-1.5 text-govblue text-xs font-bold uppercase tracking-wider">
+              <i class="fa-solid fa-file-excel"></i> Controle e Gestão de Contingente
+            </span>
+            <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+              Ingestão de Dados do Sistema de Controle de Abrigamento
+            </h2>
+            <p class="text-xs text-slate-500">
+              Faça o upload ou cole o relatório do sistema de abrigamento (planilhas .xlsx ou .csv dos abrigos <b>Rondon 1</b>, <b>Rondon 5</b>, <b>Tuaranoko</b>, <b>Anexo Rondon 1</b> ou <b>BV-8</b>). O sistema classifica as regras G1 a G9, recalcula a prioridade e atualiza a triagem diária.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <a href="/templates/modelo_controle_abrigamento.xlsx" download="Modelo_Controle_Abrigamento_SUFAI.xlsx" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border border-slate-300">
+              <i class="fa-solid fa-download text-emerald-600"></i> Baixar Modelo Excel
+            </a>
+            <button onclick="carregarExemploOficialRondon1()" id="btn-carregar-exemplo" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-bolt"></i> Carregar Exemplo Rondon 1 (742 Migrantes)
+            </button>
+          </div>
+        </div>
+
+        <!-- Seletor de Modo: Upload de Arquivo vs Colar Texto -->
+        <div class="flex border-b border-slate-200 text-xs font-bold">
+          <button onclick="trocarModoIngestao('upload')" id="btn-modo-upload" class="py-2 px-4 border-b-2 border-govblue text-govblue flex items-center gap-1.5">
+            <i class="fa-solid fa-upload"></i> Upload de Arquivo (.xlsx / .csv)
+          </button>
+          <button onclick="trocarModoIngestao('texto')" id="btn-modo-texto" class="py-2 px-4 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-paste"></i> Colar Texto / CSV Direto
+          </button>
+        </div>
+
+        <!-- Opções Comuns de Abrigo e Substituição -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Abrigo Oficial:</label>
+            <select id="ingestao-abrigo" class="w-full bg-white border border-slate-300 rounded-lg p-2 font-medium text-slate-800 focus:ring-2 focus:ring-govblue outline-none">
+              <option value="">Auto-detectar pelo cabeçalho da planilha</option>
+              <option value="Rondon 1">Rondon 1 (Boa Vista)</option>
+              <option value="Rondon 5">Rondon 5 (Boa Vista)</option>
+              <option value="Tuaranoko">Tuaranoko (Indígena Warao/Eñepa)</option>
+              <option value="Anexo Rondon 1">Anexo Rondon 1 (Boa Vista)</option>
+              <option value="BV-8">BV-8 (Pacaraima - Fronteira)</option>
+            </select>
+          </div>
+          <div class="flex items-center pt-4">
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input type="checkbox" id="ingestao-substituir" checked class="rounded text-govblue focus:ring-govblue w-4 h-4">
+              <span class="text-slate-700 font-semibold">Substituir contingente anterior deste abrigo</span>
+            </label>
+          </div>
+          <div class="flex items-center justify-end pt-2">
+            <span class="text-[11px] text-slate-500 italic">Suporta formatos .xlsx, .xls e .csv</span>
+          </div>
+        </div>
+
+        <!-- MODO 1: UPLOAD DE ARQUIVO -->
+        <div id="container-modo-upload" class="space-y-3">
+          <div id="dropzone-planilha" 
+               ondragover="tratarDragOver(event)" 
+               ondragleave="tratarDragLeave(event)" 
+               ondrop="tratarDrop(event)"
+               class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-govblue hover:bg-blue-50/50 transition cursor-pointer flex flex-col items-center justify-center space-y-2">
+            <input type="file" id="arquivo-planilha-input" accept=".xlsx,.xls,.csv,.txt" class="hidden" onchange="selecionarArquivoManual(event)">
+            <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-file-excel"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-700" id="dropzone-texto">
+              Clique para selecionar ou arraste o arquivo da planilha Excel (.xlsx) ou CSV aqui
+            </p>
+            <p class="text-[10px] text-slate-400" id="dropzone-subtexto">
+              Exemplo: relatorio_migrantes.csv ou Abrigados Rondon 1.xlsx (até 30MB)
+            </p>
+            <div id="arquivo-selecionado-badge" class="hidden bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2">
+              <i class="fa-solid fa-check"></i> <span id="nome-arquivo-selecionado">arquivo.xlsx</span>
+              <button onclick="removerArquivoSelecionado(event)" class="text-slate-500 hover:text-slate-800 ml-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button onclick="enviarUploadPlanilha()" id="btn-processar-upload" class="px-5 py-2.5 bg-govblue hover:bg-slate-800 text-white rounded-xl text-xs font-black transition flex items-center gap-2 shadow-sm">
+              <i class="fa-solid fa-gear"></i> Processar e Ingerir Planilha
+            </button>
+          </div>
+        </div>
+
+        <!-- MODO 2: COLAR TEXTO / CSV -->
+        <div id="container-modo-texto" class="hidden space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Cole aqui o conteúdo CSV / Relatório do Abrigo:</label>
+            <textarea id="texto-csv-input" rows="7" placeholder="Cole aqui as linhas copiadas do Excel ou arquivo CSV (ex: Grupo,Grupo – descrição,EMG,Nome completo,CPF...)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 font-mono text-[11px] text-slate-800 focus:bg-white focus:ring-2 focus:ring-govblue outline-none"></textarea>
+          </div>
+          <div class="flex justify-end">
+            <button onclick="enviarTextoCsv()" id="btn-processar-texto" class="px-5 py-2.5 bg-govblue hover:bg-slate-800 text-white rounded-xl text-xs font-black transition flex items-center gap-2 shadow-sm">
+              <i class="fa-solid fa-gear"></i> Processar Dados Colados
+            </button>
+          </div>
+        </div>
+
+        <!-- FEEDBACK E RESULTADO DA INGESTÃO (DINÂMICO) -->
+        <div id="painel-resultado-importacao" class="hidden bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-200 pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
+                <i class="fa-solid fa-circle-check"></i>
+              </span>
+              <div>
+                <h4 class="font-black text-slate-900 text-xs" id="resultado-titulo">Planilha Ingerida com Sucesso</h4>
+                <p class="text-[10px] text-slate-500" id="resultado-subtitulo">Abrigo: Rondon 1 • 742 Registros Classificados</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200" id="resultado-status-badge">
+              Base Atualizada
+            </span>
+          </div>
+
+          <!-- Cards de Métricas do Lote -->
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-center" id="resultado-kpi-grid">
+            <!-- Inseridos dinamicamente -->
+          </div>
+
+          <!-- Distribuição G1 a G9 Badges -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Distribuição por Grupos de Abordagem (G1 a G9):</span>
+            <div class="flex flex-wrap gap-1.5" id="resultado-distribuicao-grupos">
+              <!-- Inseridos dinamicamente -->
+            </div>
+          </div>
+
+          <!-- Amostra dos Primeiros Registros Ingeridos -->
+          <div class="space-y-1">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Prévia dos Registros Classificados:</span>
+            <div class="overflow-x-auto border border-slate-200 rounded-lg">
+              <table class="w-full text-left text-[11px] bg-white">
+                <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="py-1.5 px-2 font-mono">EMG</th>
+                    <th class="py-1.5 px-2">Nome Completo</th>
+                    <th class="py-1.5 px-2 font-mono">CPF</th>
+                    <th class="py-1.5 px-2">Carpa</th>
+                    <th class="py-1.5 px-2">Dias</th>
+                    <th class="py-1.5 px-2">Grupo</th>
+                    <th class="py-1.5 px-2">Score</th>
+                    <th class="py-1.5 px-2">Modalidade Sugerida</th>
+                  </tr>
+                </thead>
+                <tbody id="resultado-amostra-tabela" class="divide-y divide-slate-100">
+                  <!-- Inseridos dinamicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RELATÓRIO DIÁRIO DE ABORDAGEM TÁTICA (NOVO) -->
+      <div class="bg-gradient-to-r from-slate-900 to-govblue text-white p-5 rounded-2xl shadow-md space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-white/10 pb-3">
+          <div>
+            <span class="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+              <i class="fa-solid fa-crosshairs"></i> Inteligência Tática Diária de Campo
+            </span>
+            <h2 class="text-lg font-black text-white flex items-center gap-2">
+              Relatório Diário de Priorização & Abordagem Tática nos Abrigos
+            </h2>
+            <p class="text-xs text-slate-300">
+              Como a população dos abrigos se modifica diariamente, este relatório orienta exatamente quais abrigados e carpas devem ser abordados hoje para cada modalidade.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="carregarRelatorioDiario()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-arrows-rotate"></i> Atualizar Relatório de Hoje
+            </button>
+          </div>
+        </div>
+
+        <!-- Alvos Táticos Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <!-- Alvo 1: Acolhimento Institucional -->
+          <div class="bg-white/10 p-3.5 rounded-xl border border-white/15 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-blue-300 flex items-center gap-1.5"><i class="fa-solid fa-campground"></i> Institucional (AI)</span>
+              <span id="badge-alvos-ai" class="px-2 py-0.5 rounded text-[10px] font-black bg-blue-500/30 text-blue-200">Alvos Prioritários</span>
+            </div>
+            <div id="alvos-ai-lista" class="space-y-1.5 text-[11px] text-slate-200">
+              <div class="p-2 bg-black/20 rounded-lg">
+                <span class="font-bold block text-white">Carpa A05 - EMG-00135483</span>
+                <span class="text-slate-300">Família com crianças (1019 dias abrigados). Abordar para vagas em abrigos municipais conveniados.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alvo 2: Reunificação Familiar -->
+          <div class="bg-white/10 p-3.5 rounded-xl border border-white/15 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-emerald-300 flex items-center gap-1.5"><i class="fa-solid fa-people-arrows"></i> Reunificação (RF/RS)</span>
+              <span id="badge-alvos-rf" class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/30 text-emerald-200">Contatos Mapeados</span>
+            </div>
+            <div id="alvos-rf-lista" class="space-y-1.5 text-[11px] text-slate-200">
+              <div class="p-2 bg-black/20 rounded-lg">
+                <span class="font-bold block text-white">Carpa J13 - EMG-00147494</span>
+                <span class="text-slate-300">Irmão com residência no PR. Disparar formulário de validação de acolhedor via WhatsApp.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alvo 3: Vagas de Emprego (VES) -->
+          <div class="bg-white/10 p-3.5 rounded-xl border border-white/15 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-purple-300 flex items-center gap-1.5"><i class="fa-solid fa-briefcase"></i> Emprego VES</span>
+              <span id="badge-alvos-ves" class="px-2 py-0.5 rounded text-[10px] font-black bg-purple-500/30 text-purple-200">Perfil Laboral</span>
+            </div>
+            <div id="alvos-ves-lista" class="space-y-1.5 text-[11px] text-slate-200">
+              <div class="p-2 bg-black/20 rounded-lg">
+                <span class="font-bold block text-white">Carpa H23 - EMG-117104457</span>
+                <span class="text-slate-300">Jovem adulto (25 anos). Perfil aderente à vaga de logística/embalagem em Curitiba/PR.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alvo 4: Retenção Médica / Gestantes -->
+          <div class="bg-white/10 p-3.5 rounded-xl border border-white/15 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-pink-300 flex items-center gap-1.5"><i class="fa-solid fa-person-pregnant"></i> Atenção Obstétrica</span>
+              <span id="badge-alvos-med" class="px-2 py-0.5 rounded text-[10px] font-black bg-pink-500/30 text-pink-200">Encaminhamento P Trg</span>
+            </div>
+            <div id="alvos-med-lista" class="space-y-1.5 text-[11px] text-slate-200">
+              <div class="p-2 bg-black/20 rounded-lg">
+                <span class="font-bold block text-white">Carpa L13 - EMG-116169197</span>
+                <span class="text-slate-300">Gestante na família de 6 membros. Exame e laudo de 72h obrigatórios antes do manifesto aéreo.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contingente Completo do Abrigo -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col gap-3">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-campground text-govblue"></i> Base Ativa dos Centros de Acolhimento do SUFAI
+              </h2>
+              <p class="text-xs text-slate-500">
+                População acolhida em tempo real nas 5 unidades oficiais: <b>Rondon 1</b>, <b>Rondon 5</b>, <b>Tuaranoko (Indígena)</b>, <b>Anexo Rondon 1</b> e <b>BV-8 (Pacaraima)</b>.
+              </p>
+            </div>
+            <span class="text-xs text-slate-600 bg-slate-100 px-3 py-1 rounded-full font-bold self-start md:self-auto border border-slate-200">
+              <i class="fa-solid fa-layer-group text-govblue mr-1"></i> Classificação Automatizada G1 a G9
+            </span>
+          </div>
+
+          <!-- Dual Filter Bar: Shelter & Vulnerability -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+            <!-- Filter by Shelter -->
+            <div class="flex flex-wrap items-center gap-1.5 text-xs">
+              <span class="font-bold text-slate-600 mr-1 flex items-center gap-1"><i class="fa-solid fa-hotel text-govblue"></i> Filtrar Abrigo:</span>
+              <button onclick="filtrarPorAbrigo('TODOS')" id="btn-abrigo-TODOS" class="btn-filtro-abrigo px-2.5 py-1 bg-govblue text-white rounded font-bold transition shadow-sm">Todos (5 Abrigos)</button>
+              <button onclick="filtrarPorAbrigo('Rondon 1')" id="btn-abrigo-Rondon-1" class="btn-filtro-abrigo px-2.5 py-1 bg-white border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-100 transition">Rondon 1</button>
+              <button onclick="filtrarPorAbrigo('Rondon 5')" id="btn-abrigo-Rondon-5" class="btn-filtro-abrigo px-2.5 py-1 bg-white border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-100 transition">Rondon 5</button>
+              <button onclick="filtrarPorAbrigo('Tuaranoko')" id="btn-abrigo-Tuaranoko" class="btn-filtro-abrigo px-2.5 py-1 bg-amber-50 border border-amber-300 text-amber-900 rounded font-bold hover:bg-amber-100 transition"><i class="fa-solid fa-feather mr-1"></i>Tuaranoko (Indígena)</button>
+              <button onclick="filtrarPorAbrigo('Anexo Rondon 1')" id="btn-abrigo-Anexo-Rondon-1" class="btn-filtro-abrigo px-2.5 py-1 bg-white border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-100 transition">Anexo Rondon 1</button>
+              <button onclick="filtrarPorAbrigo('BV-8')" id="btn-abrigo-BV-8" class="btn-filtro-abrigo px-2.5 py-1 bg-emerald-50 border border-emerald-300 text-emerald-900 rounded font-bold hover:bg-emerald-100 transition"><i class="fa-solid fa-location-dot mr-1"></i>BV-8 (Pacaraima)</button>
+            </div>
+
+            <!-- Filter by Vulnerability -->
+            <div class="flex flex-wrap items-center gap-1.5 text-xs pt-2 border-t border-slate-200">
+              <span class="font-bold text-slate-600 mr-1 flex items-center gap-1"><i class="fa-solid fa-sliders text-govblue"></i> Vulnerabilidade:</span>
+              <button onclick="filtrarAbrigados('TODOS')" id="btn-grupo-TODOS" class="btn-filtro-grupo px-2 py-0.5 bg-govblue text-white rounded font-bold transition">Todos Grupos</button>
+              <button onclick="filtrarAbrigados('G1')" id="btn-grupo-G1" class="btn-filtro-grupo px-2 py-0.5 bg-white border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-100 transition">G1 (Proteção Social)</button>
+              <button onclick="filtrarAbrigados('G2')" id="btn-grupo-G2" class="btn-filtro-grupo px-2 py-0.5 bg-white border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-100 transition">G2 (Gestante)</button>
+              <button onclick="filtrarAbrigados('G3')" id="btn-grupo-G3" class="btn-filtro-grupo px-2 py-0.5 bg-white border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-100 transition">G3 (PCD)</button>
+              <button onclick="filtrarAbrigados('G4')" id="btn-grupo-G4" class="btn-filtro-grupo px-2 py-0.5 bg-white border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-100 transition">G4 (Longa Perm. 45+)</button>
+              <button onclick="filtrarAbrigados('G9')" id="btn-grupo-G9" class="btn-filtro-grupo px-2 py-0.5 bg-white border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-100 transition">G9 (Desacompanhados)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto border border-slate-200 rounded-xl custom-scrollbar">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-3">EMG ID</th>
+                <th class="py-3 px-3">Nome do Beneficiário</th>
+                <th class="py-3 px-3">Abrigo</th>
+                <th class="py-3 px-2">Carpa / Tenda</th>
+                <th class="py-3 px-2">Dias Abrigado</th>
+                <th class="py-3 px-3">Perfil / Etnia</th>
+                <th class="py-3 px-3">Grupo Prioridade</th>
+                <th class="py-3 px-3">Pontuação</th>
+                <th class="py-3 px-3 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-abrigados-corpo" class="divide-y divide-slate-100">
+              <!-- Preenchido via Javascript -->
+              <tr>
+                <td colspan="9" class="text-center py-6 text-slate-400">
+                  <i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando base consolidada dos 5 abrigos oficiais...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ABA 3: SIMULADOR & MATCH COM IA FEDERAL    -->
+    <!-- ========================================== -->
+    <div id="aba-simulador" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Form Left Column -->
+        <div class="lg:col-span-1 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-user-plus text-emerald-600"></i> Simular Processo com IA Federal
+          </h2>
+          
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Nome Completo</label>
+              <input type="text" id="sim-nome" value="Carlos Eduardo Mendoza" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">CPF</label>
+                <input type="text" id="sim-cpf" value="789.012.345-67" class="w-full border border-slate-300 rounded-lg p-2">
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Centro Acolhimento</label>
+                <select id="sim-abrigo" class="w-full border border-slate-300 rounded-lg p-2 bg-white text-xs font-semibold">
+                  <option value="Rondon 1">Rondon 1 (Boa Vista)</option>
+                  <option value="Rondon 5">Rondon 5 (Boa Vista)</option>
+                  <option value="Tuaranoko">Tuaranoko (Indígena)</option>
+                  <option value="Anexo Rondon 1">Anexo Rondon 1</option>
+                  <option value="BV-8">BV-8 (Pacaraima)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Modalidade Pretendida Inicial</label>
+              <select id="sim-modalidade" class="w-full border border-slate-300 rounded-lg p-2 bg-white">
+                <option value="REUNIFICACAO_FAMILIAR">Reunificação Familiar (RF)</option>
+                <option value="REUNIAO_SOCIAL">Reunião Social (RS)</option>
+                <option value="ABRIGO_INSTITUCIONAL">Acolhimento Institucional (AI)</option>
+                <option value="VAGA_DE_EMPREGO_SINALIZADA">Vaga de Emprego (VES Direta)</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Cidade Destino (Família)</label>
+                <input type="text" id="sim-cidade" value="Curitiba" class="w-full border border-slate-300 rounded-lg p-2">
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">UF Destino</label>
+                <input type="text" id="sim-uf" value="PR" class="w-full border border-slate-300 rounded-lg p-2">
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Experiência Profissional</label>
+              <textarea id="sim-experiencia" rows="2" class="w-full border border-slate-300 rounded-lg p-2">Experiência com logística industrial, embalagem, conferência de estoque e linha de produção em fábrica.</textarea>
+            </div>
+
+            <!-- Boarding Rules inputs -->
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+              <span class="font-bold text-[11px] text-slate-700 block"><i class="fa-solid fa-person-breastfeeding text-pink-600 mr-1"></i> Regras de Saúde & Embarque</span>
+              <div class="flex items-center space-x-2">
+                <input type="checkbox" id="sim-gestante" onchange="toggleGestacaoCampos()" class="rounded text-pink-600 focus:ring-pink-500">
+                <label for="sim-gestante" class="text-slate-700">Beneficiária Gestante</label>
+              </div>
+              <div id="gestacao-detalhes" class="hidden grid grid-cols-2 gap-2 pt-1 text-[11px]">
+                <div>
+                  <label class="block text-slate-600">Semanas:</label>
+                  <input type="number" id="sim-semanas" value="24" min="1" max="42" class="w-full border border-slate-300 rounded p-1">
+                </div>
+                <div class="flex items-center pt-3">
+                  <input type="checkbox" id="sim-atestado72h" class="rounded text-blue-600 mr-1.5">
+                  <label for="sim-atestado72h" class="text-slate-600">Atestado 72h</label>
+                </div>
+              </div>
+            </div>
+
+            <button onclick="executarSimulacao()" id="btn-executar-sim" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-bolt"></i> Executar com Motor de IA Federal
+            </button>
+          </div>
+        </div>
+
+        <!-- Simulation Results Right Column -->
+        <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-square-poll-vertical text-govblue"></i> Parecer do Fluxo Integrado & IA Semântica
+            </h2>
+            <span id="badge-tempo-exec" class="text-[11px] px-2.5 py-0.5 rounded font-semibold bg-slate-100 text-slate-600">Aguardando execução</span>
+          </div>
+
+          <div id="resultado-simulacao-placeholder" class="text-center py-16 text-slate-400">
+            <i class="fa-solid fa-microchip text-4xl mb-3 text-slate-300"></i>
+            <p class="text-sm">Clique em "Executar com Motor de IA Federal" para processar as 3 fases completas do caso.</p>
+          </div>
+
+          <div id="resultado-simulacao-container" class="hidden space-y-4">
+            <!-- 1. Convergent Job Match Alert -->
+            <div id="card-match-convergente" class="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-400 p-4 rounded-xl shadow-sm">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2 text-emerald-900 font-extrabold text-sm mb-1">
+                  <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i> MATCH CONVERGENTE INTELIGENTE IDENTIFICADO!
+                </div>
+                <span id="match-percent" class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white">92% Match</span>
+              </div>
+              <p id="match-descricao" class="text-xs text-emerald-900 font-medium mb-2 leading-relaxed">
+                <!-- Preenchido via JS -->
+              </p>
+              <div class="bg-white/80 p-2.5 rounded-lg border border-emerald-200 text-xs">
+                <span class="font-bold text-slate-700 block">Vaga Vinculada:</span>
+                <span id="match-vaga-detalhes" class="text-slate-600 block"></span>
+              </div>
+            </div>
+
+            <!-- Steps Progress Badges -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-lg">
+                <span class="text-slate-400 block text-[10px] uppercase font-bold">1. Documental</span>
+                <span id="sim-step-doc" class="font-bold text-emerald-700 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> 100% Válido</span>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-lg">
+                <span class="text-slate-400 block text-[10px] uppercase font-bold">2. Médico FFT</span>
+                <span id="sim-step-med" class="font-bold text-emerald-700 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Apto para Voo</span>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-lg">
+                <span class="text-slate-400 block text-[10px] uppercase font-bold">3. Regras Embarque</span>
+                <span id="sim-step-emb" class="font-bold text-emerald-700 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Autorizado</span>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-lg">
+                <span class="text-slate-400 block text-[10px] uppercase font-bold">4. PCDP / SCDP</span>
+                <span id="sim-step-scdp" class="font-bold text-purple-700 flex items-center gap-1"><i class="fa-solid fa-file-invoice"></i> PCDP-2026-001</span>
+              </div>
+            </div>
+
+            <!-- Raw JSON Toggle -->
+            <details class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+              <summary class="font-semibold text-slate-700 cursor-pointer flex items-center justify-between">
+                <span>Ver Resposta Estruturada Completa (JSON)</span>
+                <i class="fa-solid fa-chevron-down text-slate-400"></i>
+              </summary>
+              <pre id="sim-json-output" class="mt-2 p-3 bg-slate-900 text-emerald-400 rounded-lg overflow-x-auto text-[11px] font-mono custom-scrollbar"></pre>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ABA 4: ANTI-ABSENTEÍSMO & META WHATSAPP    -->
+    <!-- ========================================== -->
+    <div id="aba-anti-absenteismo" class="hidden space-y-6">
+
+      <!-- META CLOUD API STATUS BAR (NOVO) -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-xs font-bold text-slate-900">WhatsApp Business Cloud API (Meta Oficial)</h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Conectado & Verificado</span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-mono">Webhook: /api/webhook/whatsapp • Phone ID: 104928374829102 • WABA: waba_acolhida_gov_br_01</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="testarWebhookMeta()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg border border-slate-300 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-vial"></i> Testar Webhook Meta
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Timeline Left -->
+        <div class="lg:col-span-1 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-bell text-amber-500"></i> Marcos Temporais de Disparo
+          </h2>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            O robô automatizado dispara notificações ativas pela API da Meta em 4 momentos cruciais para assegurar comparência ao embarque:
+          </p>
+          <div class="space-y-2.5 text-xs">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-800 font-black flex items-center justify-center shrink-0">D-7</div>
+              <div>
+                <span class="font-bold text-slate-800 block">Confirmação Prévia & Malas</span>
+                <span class="text-slate-500 text-[11px]">Verifica voluntariedade mantida e regras de bagagem (23kg).</span>
+              </div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 font-black flex items-center justify-center shrink-0">D-3</div>
+              <div>
+                <span class="font-bold text-slate-800 block">Triagem de Saúde & Sintomas</span>
+                <span class="text-slate-500 text-[11px]">Investiga febre, diarreia, estágio gestacional e aptidão médica.</span>
+              </div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 font-black flex items-center justify-center shrink-0">D-1</div>
+              <div>
+                <span class="font-bold text-slate-800 block">Confirmação Crítica Final</span>
+                <span class="text-slate-500 text-[11px]">Hora da verdade. Se houver recusa, convoca suplente do Banco de Reserva em 15 minutos!</span>
+              </div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-800 font-black flex items-center justify-center shrink-0">H-4</div>
+              <div>
+                <span class="font-bold text-slate-800 block">Concentração P Trg</span>
+                <span class="text-slate-500 text-[11px]">Instruções de portão e transporte terrestre até o aeroporto.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WhatsApp Chat Simulator Right -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col h-[560px] overflow-hidden">
+          <!-- Chat Header -->
+          <div class="bg-govgreen text-white p-3.5 flex items-center justify-between shadow-sm">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm">Carlos Mendoza (EMG-00147494)</h3>
+                <span class="text-[11px] text-emerald-200 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Online no WhatsApp • Voo CWB em D-1
+                </span>
+              </div>
+            </div>
+            <div class="text-xs bg-emerald-900/40 px-2.5 py-1 rounded-md border border-emerald-400/20">
+              Análise Semântica: <strong>IA Federal SUFAI</strong>
+            </div>
+          </div>
+
+          <!-- Chat Messages Scrollable -->
+          <div id="chat-mensagens" class="flex-1 p-4 overflow-y-auto space-y-3 bg-[#efeae2] text-xs custom-scrollbar">
+            <!-- Bot Message -->
+            <div class="flex justify-start">
+              <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm max-w-md border border-slate-200">
+                <span class="text-[10px] font-bold text-govgreen block mb-1">🤖 SIGA-Acolhida Bot • Notificação D-1</span>
+                <p class="text-slate-800 leading-relaxed">
+                  Hola Carlos, su vuelo humanitario hacia <strong>Curitiba/PR</strong> despega en <strong>24 horas</strong>. ¿Usted y su familia están 100% listos para presentarse mañana a las 06:00 en el P Trg (Posto de Triagem)?
+                </p>
+                <span class="text-[9px] text-slate-400 block text-right mt-1">Hoje, 09:15</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Test Buttons -->
+          <div class="bg-slate-50 border-t border-slate-200 p-2 flex flex-wrap gap-1.5 text-[11px]">
+            <span class="text-slate-500 font-semibold self-center mr-1">Respostas Rápidas:</span>
+            <button onclick="enviarMensagemRapida('Sí, estamos todos listos con las maletas y mis 2 hijos listos.')" class="px-2.5 py-1 bg-white border border-slate-300 rounded hover:bg-slate-100 text-slate-700">
+              ✅ "Sí, estamos todos listos"
+            </button>
+            <button onclick="enviarMensagemRapida('No puedo ir a Curitiba, conseguí un trabajo temporal aquí en Boa Vista.')" class="px-2.5 py-1 bg-white border border-rose-300 text-rose-700 rounded hover:bg-rose-50">
+              ❌ "No puedo ir, conseguí trabajo"
+            </button>
+            <button onclick="enviarMensagemRapida('Mi hijo amaneció con fiebre de 39 y mucha tos, tengo miedo.')" class="px-2.5 py-1 bg-white border border-amber-300 text-amber-700 rounded hover:bg-amber-50">
+              ⚠️ "Mi hijo tiene fiebre de 39°"
+            </button>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="p-3 bg-white border-t border-slate-200 flex gap-2">
+            <input type="text" id="chat-input" placeholder="Digite uma resposta simulada do migrante em espanhol ou português..." class="flex-1 border border-slate-300 rounded-xl px-3.5 py-2 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            <button onclick="enviarMensagemChat()" class="px-4 py-2 bg-govgreen hover:bg-emerald-800 text-white font-bold rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+              <span>Enviar</span> <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+
+          <!-- Real-Time Evaluation Result Box -->
+          <div id="chat-avaliacao-box" class="bg-slate-900 text-white p-3 text-xs flex items-center justify-between hidden">
+            <div class="flex items-center space-x-3">
+              <span id="chat-risco-badge" class="px-2 py-0.5 rounded font-black text-[10px] bg-emerald-500 text-slate-950 uppercase">Risco Baixo</span>
+              <span id="chat-risco-texto" class="text-slate-200">Presença confirmada. Probabilidade de No-Show: 2%</span>
+            </div>
+            <span id="chat-acao-reserva" class="text-emerald-400 font-semibold text-[11px]"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ABA 5: DECISÃO AÉREA & TRAVA ERÁRIO        -->
+    <!-- ========================================== -->
+    <div id="aba-decisao-aerea" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Control Form Left -->
+        <div class="lg:col-span-1 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-sliders text-blue-600"></i> Parâmetros do Voo & Destino
+          </h2>
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Cidade Destino</label>
+              <select id="aerea-cidade" onchange="atualizarUfDestino()" class="w-full border border-slate-300 rounded-lg p-2 bg-white">
+                <option value="Curitiba" data-uf="PR">Curitiba (PR) - Rota Contratual Sideral</option>
+                <option value="Florianópolis" data-uf="SC">Florianópolis (SC) - Rota Contratual Sideral</option>
+                <option value="Porto Alegre" data-uf="RS">Porto Alegre (RS) - Rota Contratual Sideral</option>
+                <option value="Chapecó" data-uf="SC">Chapecó (SC) - Fora do contrato Sideral</option>
+                <option value="São Paulo" data-uf="SP">São Paulo (SP) - Fora do contrato Sideral</option>
+                <option value="Belo Horizonte" data-uf="MG">Belo Horizonte (MG) - Fora do contrato Sideral</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Passageiros Prontos para Embarque</label>
+              <div class="flex items-center space-x-3">
+                <input type="range" id="aerea-passageiros-range" min="5" max="144" value="75" oninput="sincronizarPassageiros(this.value)" class="flex-1 accent-govblue">
+                <input type="number" id="aerea-passageiros-num" min="5" max="144" value="75" oninput="sincronizarPassageiros(this.value)" class="w-16 border border-slate-300 rounded-lg p-1.5 text-center font-bold">
+              </div>
+              <span class="text-[10px] text-slate-500 mt-1 block">Quorum mínimo Sideral B737: 60 passageiros</span>
+            </div>
+
+            <button onclick="calcularDecisaoAerea()" class="w-full py-2.5 px-4 bg-govblue hover:bg-govblueLight text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-calculator"></i> Avaliar Decisão & Trava Erário
+            </button>
+          </div>
+
+          <!-- Rules Summary -->
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-1.5 text-xs text-blue-900">
+            <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i> Diretrizes Contratuais:</span>
+            <ul class="list-disc pl-4 space-y-1 text-[11px] text-blue-800">
+              <li><strong>Sideral:</strong> Exclusivo para Curitiba, Florianópolis e Porto Alegre (Capacidade 144 pax; mín. 60).</li>
+              <li><strong>Comercial OIM:</strong> Voo regular de Boa Vista (BVB) para rotas fragmentadas ou pequeno contingente.</li>
+              <li><strong>FAB:</strong> Voos com aeronaves KC-390 / C-130 sob demanda militar.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Decision Result Right -->
+        <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-scale-balanced text-govblue"></i> Parecer do Motor Logístico de Decisão
+          </h2>
+
+          <div id="resultado-aereo-box" class="space-y-4">
+            <!-- Modal Result Card -->
+            <div id="card-modal-resultado" class="p-5 rounded-xl border-2 border-emerald-400 bg-emerald-50/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <span class="text-[10px] uppercase font-black tracking-wider text-emerald-800 block">Modal Selecionado</span>
+                <h3 id="modal-titulo" class="text-xl font-black text-emerald-950">FRETAMENTO SIDERAL (Boeing 737)</h3>
+                <p id="modal-justificativa" class="text-xs text-emerald-800 mt-1">Rota contratual atendida com quorum economicamente vantajoso.</p>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] uppercase font-bold text-slate-500 block">Custo Estimado por Assento</span>
+                <span id="modal-custo-pax" class="text-xl font-black text-slate-800">R$ 1.666,67</span>
+              </div>
+            </div>
+
+            <!-- Financial Lock Guard Card -->
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+              <span class="font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-amber-600"></i> Auditoria da Trava de Dano ao Erário (TCU)
+              </span>
+              <p id="trava-descricao" class="text-slate-600 leading-relaxed">
+                A aeronave Sideral não decola com menos de 60 passageiros. Voos fora de Curitiba, Florianópolis e Porto Alegre são automaticamente bloqueados e convertidos em voos comerciais OIM ou FAB, garantindo 100% de conformidade com a Lei nº 8.443/92 e normas de responsabilidade fiscal.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================== -->
+      <!-- MAPA INTERATIVO DE ASSENTOS DA AERONAVE (SEAT MAP) -->
+      <!-- ================================================== -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800 uppercase tracking-wider">Aeronaves Oficiais</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider"><i class="fa-solid fa-users"></i> 100% Lotação Máxima</span>
+            </div>
+            <h2 class="text-lg font-black text-slate-900 flex items-center gap-2 mt-1">
+              <i class="fa-solid fa-plane-up text-govblue"></i> Mapa de Assentos da Aeronave (Seat Map Interativo)
+            </h2>
+            <p class="text-xs text-slate-500">
+              Visualização gráfica da distribuição de passageiros nos assentos, núcleos familiares contíguos (mesma cor) e prioridades (Gestantes/PcD).
+            </p>
+          </div>
+          <!-- Selector Sideral vs FAB -->
+          <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <button onclick="alternarMapaModal('sideral')" id="btn-mapa-sideral" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-govblue text-white shadow-sm transition flex items-center gap-1.5">
+              <i class="fa-solid fa-plane"></i> Sideral (B737 - 144pax)
+            </button>
+            <button onclick="alternarMapaModal('fab')" id="btn-mapa-fab" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved"></i> FAB (KC-390 - 80pax)
+            </button>
+          </div>
+        </div>
+
+        <!-- Banner de Sinalização de Conformidade Documental -->
+        <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 p-3.5 rounded-xl border border-emerald-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shadow-sm">
+              <i class="fa-solid fa-file-shield"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-slate-900 text-sm">Sinalização de Conformidade Documental — Voos SUFAI</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <i class="fa-solid fa-circle-check mr-1"></i>100% REGULAR
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-600 mt-0.5">
+                Todos os passageiros alocados na aeronave possuem os <b>5 Eixos Documentais auditados e aprovados</b>: Polícia Federal (SISMIGRA), Receita Federal (CPF), Vínculo Familiar (Anti-Tráfico), Laudo Fit-for-Travel e Termo de Voluntariedade.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 self-end md:self-auto">
+            <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-emerald-200 text-[11px] font-bold text-slate-700 shadow-sm">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Semáforo: <strong class="text-emerald-700">VERDE (Pronto p/ Embarque)</strong></span>
+            </div>
+            <button onclick="abrirModalAuditoriaDocumentalCompleta()" class="px-3.5 py-1.5 bg-govblue text-white rounded-lg font-bold text-[11px] hover:bg-blue-900 transition flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-list-check"></i> Matriz dos 5 Eixos
+            </button>
+          </div>
+        </div>
+
+        <!-- Aircraft Stats Ribbon -->
+        <div id="mapa-stats-ribbon" class="grid grid-cols-2 md:grid-cols-6 gap-2 text-xs">
+          <!-- preenchido dinamicamente -->
+        </div>
+
+        <!-- Legenda -->
+        <div class="flex flex-wrap items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-600">
+          <span class="font-bold text-slate-700 mr-1"><i class="fa-solid fa-tags text-govblue"></i> Legenda:</span>
+          <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded border border-slate-300 bg-blue-500"></span> Família Alocada Junto</span>
+          <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded border border-pink-400 bg-pink-100 text-pink-700 flex items-center justify-center font-bold text-[9px]"><i class="fa-solid fa-person-pregnant"></i></span> Gestante / PcD (Prioritário)</span>
+          <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded border border-amber-400 bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[9px]"><i class="fa-solid fa-door-open"></i></span> Saída Emergência</span>
+          <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded border border-slate-300 bg-slate-200"></span> Suplente Stand-by</span>
+        </div>
+
+        <!-- Cabin Visualization Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          <!-- Left: Aircraft Cabin Scrollable -->
+          <div class="lg:col-span-2 bg-slate-900 p-6 rounded-2xl shadow-inner border border-slate-800 flex flex-col items-center overflow-x-auto">
+            <!-- Cockpit graphic -->
+            <div class="w-48 h-12 bg-slate-800 rounded-t-full border-t-2 border-x-2 border-slate-600 flex items-center justify-center text-slate-400 text-[11px] font-mono font-bold mb-3 shadow">
+              <i class="fa-solid fa-plane-departure mr-2 text-slate-300"></i> CABINE DE COMANDO
+            </div>
+            <!-- Letter headers -->
+            <div id="cabine-letras-header" class="flex justify-between w-full max-w-md text-xs font-mono font-bold text-slate-400 px-3 pb-2 border-b border-slate-700 mb-3">
+              <!-- preenchido dinamicamente -->
+            </div>
+            <!-- Rows of seats -->
+            <div id="cabine-fileiras-container" class="space-y-1.5 w-full max-w-md custom-scrollbar max-h-[500px] overflow-y-auto pr-1">
+              <!-- preenchido dinamicamente -->
+            </div>
+          </div>
+
+          <!-- Right: Selected Seat Detail Panel -->
+          <div id="painel-detalhe-assento" class="lg:col-span-1 bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 text-xs">
+            <!-- preenchido dinamicamente ou placeholder inicial -->
+            <div class="text-center py-12 text-slate-400">
+              <i class="fa-solid fa-chair text-3xl mb-2 text-slate-300"></i>
+              <p class="font-bold text-slate-700">Selecione uma poltrona no mapa</p>
+              <p class="text-[11px] text-slate-500">Clique em qualquer assento da aeronave para visualizar a ficha do migrante, abrigo de origem e núcleo familiar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ABA 6: SCDP & AUDITORIA TCU/CGU           -->
+    <!-- ========================================== -->
+    <div id="aba-scdp" class="hidden space-y-6">
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-file-shield text-govblue"></i> Sistema de Concessão de Diárias e Passagens (SCDP)
+            </h2>
+            <p class="text-xs text-slate-500">
+              Emissão automática de PCDPs, vinculação obrigatória de bilhetes E-Ticket e geração de comprovação digital de viagem para o TCU e CGU.
+            </p>
+          </div>
+          <button onclick="carregarSCDP()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg border border-slate-300 transition flex items-center gap-1.5 self-start">
+            <i class="fa-solid fa-arrows-rotate"></i> Atualizar PCDPs
+          </button>
+        </div>
+
+        <!-- PCDP Table -->
+        <div class="overflow-x-auto border border-slate-200 rounded-xl custom-scrollbar">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-3">Número PCDP</th>
+                <th class="py-3 px-3">Beneficiário (CPF)</th>
+                <th class="py-3 px-3">Origem / Destino</th>
+                <th class="py-3 px-3">Bilhete (E-Ticket / PNR)</th>
+                <th class="py-3 px-3">Cia Aérea / Valor</th>
+                <th class="py-3 px-3">Status Prestação de Contas</th>
+                <th class="py-3 px-3">Hash Criptográfico (SHA-256)</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-scdp-corpo" class="divide-y divide-slate-100">
+              <!-- Preenchido via Javascript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Legal Disclaimer Note -->
+        <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-950 flex items-center gap-3">
+          <i class="fa-solid fa-certificate text-emerald-600 text-xl"></i>
+          <div>
+            <span class="font-bold block">Conformidade Plena com Instrução Normativa SLTI/MPOG nº 03/2015</span>
+            <p class="text-[11px] text-emerald-800">
+              Todas as passagens adquiridas com recursos do Governo Federal possuem vinculação eletrônica de cartão de embarque e prestação de contas com fechamento automático em até 5 dias pós-deslocamento.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 7: SENTINELA LGPD & RESILIÊNCIA -->
+    <div id="aba-seguranca-resiliencia" class="hidden space-y-6">
+      <!-- Header Banner -->
+      <div class="bg-gradient-to-r from-slate-900 via-govblue to-slate-900 text-white p-6 rounded-2xl shadow-md border border-slate-700">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                <i class="fa-solid fa-shield-halved mr-1"></i> Proteção Ativa SUFAI
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                LGPD (Lei 13.709/2018)
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                Circuit Breakers & Resiliência
+              </span>
+            </div>
+            <h2 class="text-xl font-black tracking-tight">Sentinela de Segurança, LGPD & Auditoria de Resiliência</h2>
+            <p class="text-xs text-slate-300 max-w-3xl mt-1">
+              Camada inteligente de proteção cibernética, mascaramento de PII, validação criptográfica de cartões de embarque no <b>Posto de Triagem (P Trg)</b>, prevenção de tráfico humano e tolerância a falhas para garantir operação contínua e sem dano ao erário.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="carregarSaudeResiliencia()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+              <i class="fa-solid fa-arrows-rotate"></i> Diagnóstico em Tempo Real
+            </button>
+            <button onclick="auditarSegurancaLGPD()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl border border-slate-600 shadow-sm transition flex items-center gap-2">
+              <i class="fa-solid fa-user-shield text-blue-400"></i> Auditoria LGPD
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Autonomous Agents & Skills Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Agent 1: Sentinela de Segurança -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-100 text-govblue flex items-center justify-center text-lg shadow-sm">
+                <i class="fa-solid fa-user-lock"></i>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-sm">Agente Sentinela de Segurança & LGPD</h3>
+                <span class="text-[11px] font-mono text-slate-500">Subagente: sentinela_seguranca</span>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+              ATIVO & VIGILANTE
+            </span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Monitora o tratamento de dados pessoais sensíveis conforme a <b>LGPD (Lei 13.709/2018)</b> e valida integridade física familiar contra tráfico de pessoas.
+          </p>
+          <div class="space-y-2 text-xs">
+            <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <i class="fa-solid fa-eye-slash text-blue-600 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-slate-800">Mascaramento Automático de PII</span>
+                <p class="text-[11px] text-slate-500">CPFs (ex: <code class="font-mono text-slate-700 bg-slate-200 px-1 py-0.5 rounded">***.***.860-06</code>), telefones e laudos médicos obstétricos protegidos contra vazamento.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <i class="fa-solid fa-signature text-purple-600 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-slate-800">Assinatura Criptográfica HMAC-SHA256</span>
+                <p class="text-[11px] text-slate-500">Cartões de embarque e E-Tickets assinado digitalmente, impedindo falsificação ou reuso de bilhetes nos portões do P Trg.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <i class="fa-solid fa-children text-rose-600 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-slate-800">Alerta de Vigilância Anti-Tráfico</span>
+                <p class="text-[11px] text-slate-500">Cruzamento de relações familiares e documentação para blindar crianças e menores desacompanhados.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agent 2: Auditor de Resiliência -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg shadow-sm">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-sm">Agente Auditor de Resiliência & Confiabilidade</h3>
+                <span class="text-[11px] font-mono text-slate-500">Subagente: auditor_resiliencia</span>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+              ALTA DISPONIBILIDADE
+            </span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Supervisiona a estabilidade das comunicações federais externas e a resiliência offline em áreas remotas ou de conectividade instável.
+          </p>
+          <div class="space-y-2 text-xs">
+            <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <i class="fa-solid fa-tower-broadcast text-amber-600 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-slate-800">Circuit Breakers com Fallback Gracioso</span>
+                <p class="text-[11px] text-slate-500">Interrompe chamadas com falha contínua (WhatsApp, SCDP, RF) e ativa buffers de retransmissão sem travar o sistema.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <i class="fa-solid fa-wifi-slash text-teal-600 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-slate-800">Arquitetura Offline-First (PWA & Service Worker)</span>
+                <p class="text-[11px] text-slate-500">Permite ao migrante e aos militares do P Trg utilizarem o app offline com sincronização automática posterior.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <i class="fa-solid fa-code-merge text-indigo-600 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-slate-800">Motor de Desconflito Cadastral em 4 Níveis</span>
+                <p class="text-[11px] text-slate-500">Unifica registros da planilha de abrigamento e do aplicativo com zero duplicatas e histórico preservado.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Circuit Breakers Status Panels -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-bolt text-amber-500"></i> Monitoramento de Circuit Breakers (Tolerância a Falhas)
+            </h3>
+            <p class="text-xs text-slate-500">Isolamento inteligente de APIs externas com reativação automática após 30 segundos de cooldown.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="simularInstabilidade('WHATSAPP')" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold rounded-lg transition flex items-center gap-1.5">
+              <i class="fa-solid fa-triangle-exclamation"></i> Simular Queda WhatsApp
+            </button>
+            <button onclick="simularInstabilidade('RESET')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-bold rounded-lg transition flex items-center gap-1.5">
+              <i class="fa-solid fa-power-off"></i> Resetar Circuit Breakers
+            </button>
+          </div>
+        </div>
+
+        <div id="circuit-breakers-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Carregado via JavaScript -->
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 text-xs">
+            <i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando status dos Circuit Breakers...
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Audit Terminal Output -->
+      <div class="bg-slate-900 text-slate-100 p-5 rounded-2xl border border-slate-800 shadow-lg space-y-3 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div class="flex items-center gap-2 text-slate-300 font-bold">
+            <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+            <span class="ml-2 text-emerald-400 font-sans font-bold">Terminal Sentinela & Diagnóstico de Resiliência</span>
+          </div>
+          <span id="terminal-timestamp" class="text-slate-500 text-[11px] font-sans">Aguardando comando...</span>
+        </div>
+        <div id="terminal-resiliencia-output" class="h-48 overflow-y-auto bg-slate-950 p-3 rounded-xl border border-slate-800 text-slate-300 text-[11px] leading-relaxed space-y-1">
+          <p class="text-slate-500">// Sistema Sentinela Operação Acolhida carregado com sucesso.</p>
+          <p class="text-emerald-400">✓ Mascaramento LGPD ativo em todas as rotas públicas de consulta.</p>
+          <p class="text-emerald-400">✓ Assinatura HMAC-SHA256 parametrizada para verificação no P Trg.</p>
+          <p class="text-emerald-400">✓ Trava de Erário ativa (100% de ocupação nos voos Sideral e FAB).</p>
+          <p class="text-slate-400">Clique em "Diagnóstico em Tempo Real" ou "Auditoria LGPD" para inspecionar.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Federal Footer -->
+  <footer class="bg-govblue text-slate-300 text-xs py-4 px-4 border-t border-blue-900 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="flex items-center space-x-2">
+        <span class="font-bold text-white">OPERAÇÃO ACOLHIDA</span>
+        <span>•</span>
+        <span>Ministério da Cidadania / Subcomitê Federal para Abrigamento e Interiorização (SUFAI)</span>
+      </div>
+      <div class="text-slate-400 text-[11px]">
+        Desenvolvido com <strong class="text-emerald-400">Motor de Inteligência Artificial Federal</strong> • Zero Desperdício Público
+      </div>
+    </div>
+  </footer>
+
+  <!-- Frontend Logic Script -->
+  <script>
+    // Tab switching
+    function trocarAba(abaId) {
+      const abas = ['visao-geral', 'abrigados', 'simulador', 'anti-absenteismo', 'decisao-aerea', 'scdp', 'seguranca-resiliencia'];
+      abas.forEach(id => {
+        document.getElementById(`aba-${id}`).classList.add('hidden');
+        const btn = document.getElementById(`tab-btn-${id}`);
+        if (btn) {
+          btn.classList.remove('tab-active');
+          btn.classList.add('text-slate-500');
+        }
+      });
+      document.getElementById(`aba-${abaId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-btn-${abaId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('tab-active');
+        activeBtn.classList.remove('text-slate-500');
+      }
+
+      if (abaId === 'abrigados') {
+        carregarAbrigados();
+        carregarRelatorioDiario();
+      }
+      if (abaId === 'scdp') carregarSCDP();
+      if (abaId === 'seguranca-resiliencia') carregarSaudeResiliencia();
+    }
+
+    // Load Overview Metrics
+    async function carregarMetricas() {
+      try {
+        const res = await fetch('/api/metricas');
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('kpi-abrigados').innerText = (data.totalAbrigados || 2840).toLocaleString('pt-BR');
+          document.getElementById('kpi-ocupacao').innerText = data.taxaOcupacaoVoos || '100%';
+          document.getElementById('kpi-economia').innerText = 'R$ ' + (data.economiaEstimadaDanoErario ? data.economiaEstimadaDanoErario.toLocaleString('pt-BR') : '142.350');
+          document.getElementById('kpi-scdp').innerText = data.processosNoSCDP || '184';
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar métricas:', e);
+      }
+    }
+
+    // Load Daily Tactical Shelter Report
+    async function carregarRelatorioDiario() {
+      try {
+        const res = await fetch('/api/abrigados/relatorio-diario');
+        if (res.ok) {
+          const data = await res.json();
+          renderizarRelatorioDiario(data);
+        }
+      } catch (e) {
+        console.error('Erro ao carregar relatório diário:', e);
+      }
+    }
+
+    function renderizarRelatorioDiario(data) {
+      if (!data || !data.alvosPorModalidade) return;
+
+      // Alvos Institucional
+      const aiLista = document.getElementById('alvos-ai-lista');
+      if (aiLista && data.alvosPorModalidade.institucional) {
+        aiLista.innerHTML = data.alvosPorModalidade.institucional.slice(0, 3).map(alvo => `
+          <div class="p-2 bg-black/20 rounded-lg">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white text-[10px]"><i class="fa-solid fa-hotel text-blue-300 mr-1"></i>${alvo.abrigo || 'Rondon 1'} • Carpa ${alvo.carpa}</span>
+              <span class="text-[9px] font-mono text-slate-300">${alvo.emgId}</span>
+            </div>
+            <span class="text-slate-300 block font-medium mt-0.5">${alvo.nome} (${alvo.diasAbrigado} d)</span>
+            <span class="text-blue-300 text-[10px] block mt-0.5">${alvo.acaoOperacionalImediata}</span>
+          </div>
+        `).join('') || '<span class="text-slate-400">Nenhum alvo urgente hoje.</span>';
+      }
+
+      // Alvos Reunificação
+      const rfLista = document.getElementById('alvos-rf-lista');
+      if (rfLista && data.alvosPorModalidade.reunificacaoOuSocial) {
+        rfLista.innerHTML = data.alvosPorModalidade.reunificacaoOuSocial.slice(0, 3).map(alvo => `
+          <div class="p-2 bg-black/20 rounded-lg">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white text-[10px]"><i class="fa-solid fa-hotel text-emerald-300 mr-1"></i>${alvo.abrigo || 'Rondon 1'} • Carpa ${alvo.carpa}</span>
+              <span class="text-[9px] font-mono text-slate-300">${alvo.emgId}</span>
+            </div>
+            <span class="text-slate-300 block font-medium mt-0.5">${alvo.nome}</span>
+            <span class="text-emerald-300 text-[10px] block mt-0.5">${alvo.acaoOperacionalImediata}</span>
+          </div>
+        `).join('') || '<span class="text-slate-400">Nenhum alvo mapeado hoje.</span>';
+      }
+
+      // Alvos VES
+      const vesLista = document.getElementById('alvos-ves-lista');
+      if (vesLista && data.alvosPorModalidade.empregoVES) {
+        vesLista.innerHTML = data.alvosPorModalidade.empregoVES.slice(0, 3).map(alvo => `
+          <div class="p-2 bg-black/20 rounded-lg">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white text-[10px]"><i class="fa-solid fa-hotel text-purple-300 mr-1"></i>${alvo.abrigo || 'Rondon 1'} • Carpa ${alvo.carpa}</span>
+              <span class="text-[9px] font-mono text-slate-300">${alvo.emgId}</span>
+            </div>
+            <span class="text-slate-300 block font-medium mt-0.5">${alvo.nome}</span>
+            <span class="text-purple-300 text-[10px] block mt-0.5">${alvo.vagaSugerida || alvo.acaoOperacionalImediata}</span>
+          </div>
+        `).join('') || '<span class="text-slate-400">Sem vagas compatíveis.</span>';
+      }
+
+      // Alvos Médicos
+      const medLista = document.getElementById('alvos-med-lista');
+      if (medLista && data.alvosPorModalidade.atencaoMedicaObstetrica) {
+        medLista.innerHTML = data.alvosPorModalidade.atencaoMedicaObstetrica.slice(0, 3).map(alvo => `
+          <div class="p-2 bg-black/20 rounded-lg">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white text-[10px]"><i class="fa-solid fa-hotel text-pink-300 mr-1"></i>${alvo.abrigo || 'Rondon 1'} • Carpa ${alvo.carpa}</span>
+              <span class="text-[9px] font-mono text-slate-300">${alvo.emgId}</span>
+            </div>
+            <span class="text-slate-300 block font-medium mt-0.5">${alvo.nome}</span>
+            <span class="text-pink-300 text-[10px] block mt-0.5">${alvo.acaoOperacionalImediata}</span>
+          </div>
+        `).join('') || '<span class="text-slate-400">Sem retenções médicas ativas.</span>';
+      }
+    }
+
+    // Load Shelter Data across all 5 official centers
+    let abrigadosMemoria = [];
+    let filtroAbrigoAtual = 'TODOS';
+    let filtroGrupoAtual = 'TODOS';
+
+    async function carregarAbrigados() {
+      try {
+        const res = await fetch('/api/abrigados');
+        if (res.ok) {
+          const resultado = await res.json();
+          abrigadosMemoria = resultado.classificados || resultado;
+          aplicarFiltros();
+        }
+      } catch (e) {
+        console.error('Erro ao carregar abrigados:', e);
+      }
+    }
+
+    function renderizarTabelaAbrigados(lista) {
+      const corpo = document.getElementById('tabela-abrigados-corpo');
+      if (!corpo) return;
+
+      if (!lista || lista.length === 0) {
+        corpo.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-400">Nenhum abrigado encontrado com os filtros selecionados.</td></tr>`;
+        return;
+      }
+
+      corpo.innerHTML = lista.map(item => {
+        const reg = item.registro || item;
+        const diasDestaque = reg.diasAbrigado > 1000 
+          ? `<span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-800">${reg.diasAbrigado} d</span>`
+          : `<span class="text-slate-600 font-semibold">${reg.diasAbrigado} d</span>`;
+
+        const codigoGrupo = item.grupo?.codigo || item.grupo || 'G1';
+        const nomeGrupo = item.grupo?.nome || item.descricaoGrupo || '';
+
+        const grupoBadgeColor = {
+          'G1': 'bg-emerald-100 text-emerald-800 border-emerald-300',
+          'G2': 'bg-pink-100 text-pink-800 border-pink-300',
+          'G3': 'bg-blue-100 text-blue-800 border-blue-300',
+          'G4': 'bg-purple-100 text-purple-800 border-purple-300',
+          'G9': 'bg-slate-100 text-slate-800 border-slate-300',
+        }[codigoGrupo] || 'bg-slate-100 text-slate-800 border-slate-300';
+
+        const abrigo = reg.abrigo || 'Rondon 1';
+        const abrigoBadge = {
+          'Rondon 1': '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">Rondon 1</span>',
+          'Rondon 5': '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">Rondon 5</span>',
+          'Tuaranoko': '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300"><i class="fa-solid fa-feather mr-1"></i>Tuaranoko</span>',
+          'Anexo Rondon 1': '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-100 text-cyan-800 border border-cyan-200">Anexo Rondon 1</span>',
+          'BV-8': '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300"><i class="fa-solid fa-location-dot mr-1"></i>BV-8</span>',
+        }[abrigo] || `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">${abrigo}</span>`;
+
+        const etniaBadge = reg.etnia ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-amber-200 text-amber-900 ml-1">[${reg.etnia}]</span>` : '';
+
+        const desconflitadoBadge = reg.desconflitado
+          ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-blue-100 text-blue-800 border border-blue-300 ml-1" title="${reg.motivoDesconflito || 'Registro unificado sem duplicação'}"><i class="fa-solid fa-link mr-0.5"></i>Unificado</span>`
+          : '';
+
+        return `
+          <tr class="hover:bg-slate-50 transition ${reg.desconflitado ? 'bg-blue-50/30' : ''}">
+            <td class="py-2.5 px-3 font-mono font-semibold text-slate-800">${reg.emgId} ${desconflitadoBadge}</td>
+            <td class="py-2.5 px-3 font-semibold text-slate-900">${reg.nomeCompleto}</td>
+            <td class="py-2.5 px-3 whitespace-nowrap">${abrigoBadge}</td>
+            <td class="py-2.5 px-2 font-bold text-govblue">${reg.carpa || '-'}</td>
+            <td class="py-2.5 px-2">${diasDestaque}</td>
+            <td class="py-2.5 px-3 text-slate-600">${reg.perfilFamiliar} ${etniaBadge}</td>
+            <td class="py-2.5 px-3">
+              <span class="px-2 py-0.5 rounded border text-[10px] font-bold ${grupoBadgeColor}">
+                ${codigoGrupo}: ${nomeGrupo.slice(0, 28)}...
+              </span>
+            </td>
+            <td class="py-2.5 px-3 font-black text-slate-800">${score} pts</td>
+            <td class="py-2.5 px-3 text-center">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${reg.desconflitado ? 'bg-blue-100 text-blue-800 border border-blue-300' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
+                ${reg.desconflitado ? 'Desconflitado' : 'Apto Fila'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function aplicarFiltros() {
+      let filtrados = abrigadosMemoria;
+      if (filtroAbrigoAtual !== 'TODOS') {
+        filtrados = filtrados.filter(item => {
+          const reg = item.registro || item;
+          return (reg.abrigo || 'Rondon 1') === filtroAbrigoAtual;
+        });
+      }
+      if (filtroGrupoAtual !== 'TODOS') {
+        filtrados = filtrados.filter(item => {
+          const cod = item.grupo?.codigo || item.grupo;
+          return cod === filtroGrupoAtual;
+        });
+      }
+      renderizarTabelaAbrigados(filtrados);
+    }
+
+    function filtrarPorAbrigo(abrigo) {
+      filtroAbrigoAtual = abrigo;
+      document.querySelectorAll('.btn-filtro-abrigo').forEach(b => {
+        b.classList.remove('bg-govblue', 'text-white', 'shadow-sm');
+        b.classList.add('bg-white', 'text-slate-700');
+      });
+      const atvId = abrigo === 'TODOS' ? 'btn-abrigo-TODOS' : `btn-abrigo-${abrigo.replace(/\s+/g, '-')}`;
+      const atv = document.getElementById(atvId);
+      if (atv) {
+        atv.classList.remove('bg-white', 'text-slate-700');
+        atv.classList.add('bg-govblue', 'text-white', 'shadow-sm');
+      }
+      aplicarFiltros();
+    }
+
+    function filtrarAbrigados(grupo) {
+      filtroGrupoAtual = grupo;
+      document.querySelectorAll('.btn-filtro-grupo').forEach(b => {
+        b.classList.remove('bg-govblue', 'text-white');
+        b.classList.add('bg-white', 'text-slate-700');
+      });
+      const atv = document.getElementById(`btn-grupo-${grupo}`);
+      if (atv) {
+        atv.classList.remove('bg-white', 'text-slate-700');
+        atv.classList.add('bg-govblue', 'text-white');
+      }
+      aplicarFiltros();
+    }
+
+    // INGESTÃO DE PLANILHAS E RELATÓRIOS DE ABRIGAMENTO
+    let arquivoPlanilhaSelecionado = null;
+
+    function trocarModoIngestao(modo) {
+      const btnUpload = document.getElementById('btn-modo-upload');
+      const btnTexto = document.getElementById('btn-modo-texto');
+      const contUpload = document.getElementById('container-modo-upload');
+      const contTexto = document.getElementById('container-modo-texto');
+
+      if (modo === 'upload') {
+        btnUpload.className = "py-2 px-4 border-b-2 border-govblue text-govblue flex items-center gap-1.5";
+        btnTexto.className = "py-2 px-4 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5";
+        contUpload.classList.remove('hidden');
+        contTexto.classList.add('hidden');
+      } else {
+        btnTexto.className = "py-2 px-4 border-b-2 border-govblue text-govblue flex items-center gap-1.5";
+        btnUpload.className = "py-2 px-4 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5";
+        contTexto.classList.remove('hidden');
+        contUpload.classList.add('hidden');
+      }
+    }
+
+    function tratarDragOver(e) {
+      e.preventDefault();
+      document.getElementById('dropzone-planilha').classList.add('border-govblue', 'bg-blue-50/60');
+    }
+
+    function tratarDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('dropzone-planilha').classList.remove('border-govblue', 'bg-blue-50/60');
+    }
+
+    function tratarDrop(e) {
+      e.preventDefault();
+      document.getElementById('dropzone-planilha').classList.remove('border-govblue', 'bg-blue-50/60');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        arquivoPlanilhaSelecionado = e.dataTransfer.files[0];
+        atualizarBadgeArquivo();
+      }
+    }
+
+    function selecionarArquivoManual(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        arquivoPlanilhaSelecionado = e.target.files[0];
+        atualizarBadgeArquivo();
+      }
+    }
+
+    function atualizarBadgeArquivo() {
+      if (arquivoPlanilhaSelecionado) {
+        document.getElementById('dropzone-texto').classList.add('hidden');
+        document.getElementById('dropzone-subtexto').classList.add('hidden');
+        const badge = document.getElementById('arquivo-selecionado-badge');
+        badge.classList.remove('hidden');
+        document.getElementById('nome-arquivo-selecionado').innerText = `${arquivoPlanilhaSelecionado.name} (${(arquivoPlanilhaSelecionado.size / 1024).toFixed(1)} KB)`;
+      }
+    }
+
+    function removerArquivoSelecionado(e) {
+      e.stopPropagation();
+      arquivoPlanilhaSelecionado = null;
+      document.getElementById('arquivo-planilha-input').value = '';
+      document.getElementById('dropzone-texto').classList.remove('hidden');
+      document.getElementById('dropzone-subtexto').classList.remove('hidden');
+      document.getElementById('arquivo-selecionado-badge').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropzone = document.getElementById('dropzone-planilha');
+      if (dropzone) {
+        dropzone.addEventListener('click', () => {
+          document.getElementById('arquivo-planilha-input').click();
+        });
+      }
+    });
+
+    async function enviarUploadPlanilha() {
+      if (!arquivoPlanilhaSelecionado) {
+        alert('Por favor, selecione um arquivo de planilha (.xlsx, .xls ou .csv).');
+        return;
+      }
+
+      const btn = document.getElementById('btn-processar-upload');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Processando Planilha...`;
+
+      try {
+        const formData = new FormData();
+        formData.append('planilha', arquivoPlanilhaSelecionado);
+        const abrigoManual = document.getElementById('ingestao-abrigo').value;
+        if (abrigoManual) formData.append('abrigo', abrigoManual);
+        formData.append('substituir', document.getElementById('ingestao-substituir').checked);
+
+        const res = await fetch('/api/abrigados/upload-planilha', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const dados = await res.json();
+        if (res.ok && dados.sucesso) {
+          mostrarResultadoImportacao(dados);
+        } else {
+          alert('Erro ao processar planilha: ' + (dados.erro || 'Falha na validação dos dados.'));
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao enviar planilha: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-gear"></i> Processar e Ingerir Planilha`;
+      }
+    }
+
+    async function enviarTextoCsv() {
+      const texto = document.getElementById('texto-csv-input').value.trim();
+      if (!texto) {
+        alert('Por favor, cole as linhas do relatório em formato texto/CSV.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-processar-texto');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Processando Texto...`;
+
+      try {
+        const abrigoManual = document.getElementById('ingestao-abrigo').value;
+        const res = await fetch('/api/abrigados/importar-texto', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            texto,
+            abrigo: abrigoManual || undefined,
+            substituir: document.getElementById('ingestao-substituir').checked,
+          }),
+        });
+
+        const dados = await res.json();
+        if (res.ok && dados.sucesso) {
+          mostrarResultadoImportacao(dados);
+        } else {
+          alert('Erro ao processar dados de texto: ' + (dados.erro || 'Formato não reconhecido.'));
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao enviar texto: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-gear"></i> Processar Dados Colados`;
+      }
+    }
+
+    async function carregarExemploOficialRondon1() {
+      const btn = document.getElementById('btn-carregar-exemplo');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Carregando Rondon 1...`;
+
+      try {
+        const res = await fetch('/api/abrigados/carregar-exemplo-oficial', { method: 'POST' });
+        const dados = await res.json();
+        if (res.ok && dados.sucesso) {
+          mostrarResultadoImportacao(dados);
+        } else {
+          alert('Erro ao carregar exemplo oficial: ' + (dados.erro || 'Falha ao carregar.'));
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao carregar exemplo oficial: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-bolt"></i> Carregar Exemplo Rondon 1 (742 Migrantes)`;
+      }
+    }
+
+    function mostrarResultadoImportacao(res) {
+      const painel = document.getElementById('painel-resultado-importacao');
+      if (!painel) return;
+
+      painel.classList.remove('hidden');
+      document.getElementById('resultado-titulo').innerText = `Planilha de Abrigamento Processada com Sucesso!`;
+      document.getElementById('resultado-subtitulo').innerText = 
+        `Abrigo Identificado: ${res.abrigoIdentificado} • ${res.totalAbrigadosValidos} Registros Válidos (${res.totalNovosInseridos} novos, ${res.totalAtualizados} atualizados)`;
+
+      // Render KPIs
+      const kpis = document.getElementById('resultado-kpi-grid');
+      kpis.innerHTML = `
+        <div class="bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm">
+          <span class="text-[10px] text-slate-400 font-bold block uppercase">TOTAL REGISTROS</span>
+          <span class="font-black text-slate-900 text-sm">${res.totalAbrigadosValidos}</span>
+        </div>
+        <div class="bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm">
+          <span class="text-[10px] text-slate-400 font-bold block uppercase">PERMANÊNCIA MÉDIA</span>
+          <span class="font-black text-blue-700 text-sm">${res.estatisticasGerais?.permanenciaMediaDias || 0} dias</span>
+        </div>
+        <div class="bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm">
+          <span class="text-[10px] text-slate-400 font-bold block uppercase">GESTANTES (G2)</span>
+          <span class="font-black text-pink-700 text-sm">${res.estatisticasGerais?.totalGestantes || 0}</span>
+        </div>
+        <div class="bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm">
+          <span class="text-[10px] text-slate-400 font-bold block uppercase">PCD POTENCIAL (G3)</span>
+          <span class="font-black text-purple-700 text-sm">${res.estatisticasGerais?.totalPCD || 0}</span>
+        </div>
+        <div class="bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm">
+          <span class="text-[10px] text-slate-400 font-bold block uppercase">CASOS CRÍTICOS (+1 ANO)</span>
+          <span class="font-black text-rose-700 text-sm">${res.estatisticasGerais?.casosCriticosMaisDe1Ano || 0}</span>
+        </div>
+      `;
+
+      // Render Group distribution badges
+      const dist = document.getElementById('resultado-distribuicao-grupos');
+      if (dist && res.distribuicaoGrupos) {
+        dist.innerHTML = Object.entries(res.distribuicaoGrupos).map(([grp, qtd]) => {
+          const cor = {
+            'G1': 'bg-emerald-100 text-emerald-800 border-emerald-300',
+            'G2': 'bg-pink-100 text-pink-800 border-pink-300',
+            'G3': 'bg-blue-100 text-blue-800 border-blue-300',
+            'G4': 'bg-purple-100 text-purple-800 border-purple-300',
+            'G8': 'bg-amber-100 text-amber-800 border-amber-300',
+            'G9': 'bg-slate-100 text-slate-800 border-slate-300',
+          }[grp] || 'bg-slate-100 text-slate-700 border-slate-300';
+          return `<span class="px-2 py-0.5 rounded text-[10px] font-bold border ${cor}">${grp}: <b>${qtd}</b></span>`;
+        }).join('');
+      }
+
+      // Render sample table
+      const tabelaAmostra = document.getElementById('resultado-amostra-tabela');
+      if (tabelaAmostra && res.amostraClassificados) {
+        tabelaAmostra.innerHTML = res.amostraClassificados.map(item => `
+          <tr class="hover:bg-slate-50">
+            <td class="py-1 px-2 font-mono font-bold text-govblue">${item.emgId}</td>
+            <td class="py-1 px-2 font-semibold text-slate-800">${item.nomeCompleto}</td>
+            <td class="py-1 px-2 font-mono text-slate-500">${item.cpf}</td>
+            <td class="py-1 px-2 font-bold text-slate-700">${item.carpa}</td>
+            <td class="py-1 px-2 text-slate-600">${item.diasAbrigado} d</td>
+            <td class="py-1 px-2"><span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-slate-100 text-slate-800 border">${item.grupo?.codigo || 'G1'}</span></td>
+            <td class="py-1 px-2 font-bold text-slate-900">${item.scorePrioridadeInteriorizacao}</td>
+            <td class="py-1 px-2 text-[10px] text-slate-600 truncate max-w-xs">${item.modalidadeRecomendada}</td>
+          </tr>
+        `).join('');
+      }
+
+      // Atualiza base geral do sistema
+      carregarAbrigados();
+      carregarRelatorioDiario();
+      carregarMetricas();
+    }
+
+    // Toggle Gestation inputs
+    function toggleGestacaoCampos() {
+      const check = document.getElementById('sim-gestante');
+      const det = document.getElementById('gestacao-detalhes');
+      if (check.checked) {
+        det.classList.remove('hidden');
+      } else {
+        det.classList.add('hidden');
+      }
+    }
+
+    // End-to-End Simulation
+    async function executarSimulacao() {
+      const btn = document.getElementById('btn-executar-sim');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Processando com IA Federal...`;
+
+      const gestante = document.getElementById('sim-gestante').checked;
+      const payload = {
+        beneficiario: {
+          id: 'SIM-' + Date.now().toString().slice(-4),
+          nome: document.getElementById('sim-nome').value,
+          cpf: document.getElementById('sim-cpf').value,
+          localAtual: 'BOA_VISTA',
+          abrigoOrigem: document.getElementById('sim-abrigo') ? document.getElementById('sim-abrigo').value : 'Rondon 1',
+          tempoAbrigadoDias: 850,
+          modalidadeInteresse: document.getElementById('sim-modalidade').value,
+          documentacaoMigratoria: {
+            tipo: 'SOLICITACAO_REFUGIO',
+            numeroProtocolo: '08280.001234/2026-11',
+            dataEmissao: '2024-01-01',
+            regular: true,
+          },
+          saude: {
+            vacinaFebreAmarela: { aplicada: true, diasDesdeDose: 30 },
+            vacinaTripliceViral: { primeiraDoseAplicada: true },
+            sintomasEpidemicos: false,
+            gestante: gestante,
+            dadosGestacao: {
+              gestante: gestante,
+              semanasGestacao: gestante ? parseInt(document.getElementById('sim-semanas').value) : undefined,
+              atestadoObstetricoEmitido72h: gestante ? document.getElementById('sim-atestado72h').checked : false,
+            }
+          },
+          declaracaoVoluntariedadeAssinada: true,
+          dependentesMenores: [],
+          perfilProfissional: {
+            profissaoDeclarada: 'Operador de Linha de Produção / Logística',
+            experienciaPrevia: document.getElementById('sim-experiencia').value,
+            escolaridade: 'Ensino Médio Completo',
+            nivelPortugues: 'BASICO',
+          }
+        },
+        receptor: {
+          nome: 'Maria Gabriela Mendoza',
+          parentesco: 'Irmã',
+          cidade: document.getElementById('sim-cidade').value,
+          uf: document.getElementById('sim-uf').value,
+          rendaSuficienteComprovada: true,
+          capacidadeAcolhimentoComprovada: true,
+          moradiaConfirmada: true,
+        }
+      };
+
+      try {
+        const res = await fetch('/api/processos/simular', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const dados = await res.json();
+          mostrarResultadoSimulacao(dados);
+        } else {
+          alert('Erro ao executar simulação. Verifique os campos.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao conectar com a API: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-bolt"></i> Executar com Motor de IA Federal`;
+      }
+    }
+
+    function mostrarResultadoSimulacao(dados) {
+      document.getElementById('resultado-simulacao-placeholder').classList.add('hidden');
+      document.getElementById('resultado-simulacao-container').classList.remove('hidden');
+      document.getElementById('badge-tempo-exec').innerText = 'Processado com Sucesso • Protocolo ' + (dados.protocolo || dados.protocoloProcesso || 'ACOLHIDA-2026');
+
+      // Check for Convergent Job Match
+      const cardMatch = document.getElementById('card-match-convergente');
+      if (dados.matchVESOportunidade) {
+        cardMatch.classList.remove('hidden');
+        document.getElementById('match-percent').innerText = `${Math.round(dados.matchVESOportunidade.compatibilidadePercent * 100)}% Match`;
+        document.getElementById('match-descricao').innerText = dados.matchVESOportunidade.beneficioConvergente;
+        document.getElementById('match-vaga-detalhes').innerText = 
+          `Cargo: ${dados.matchVESOportunidade.vaga.tituloCargo} | Empresa: ${dados.matchVESOportunidade.vaga.empresa.razaoSocial} | Salário: R$ ${dados.matchVESOportunidade.vaga.salario.toFixed(2)}`;
+      } else {
+        cardMatch.classList.add('hidden');
+      }
+
+      // Steps update
+      if (dados.historicoEtapas) {
+        document.getElementById('sim-step-doc').innerHTML = `<i class="fa-solid fa-circle-check"></i> 100% Válido`;
+        document.getElementById('sim-step-med').innerHTML = `<i class="fa-solid fa-circle-check"></i> Apto para Voo`;
+      }
+
+      // JSON dump
+      document.getElementById('sim-json-output').innerText = JSON.stringify(dados, null, 2);
+    }
+
+    // Anti-absenteeism Chat
+    async function enviarMensagemChat() {
+      const input = document.getElementById('chat-input');
+      const texto = input.value.trim();
+      if (!texto) return;
+
+      adicionarMensagemUsuario(texto);
+      input.value = '';
+
+      try {
+        const res = await fetch('/api/anti-absenteismo/avaliar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            respostaTexto: texto,
+            diasAteVoo: 1,
+            beneficiario: {
+              id: 'EMG-00147494',
+              nome: 'Carlos Mendoza',
+              localAtual: 'BOA_VISTA',
+              dependentesMenores: [],
+            }
+          })
+        });
+
+        if (res.ok) {
+          const avaliacao = await res.json();
+          mostrarResultadoAvaliacaoChat(avaliacao);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function enviarMensagemRapida(texto) {
+      document.getElementById('chat-input').value = texto;
+      enviarMensagemChat();
+    }
+
+    function adicionarMensagemUsuario(texto) {
+      const container = document.getElementById('chat-mensagens');
+      const hora = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const html = `
+        <div class="flex justify-end">
+          <div class="bg-[#d9fdd3] p-3 rounded-2xl rounded-tr-none shadow-sm max-w-md border border-emerald-200">
+            <span class="text-[10px] font-bold text-emerald-800 block mb-1">Carlos Mendoza</span>
+            <p class="text-slate-800 leading-relaxed">${texto}</p>
+            <span class="text-[9px] text-slate-400 block text-right mt-1">${hora} • Lido</span>
+          </div>
+        </div>
+      `;
+      container.innerHTML += html;
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function mostrarResultadoAvaliacaoChat(avaliacao) {
+      const box = document.getElementById('chat-avaliacao-box');
+      box.classList.remove('hidden');
+
+      const badge = document.getElementById('chat-risco-badge');
+      const texto = document.getElementById('chat-risco-texto');
+      const acao = document.getElementById('chat-acao-reserva');
+
+      const status = avaliacao.statusProntidao || 'CONFIRMADO';
+      const risco = status === 'CONFIRMADO' ? 'BAIXO' : (status === 'DUVIDA_LOGISTICA' ? 'MEDIO' : 'ALTO');
+
+      const nivelCor = {
+        'BAIXO': 'bg-emerald-500 text-slate-950',
+        'MEDIO': 'bg-amber-400 text-slate-950',
+        'ALTO': 'bg-rose-500 text-white',
+        'CRITICO': 'bg-rose-700 text-white animate-pulse',
+      }[risco] || 'bg-slate-500 text-white';
+
+      badge.className = `px-2 py-0.5 rounded font-black text-[10px] uppercase ${nivelCor}`;
+      badge.innerText = `Status: ${status}`;
+
+      const prob = Math.round((avaliacao.probabilidadeComparecimento || 0.95) * 100);
+      texto.innerText = `Probabilidade Comparecimento: ${prob}% | Ação: ${avaliacao.acaoRecomendada}`;
+
+      if (risco === 'ALTO' || status === 'RISCO_DESISTENCIA') {
+        acao.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Banco de Reserva Acionado: Suplente dos abrigos oficiais (SUFAI) convocado!`;
+        acao.className = "text-amber-300 font-bold text-[11px]";
+      } else {
+        acao.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Voo Confirmado no Manifesto`;
+        acao.className = "text-emerald-400 font-semibold text-[11px]";
+      }
+    }
+
+    // Meta Webhook Testing
+    async function testarWebhookMeta() {
+      try {
+        const res = await fetch('/api/whatsapp/simular-webhook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            telefone: '559599147494',
+            nome: 'Carlos Mendoza',
+            texto: 'Sí, confirmo la presencia de mi familia para el vuelo de mañana.'
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          alert(`Webhook Meta Processado com Sucesso!\nRemetente: ${data.remetente}\nTexto: "${data.textoRecebido}"\nAção: ${data.acaoExecutada}`);
+        }
+      } catch (e) {
+        alert('Erro ao testar webhook Meta: ' + e.message);
+      }
+    }
+
+    // Air Decision & Financial Lock
+    function sincronizarPassageiros(valor) {
+      document.getElementById('aerea-passageiros-range').value = valor;
+      document.getElementById('aerea-passageiros-num').value = valor;
+    }
+
+    function atualizarUfDestino() {
+      calcularDecisaoAerea();
+    }
+
+    async function calcularDecisaoAerea() {
+      const select = document.getElementById('aerea-cidade');
+      const cidade = select.value;
+      const uf = select.options[select.selectedIndex].getAttribute('data-uf');
+      const pax = parseInt(document.getElementById('aerea-passageiros-num').value);
+
+      try {
+        const res = await fetch('/api/logistica/decisao-aerea', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cidadeDestino: cidade,
+            ufDestino: uf,
+            quantidadePassageiros: pax
+          })
+        });
+
+        if (res.ok) {
+          const d = await res.json();
+          renderizarDecisaoAerea(d, pax);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderizarDecisaoAerea(d, pax) {
+      const titulo = document.getElementById('modal-titulo');
+      const just = document.getElementById('modal-justificativa');
+      const custo = document.getElementById('modal-custo-pax');
+      const card = document.getElementById('card-modal-resultado');
+
+      const modal = d.modalEscolhido || d.modalSelecionado || 'FRETAMENTO_SIDERAL';
+      titulo.innerText = `${modal} (${d.operadora || 'Sideral Boeing 737'})`;
+      just.innerText = d.justificativaEconomica || d.justificativa;
+      custo.innerText = 'R$ ' + (d.custoMedioPorPassageiroEst ? d.custoMedioPorPassageiroEst.toFixed(2) : '1.150,00');
+
+      if (modal.includes('BLOQUEADO') || modal.includes('COMERCIAL')) {
+        card.className = "p-5 rounded-xl border-2 border-amber-400 bg-amber-50/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4";
+      } else {
+        card.className = "p-5 rounded-xl border-2 border-emerald-400 bg-emerald-50/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4";
+      }
+    }
+
+    // SCDP PCDPs
+    async function carregarSCDP() {
+      try {
+        const res = await fetch('/api/scdp/pcdps');
+        if (res.ok) {
+          const lista = await res.json();
+          const corpo = document.getElementById('tabela-scdp-corpo');
+          corpo.innerHTML = lista.map(p => `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="py-2.5 px-3 font-mono font-bold text-govblue">${p.numeroPCDP}</td>
+              <td class="py-2.5 px-3">
+                <span class="font-bold text-slate-800 block">${p.beneficiarioNome}</span>
+                <span class="text-slate-400 text-[10px] font-mono">${p.beneficiarioCPF}</span>
+              </td>
+              <td class="py-2.5 px-3 font-semibold text-slate-700">${p.origem} ➔ ${p.destino}</td>
+              <td class="py-2.5 px-3">
+                <span class="font-mono font-bold text-purple-800 block">${p.dadosBilhete?.numeroBilheteETicket || 'Pendente'}</span>
+                <span class="text-[10px] text-slate-500 font-mono">PNR: ${p.dadosBilhete?.localizadorPNR || '-'}</span>
+              </td>
+              <td class="py-2.5 px-3">
+                <span class="text-slate-800 font-bold block">${p.dadosBilhete?.companhiaAerea || 'Comercial'}</span>
+                <span class="text-[10px] text-emerald-700 font-semibold">R$ ${p.dadosBilhete?.valorTarifa?.toFixed(2) || '0,00'}</span>
+              </td>
+              <td class="py-2.5 px-3">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  ${p.statusPrestacaoContas}
+                </span>
+              </td>
+              <td class="py-2.5 px-3 font-mono text-[10px] text-slate-500">
+                ${p.comprovacaoViagem?.hashComprovacaoViagem ? p.comprovacaoViagem.hashComprovacaoViagem.slice(0, 16) + '...' : 'Pendente'}
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // SEAT MAP: LÓGICA DO MAPA DE ASSENTOS DA AERONAVE
+    let modalAtualMapa = 'sideral';
+    let mapaDadosCache = null;
+
+    async function alternarMapaModal(modal) {
+      modalAtualMapa = modal;
+      const btnSideral = document.getElementById('btn-mapa-sideral');
+      const btnFab = document.getElementById('btn-mapa-fab');
+
+      if (modal === 'sideral') {
+        btnSideral.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-govblue text-white shadow-sm transition flex items-center gap-1.5";
+        btnFab.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
+      } else {
+        btnFab.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-govblue text-white shadow-sm transition flex items-center gap-1.5";
+        btnSideral.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
+      }
+
+      await carregarMapaAssentos(modal);
+    }
+
+    async function carregarMapaAssentos(modal) {
+      const containerFileiras = document.getElementById('cabine-fileiras-container');
+      if (containerFileiras) {
+        containerFileiras.innerHTML = '<div class="text-center py-10 text-slate-400 text-xs"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Carregando mapa de assentos da aeronave...</div>';
+      }
+
+      try {
+        const select = document.getElementById('aerea-cidade');
+        const destino = select ? select.value : 'Curitiba';
+        const res = await fetch(`/api/voo/mapa-assentos/${modal || modalAtualMapa}?destino=${encodeURIComponent(destino)}`);
+        if (res.ok) {
+          const dados = await res.json();
+          mapaDadosCache = dados;
+          renderizarMapaCabine(dados);
+        }
+      } catch (e) {
+        console.error('Erro ao carregar mapa de assentos:', e);
+      }
+    }
+
+    function renderizarMapaCabine(mapa) {
+      if (!mapa || !mapa.aeronave) return;
+
+      // 1. Stats Ribbon
+      const ribbon = document.getElementById('mapa-stats-ribbon');
+      if (ribbon) {
+        ribbon.innerHTML = `
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+            <span class="text-[10px] text-slate-500 font-bold block uppercase">AERONAVE</span>
+            <span class="font-extrabold text-slate-800 text-xs">${mapa.aeronave.modelo.split('(')[0]}</span>
+            <span class="text-[10px] text-slate-400 font-mono block">${mapa.aeronave.matricula}</span>
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+            <span class="text-[10px] text-slate-500 font-bold block uppercase">VOO & DESTINO</span>
+            <span class="font-extrabold text-slate-800 text-xs">${mapa.aeronave.numeroVoo.split(' ')[0]}</span>
+            <span class="text-[10px] text-slate-400 block truncate">${mapa.aeronave.destino}</span>
+          </div>
+          <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+            <span class="text-[10px] text-emerald-700 font-bold block uppercase">LOTAÇÃO</span>
+            <span class="font-black text-emerald-900 text-xs">${mapa.aeronave.totalAssentosOcupados}/${mapa.aeronave.capacidadeTotal} (100%)</span>
+            <span class="text-[10px] text-emerald-600 font-semibold block">Lotação Máxima</span>
+          </div>
+          <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
+            <span class="text-[10px] text-blue-700 font-bold block uppercase">FAMÍLIAS</span>
+            <span class="font-black text-blue-900 text-xs">${mapa.estatisticas.totalFamilias} Grupos</span>
+            <span class="text-[10px] text-blue-600 font-semibold block">Alocadas Juntas</span>
+          </div>
+          <div class="bg-pink-50 p-2.5 rounded-xl border border-pink-200">
+            <span class="text-[10px] text-pink-700 font-bold block uppercase">PRIORITÁRIOS</span>
+            <span class="font-black text-pink-900 text-xs">${mapa.estatisticas.totalGestantes} Gest. / ${mapa.estatisticas.totalPCDs} PcD</span>
+            <span class="text-[10px] text-pink-600 font-semibold block">Filas Dianteiras</span>
+          </div>
+          <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+            <span class="text-[10px] text-amber-700 font-bold block uppercase">BANCO RESERVA</span>
+            <span class="font-black text-amber-900 text-xs">${mapa.estatisticas.suplentesStandby} Suplentes</span>
+            <span class="text-[10px] text-amber-600 font-semibold block">P Trg Standby</span>
+          </div>
+        `;
+      }
+
+      // 2. Letters Header
+      const headerLetras = document.getElementById('cabine-letras-header');
+      if (headerLetras) {
+        if (mapa.aeronave.configuracaoFileiras === '3-3') {
+          headerLetras.innerHTML = `
+            <div class="flex gap-2 w-32 justify-between"><span>A</span><span>B</span><span>C</span></div>
+            <div class="text-[10px] text-slate-500 font-sans uppercase tracking-widest self-center">CORREDOR</div>
+            <div class="flex gap-2 w-32 justify-between"><span>D</span><span>E</span><span>F</span></div>
+          `;
+        } else {
+          headerLetras.innerHTML = `
+            <div class="flex gap-4 w-24 justify-between"><span>A</span><span>B</span></div>
+            <div class="text-[10px] text-slate-500 font-sans uppercase tracking-widest self-center">CORREDOR</div>
+            <div class="flex gap-4 w-24 justify-between"><span>C</span><span>D</span></div>
+          `;
+        }
+      }
+
+      // 3. Rows of Seats
+      const containerFileiras = document.getElementById('cabine-fileiras-container');
+      if (!containerFileiras) return;
+
+      containerFileiras.innerHTML = mapa.fileiras.map(f => {
+        const renderAssento = (a) => {
+          const p = a.passageiro;
+          const corBg = p ? p.corIdentificacaoFamilia : '#334155';
+          const ehPrioritario = a.tipoAssento === 'PRIORITARIO_GESTANTE_PCD';
+          const icon = p?.gestante ? '<i class="fa-solid fa-person-pregnant text-[9px] text-white"></i>' : p?.pcd ? '<i class="fa-solid fa-wheelchair text-[9px] text-white"></i>' : a.letra;
+
+          return `
+            <button onclick="selecionarAssento('${a.codigoAssento}')" 
+                    title="Assento ${a.codigoAssento} • ${p?.nomeCompleto || 'Ocupado'}"
+                    style="background-color: ${corBg};" 
+                    class="w-8 h-8 rounded-lg text-white font-mono font-bold text-[11px] flex items-center justify-center shadow transition transform hover:scale-110 active:scale-95 border ${ehPrioritario ? 'border-pink-300 ring-2 ring-pink-400' : 'border-white/20'}">
+              ${icon}
+            </button>
+          `;
+        };
+
+        const esq = f.assentosLadoEsquerdo.map(renderAssento).join('');
+        const dir = f.assentosLadoDireito.map(renderAssento).join('');
+
+        return `
+          <div class="flex items-center justify-between bg-slate-800/60 p-1.5 rounded-xl border border-slate-700/60 hover:bg-slate-800 transition">
+            <span class="text-[10px] font-mono text-slate-400 w-6 text-center font-bold">${f.numeroFileira.toString().padStart(2, '0')}</span>
+            <div class="flex gap-1.5">${esq}</div>
+            <div class="w-8 flex items-center justify-center">
+              ${f.ehSaidaEmergencia ? '<span class="text-[9px] text-amber-400 font-bold" title="Saída de Emergência">EXIT</span>' : '<span class="w-1 h-3 rounded-full bg-slate-700"></span>'}
+            </div>
+            <div class="flex gap-1.5">${dir}</div>
+          </div>
+        `;
+      }).join('');
+
+      // Auto-select first seat
+      if (mapa.fileiras[0] && mapa.fileiras[0].assentosLadoEsquerdo[0]) {
+        selecionarAssento(mapa.fileiras[0].assentosLadoEsquerdo[0].codigoAssento);
+      }
+    }
+
+    function selecionarAssento(codigoAssento) {
+      if (!mapaDadosCache) return;
+
+      let assentoEncontrado = null;
+      for (const f of mapaDadosCache.fileiras) {
+        for (const a of [...f.assentosLadoEsquerdo, ...f.assentosLadoDireito]) {
+          if (a.codigoAssento === codigoAssento) {
+            assentoEncontrado = a;
+            break;
+          }
+        }
+        if (assentoEncontrado) break;
+      }
+
+      if (!assentoEncontrado || !assentoEncontrado.passageiro) return;
+      const p = assentoEncontrado.passageiro;
+      const painel = document.getElementById('painel-detalhe-assento');
+      if (!painel) return;
+
+      painel.innerHTML = `
+        <div class="border-b border-slate-200 pb-3 flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-base shadow" style="background-color: ${p.corIdentificacaoFamilia};">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+              <span class="text-[10px] uppercase font-bold text-slate-400 block font-mono">ASSENTO RESERVADO</span>
+              <h3 class="font-black text-slate-900 text-sm flex items-center gap-1.5">
+                ${assentoEncontrado.codigoAssento} 
+                <span class="text-[10px] px-2 py-0.2 rounded-full font-bold bg-slate-200 text-slate-700">${assentoEncontrado.posicao}</span>
+              </h3>
+            </div>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${p.statusEmbarque === 'CONFIRMADO' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+            ${p.statusEmbarque}
+          </span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase font-semibold">NOME DO PASSAGEIRO</span>
+            <span class="font-extrabold text-slate-900 block">${p.nomeCompleto}</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 bg-white p-2.5 rounded-xl border border-slate-200">
+            <div>
+              <span class="text-[10px] text-slate-400 block">CÓDIGO EMG</span>
+              <span class="font-mono font-bold text-govblue block">${p.emgId}</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block">CPF CADASTRADO</span>
+              <span class="font-mono font-bold text-slate-700 block">${p.cpf}</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block">IDADE / SEXO</span>
+              <span class="font-bold text-slate-800 block">${p.idade} anos • ${p.sexo === 'Male' ? 'Masc' : 'Fem'}</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block">CLASSIFICAÇÃO</span>
+              <span class="font-bold text-purple-700 block">${p.prioridadeGrupo}</span>
+            </div>
+          </div>
+
+          <div class="p-2.5 rounded-xl border border-slate-200" style="background-color: ${p.corIdentificacaoFamilia}15; border-color: ${p.corIdentificacaoFamilia}40;">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[10px] font-black uppercase" style="color: ${p.corIdentificacaoFamilia};">
+                <i class="fa-solid fa-people-roof mr-1"></i> NÚCLEO FAMILIAR
+              </span>
+              <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-white text-slate-700 border border-slate-200">
+                ${p.codigoGrupoFamiliar}
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-700 leading-snug">
+              <b>Perfil:</b> ${p.perfilFamiliar} (${p.relacionamento}).
+              <span class="block mt-0.5 text-emerald-700 font-semibold"><i class="fa-solid fa-check mr-1"></i>Regra de ouro garantida: Família sentada junta em poltronas contíguas.</span>
+            </p>
+          </div>
+
+          <div class="p-2.5 bg-slate-100 rounded-xl space-y-1 text-[11px]">
+            <span class="text-slate-500 font-bold block"><i class="fa-solid fa-campground text-govblue mr-1"></i> Localização no Abrigamento:</span>
+            <span class="text-slate-800 font-bold block">${p.abrigoOrigem}</span>
+            <span class="text-slate-600 block">Barraca / Carpa: <b>${p.carpa}</b></span>
+          </div>
+
+          ${p.gestante ? '<div class="p-2 rounded-lg bg-pink-100 text-pink-900 font-bold text-[11px] flex items-center gap-2"><i class="fa-solid fa-person-pregnant text-base"></i> Passageira Gestante: Assento prioritário próximo ao toalete com laudo de 72h conferido.</div>' : ''}
+          ${p.pcd ? '<div class="p-2 rounded-lg bg-blue-100 text-blue-900 font-bold text-[11px] flex items-center gap-2"><i class="fa-solid fa-wheelchair text-base"></i> Passageiro PcD: Assento de fácil acesso e apoio de solo assegurado.</div>' : ''}
+
+          <!-- Card de Auditoria Documental dos 5 Eixos -->
+          <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2 mt-2">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+              <span class="text-[10px] font-black text-slate-800 uppercase flex items-center gap-1.5">
+                <i class="fa-solid fa-file-circle-check text-emerald-600"></i> Auditoria Documental SUFAI
+              </span>
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                5/5 REQUISITOS OK
+              </span>
+            </div>
+
+            <div class="space-y-1 text-[11px]">
+              <div class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
+                <span class="text-slate-600 flex items-center gap-1.5">
+                  <i class="fa-solid fa-passport text-blue-600"></i> 1. Identificação PF:
+                </span>
+                <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 text-[10px]">
+                  <i class="fa-solid fa-check text-[9px] mr-1"></i>SISMIGRA Regular
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
+                <span class="text-slate-600 flex items-center gap-1.5">
+                  <i class="fa-solid fa-id-card text-indigo-600"></i> 2. CPF (Receita):
+                </span>
+                <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 text-[10px]">
+                  <i class="fa-solid fa-check text-[9px] mr-1"></i>Ativo e Regular
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
+                <span class="text-slate-600 flex items-center gap-1.5">
+                  <i class="fa-solid fa-people-roof text-purple-600"></i> 3. Vínculo Familiar:
+                </span>
+                <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 text-[10px]">
+                  <i class="fa-solid fa-check text-[9px] mr-1"></i>Guarda/Filiação Atestada
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
+                <span class="text-slate-600 flex items-center gap-1.5">
+                  <i class="fa-solid fa-heart-pulse text-rose-600"></i> 4. Aptidão Médica:
+                </span>
+                <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 text-[10px]">
+                  <i class="fa-solid fa-check text-[9px] mr-1"></i>${p.gestante ? 'Laudo 72h Válido' : 'Fit for Travel OK'}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between p-1.5 rounded-lg bg-slate-50 border border-slate-100">
+                <span class="text-slate-600 flex items-center gap-1.5">
+                  <i class="fa-solid fa-hand-holding-heart text-amber-600"></i> 5. Voluntariedade:
+                </span>
+                <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 text-[10px]">
+                  <i class="fa-solid fa-check text-[9px] mr-1"></i>Dec. 9.288 Assinado
+                </span>
+              </div>
+            </div>
+
+            <!-- Selo HMAC e Botão de Catraca P Trg -->
+            <div class="pt-2 border-t border-slate-100 space-y-2">
+              <div class="flex items-center justify-between text-[10px] font-mono bg-slate-900 text-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-700">
+                <span class="text-emerald-400 font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-shield-halved"></i> HMAC:
+                </span>
+                <span class="truncate max-w-[170px] text-slate-300">e6d80ae9107fee2873239200969c9fbd</span>
+              </div>
+
+              <button onclick="simularValidacaoCatracaPTrg('${p.nomeCompleto.replace(/'/g, "\\'")}', '${assentoEncontrado.codigoAssento}', '${p.emgId}', '${p.cpf}', '${p.abrigoOrigem}', ${Boolean(p.gestante)})" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] rounded-lg shadow transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-qrcode text-xs"></i>
+                <span>Simular Validação na Catraca P Trg</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Resiliência & Sentinela LGPD Functions
+    async function carregarSaudeResiliencia() {
+      const container = document.getElementById('circuit-breakers-container');
+      const termOutput = document.getElementById('terminal-resiliencia-output');
+      const termTime = document.getElementById('terminal-timestamp');
+      if (termTime) termTime.innerText = new Date().toLocaleTimeString('pt-BR');
+
+      try {
+        const res = await fetch('/api/sistema/saude-resiliencia');
+        if (!res.ok) throw new Error('Falha na resposta do servidor');
+        const data = await res.json();
+
+        if (container && data.circuitBreakers) {
+          container.innerHTML = data.circuitBreakers.map(cb => {
+            const isClosed = cb.estado === 'CLOSED';
+            const isOpen = cb.estado === 'OPEN';
+            const corCard = isClosed ? 'border-emerald-200 bg-emerald-50/50' : isOpen ? 'border-rose-300 bg-rose-50/60' : 'border-amber-200 bg-amber-50/50';
+            const corBadge = isClosed ? 'bg-emerald-100 text-emerald-800' : isOpen ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800';
+            const icone = isClosed ? '<i class="fa-solid fa-circle-check text-emerald-600"></i>' : isOpen ? '<i class="fa-solid fa-triangle-exclamation text-rose-600"></i>' : '<i class="fa-solid fa-arrows-rotate text-amber-600"></i>';
+
+            return `
+              <div class="p-4 rounded-xl border ${corCard} shadow-sm space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    ${icone}
+                    <h4 class="font-bold text-slate-800 text-xs">${cb.nome}</h4>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase font-mono ${corBadge}">
+                    ${cb.estado}
+                  </span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] bg-white/80 p-2.5 rounded-lg border border-slate-200">
+                  <div>
+                    <span class="text-slate-400 block text-[10px]">REQUISIÇÕES</span>
+                    <span class="font-bold text-slate-700">${cb.totalRequisicoes}</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-400 block text-[10px]">SUCESSOS</span>
+                    <span class="font-bold text-emerald-600">${cb.totalSucessos}</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-400 block text-[10px]">FALHAS</span>
+                    <span class="font-bold text-rose-600">${cb.totalFalhas}</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-400 block text-[10px]">FALLBACKS ATIVOS</span>
+                    <span class="font-bold text-purple-700">${cb.totalFallbacksExecutados}</span>
+                  </div>
+                </div>
+                <p class="text-[10px] text-slate-500">
+                  ${isClosed ? 'Tráfego normal. Tolerância a falhas ativa.' : isOpen ? 'Circuito ABERTO: Fallback e buffer local ativados.' : 'Circuito em teste (HALF_OPEN).'}
+                </p>
+              </div>
+            `;
+          }).join('');
+        }
+
+        if (termOutput) {
+          termOutput.innerHTML += `
+            <p class="text-emerald-400 font-mono">[${new Date().toLocaleTimeString('pt-BR')}] ✓ Diagnóstico de Resiliência: Status Geral ${data.statusGeral} • Uptime: ${data.uptime.formatado} • Memória Heap: ${data.memoria.heapUsadoMb}MB • ${data.bancoEmMemoria.totalAbrigadosAtivos} abrigados ativos nos ${data.bancoEmMemoria.centrosAbrigamentoAtivos} centros.</p>
+          `;
+          termOutput.scrollTop = termOutput.scrollHeight;
+        }
+      } catch (err) {
+        if (termOutput) {
+          termOutput.innerHTML += `<p class="text-rose-400 font-mono">[ERRO] Não foi possível obter o diagnóstico: ${err.message}</p>`;
+        }
+      }
+    }
+
+    async function auditarSegurancaLGPD() {
+      const termOutput = document.getElementById('terminal-resiliencia-output');
+      const termTime = document.getElementById('terminal-timestamp');
+      if (termTime) termTime.innerText = new Date().toLocaleTimeString('pt-BR');
+
+      try {
+        const res = await fetch('/api/seguranca/auditar-integridade', { method: 'POST' });
+        const data = await res.json();
+
+        if (termOutput) {
+          termOutput.innerHTML += `
+            <p class="text-blue-400 font-mono mt-2">[${new Date().toLocaleTimeString('pt-BR')}] 🛡️ AGENTE SENTINELA SUFAI - RELATÓRIO DE AUDITORIA LGPD & INTEGRIDADE:</p>
+            <p class="text-slate-300 font-mono">├── Status LGPD: <strong class="text-emerald-400">${data.auditoriaLGPD.status}</strong></p>
+            <p class="text-slate-300 font-mono">├── Registros Protegidos com Mascaramento: <strong>${data.auditoriaLGPD.totalRegistrosProtegidos}</strong></p>
+            <p class="text-slate-300 font-mono">├── Menores sob Protocolo Anti-Tráfico de Pessoas: <strong class="text-amber-400">${data.auditoriaLGPD.menoresComVigilanciaAntiTrafico}</strong></p>
+            <p class="text-slate-300 font-mono">├── Assinatura Digital nos Bilhetes (P Trg): <strong class="text-purple-400">${data.segurancaAerea.assinaturaDigital}</strong></p>
+            <p class="text-slate-300 font-mono">└── Trava de Erário em Voos: <strong class="text-emerald-400">${data.segurancaAerea.travaOcupacao100}</strong></p>
+          `;
+          termOutput.scrollTop = termOutput.scrollHeight;
+        }
+      } catch (err) {
+        if (termOutput) {
+          termOutput.innerHTML += `<p class="text-rose-400 font-mono">[ERRO AUDITORIA] ${err.message}</p>`;
+        }
+      }
+    }
+
+    async function simularInstabilidade(tipo) {
+      const termOutput = document.getElementById('terminal-resiliencia-output');
+      try {
+        const res = await fetch('/api/sistema/simular-instabilidade', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tipo })
+        });
+        const data = await res.json();
+        if (termOutput) {
+          termOutput.innerHTML += `
+            <p class="text-amber-400 font-mono mt-2">[SIMULAÇÃO] ${data.mensagem}</p>
+          `;
+        }
+        await carregarSaudeResiliencia();
+      } catch (err) {
+        if (termOutput) {
+          termOutput.innerHTML += `<p class="text-rose-400 font-mono">[ERRO SIMULAÇÃO] ${err.message}</p>`;
+        }
+      }
+    }
+
+    // Funções de Validação de Documentação & Catraca P Trg
+    function simularValidacaoCatracaPTrg(nome, assento, emgId, cpf, abrigo, ehGestante) {
+      document.getElementById('catraca-nome').innerText = nome || 'Beneficiário Acolhida';
+      document.getElementById('catraca-assento').innerText = assento || '12B';
+      document.getElementById('catraca-emg').innerText = emgId || 'EMG-00147494';
+      document.getElementById('catraca-cpf').innerText = cpf ? cpf.replace(/(\d{3})\.(\d{3})\.(\d{3})-(\d{2})/, '***.***.$3-$4') : '***.***.860-06';
+      document.getElementById('catraca-abrigo').innerText = abrigo || 'Rondon 1';
+      document.getElementById('catraca-medico').innerText = ehGestante ? 'Laudo 72h Válido (Obstétrico)' : 'Fit-for-Travel Válido';
+      
+      const modal = document.getElementById('modal-catraca-ptrg');
+      if (modal) modal.classList.remove('hidden');
+
+      const termOutput = document.getElementById('terminal-resiliencia-output');
+      if (termOutput) {
+        termOutput.innerHTML += `
+          <p class="text-emerald-400 font-mono">[CATRACA P Trg] 🟢 Bip de Leitura Óptica OK: ${nome} • Assento ${assento} • Documentação 5/5 Válida • HMAC Válido • Embarque Confirmado.</p>
+        `;
+        termOutput.scrollTop = termOutput.scrollHeight;
+      }
+    }
+
+    function fecharModalCatraca() {
+      const modal = document.getElementById('modal-catraca-ptrg');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function abrirModalAuditoriaDocumentalCompleta() {
+      const modal = document.getElementById('modal-auditoria-5eixos');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function fecharModalAuditoriaDocumental() {
+      const modal = document.getElementById('modal-auditoria-5eixos');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // Initial Load
+    document.addEventListener('DOMContentLoaded', () => {
+      carregarMetricas();
+      calcularDecisaoAerea();
+      carregarMapaAssentos('sideral');
+      carregarSaudeResiliencia();
+    });
+  </script>
+
+  <!-- Modal: Validação na Catraca / Portão de Embarque do P Trg -->
+  <div id="modal-catraca-ptrg" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-700">
+      <!-- Top Screen Header (Estilo Terminal Militar / P Trg) -->
+      <div class="bg-slate-900 text-white p-4 flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm border border-emerald-500/30">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <div>
+            <h3 class="font-mono text-xs font-black tracking-widest text-emerald-400 uppercase">TERMINAL ÓPTICO DE EMBARQUE</h3>
+            <p class="text-[10px] text-slate-400 font-sans">Posto de Triagem (P Trg) • Boa Vista / RR</p>
+          </div>
+        </div>
+        <button onclick="fecharModalCatraca()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Main Clearance Banner -->
+      <div class="p-6 space-y-4">
+        <div class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-400 flex items-center gap-4 shadow-sm">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-md">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <span class="text-[10px] uppercase font-black tracking-widest text-emerald-800 block">SINALIZAÇÃO DE CATRACA</span>
+            <h4 class="text-lg font-black text-emerald-950 leading-tight">EMBARQUE AUTORIZADO — SUFAI</h4>
+            <span class="text-xs text-emerald-800 font-semibold block">Catraca Liberada • Documentação 100% Regular</span>
+          </div>
+        </div>
+
+        <!-- Passenger Details Grid -->
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+            <div>
+              <span class="text-[10px] text-slate-400 font-bold block uppercase">Passageiro Homologado</span>
+              <span id="catraca-nome" class="font-extrabold text-slate-900 text-sm">NOME DO PASSAGEIRO</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400 font-bold block uppercase">Poltrona Marcada</span>
+              <span id="catraca-assento" class="font-mono font-black text-govblue text-sm">12B</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-1 text-[11px]">
+            <div>
+              <span class="text-slate-400 block text-[10px]">CÓDIGO EMG</span>
+              <span id="catraca-emg" class="font-mono font-bold text-slate-800">EMG-00147494</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">CPF (MASCARADO LGPD)</span>
+              <span id="catraca-cpf" class="font-mono font-bold text-slate-800">***.***.860-06</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">ABRIGO DE ORIGEM</span>
+              <span id="catraca-abrigo" class="font-bold text-slate-800">Rondon 1</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">STATUS MÉDICO</span>
+              <span id="catraca-medico" class="font-bold text-emerald-700">Fit-for-Travel Válido</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checklist of 5 Axes -->
+        <div class="space-y-1.5 text-xs bg-white p-3.5 rounded-2xl border border-slate-200">
+          <span class="text-[10px] font-black uppercase text-slate-400 block mb-1">Checagem de Conformidade Automática (5/5)</span>
+          <div class="flex items-center justify-between text-[11px] text-slate-700">
+            <span><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i>1. Identificação Polícia Federal (SISMIGRA/STI)</span>
+            <span class="font-bold text-emerald-700 font-mono text-[10px]">REGULAR</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-700">
+            <span><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i>2. Cidadania Fiscal (Receita Federal / CPF)</span>
+            <span class="font-bold text-emerald-700 font-mono text-[10px]">ATIVO</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-700">
+            <span><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i>3. Vínculo Familiar & Proteção Anti-Tráfico</span>
+            <span class="font-bold text-emerald-700 font-mono text-[10px]">ATESTADO</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-700">
+            <span><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i>4. Aptidão Médica & Sanitária (Laudo 72h)</span>
+            <span class="font-bold text-emerald-700 font-mono text-[10px]">HOMOLOGADO</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-700">
+            <span><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i>5. Termo de Voluntariedade (Decreto 9.288/18)</span>
+            <span class="font-bold text-emerald-700 font-mono text-[10px]">ASSINADO</span>
+          </div>
+        </div>
+
+        <!-- Token HMAC -->
+        <div class="p-2.5 rounded-xl bg-slate-900 text-slate-300 font-mono text-[11px] flex items-center justify-between border border-slate-800">
+          <span class="text-emerald-400 font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-shield-halved"></i> Assinatura HMAC-SHA256:
+          </span>
+          <span class="text-slate-200 font-bold">e6d80ae9107fee2873239200969c9fbd</span>
+        </div>
+
+        <!-- Action Button -->
+        <button onclick="fecharModalCatraca()" class="w-full py-3 bg-govblue hover:bg-blue-900 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-check-double"></i>
+          <span>Confirmar Passagem / Próximo Passageiro</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Matriz Completa de Auditoria Documental dos 5 Eixos -->
+  <div id="modal-auditoria-5eixos" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-300 max-h-[90vh] flex flex-col">
+      <div class="bg-govblue text-white p-5 flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">SUFAI • Instrução Normativa</span>
+            <span class="text-xs text-slate-300">Auditoria Automatizada</span>
+          </div>
+          <h3 class="text-base font-black">Matriz dos 5 Eixos de Conformidade Documental</h3>
+        </div>
+        <button onclick="fecharModalAuditoriaDocumental()" class="w-8 h-8 rounded-lg bg-blue-900/60 text-slate-300 hover:text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4 overflow-y-auto custom-scrollbar">
+        <p class="text-xs text-slate-600 leading-relaxed">
+          O sistema realiza a checagem cruzada de 5 bases de dados antes de homologar a emissão do bilhete aéreo e liberar o assento na aeronave, garantindo 100% de segurança jurídica e sanitária:
+        </p>
+
+        <div class="space-y-3 text-xs">
+          <!-- Eixo 1 -->
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center text-sm font-bold shrink-0">1</div>
+            <div class="space-y-1">
+              <span class="font-extrabold text-slate-900 block">Identificação Migratória Regular (Polícia Federal)</span>
+              <p class="text-[11px] text-slate-600">Checagem no <b>SISMIGRA / STI-MAR</b>. Exige Cédula Venezuelana válida ou Protocolo de Solicitação de Refúgio/Residência ativo. Sem mandados na INTERPOL.</p>
+              <span class="text-[10px] text-emerald-700 font-bold block"><i class="fa-solid fa-check mr-1"></i>Status no Voo: 144 de 144 passageiros regulares</span>
+            </div>
+          </div>
+
+          <!-- Eixo 2 -->
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center text-sm font-bold shrink-0">2</div>
+            <div class="space-y-1">
+              <span class="font-extrabold text-slate-900 block">Cidadania Fiscal & Regularidade CPF (Receita Federal)</span>
+              <p class="text-[11px] text-slate-600">Validação do CPF ativo para vinculação do e-ticket aéreo e abertura de conta bancária/contrato formal na cidade de destino. Mascaramento LGPD aplicado.</p>
+              <span class="text-[10px] text-emerald-700 font-bold block"><i class="fa-solid fa-check mr-1"></i>Status no Voo: 100% CPFs validados com máscara</span>
+            </div>
+          </div>
+
+          <!-- Eixo 3 -->
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center text-sm font-bold shrink-0">3</div>
+            <div class="space-y-1">
+              <span class="font-extrabold text-slate-900 block">Vínculo Familiar & Prevenção ao Tráfico de Pessoas</span>
+              <p class="text-[11px] text-slate-600">Certidões de nascimento ou termos de guarda judicial comprovam a filiação de todos os menores. Crianças sem vínculo são bloqueadas imediatamente para a DPU.</p>
+              <span class="text-[10px] text-emerald-700 font-bold block"><i class="fa-solid fa-check mr-1"></i>Status no Voo: 0 menores em risco • Famílias alocadas juntas</span>
+            </div>
+          </div>
+
+          <!-- Eixo 4 -->
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center text-sm font-bold shrink-0">4</div>
+            <div class="space-y-1">
+              <span class="font-extrabold text-slate-900 block">Aptidão Médica & Controle Sanitário (Fit for Travel)</span>
+              <p class="text-[11px] text-slate-600">Comprovante vacinal (Febre Amarela, Tríplice Viral). Gestantes entre 28 e 35 semanas com <b>atestado médico emitido em menos de 72 horas</b> pré-embarque.</p>
+              <span class="text-[10px] text-emerald-700 font-bold block"><i class="fa-solid fa-check mr-1"></i>Status no Voo: Laudos conferidos e arquivados no P Trg</span>
+            </div>
+          </div>
+
+          <!-- Eixo 5 -->
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-bold shrink-0">5</div>
+            <div class="space-y-1">
+              <span class="font-extrabold text-slate-900 block">Consentimento Voluntário e Esclarecido (Decreto nº 9.288/2018)</span>
+              <p class="text-[11px] text-slate-600">Aquiescência formal do migrante e de todos os adultos do núcleo familiar no aplicativo móvel em seu idioma materno.</p>
+              <span class="text-[10px] text-emerald-700 font-bold block"><i class="fa-solid fa-check mr-1"></i>Status no Voo: 100% de aquiescência assinada digitalmente</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-emerald-50 border border-emerald-300 rounded-2xl flex items-center justify-between text-xs">
+          <div>
+            <span class="font-extrabold text-emerald-950 block">Conclusão da Auditoria Tática SUFAI</span>
+            <span class="text-emerald-800 text-[11px]">Voo Sideral SID-4820 (B737) e Voo FAB-9012 (KC-390) 100% homologados para decolagem.</span>
+          </div>
+          <span class="px-3 py-1 rounded-full font-black text-xs bg-emerald-600 text-white shadow">
+            APROVADO
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

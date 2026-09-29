@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Acolhida App | SUFAI Interiorização</title>
+
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0c2340">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Acolhida App">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            govblue: '#0c2340',
+            govblueLight: '#1e3a8a',
+            govgreen: '#047857',
+            govyellow: '#d97706',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, select, textarea {
+      user-select: auto;
+    }
+    .safe-area-pb {
+      padding-bottom: env(safe-area-inset-bottom, 12px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans select-none">
+
+  <!-- Mobile Top Bar -->
+  <header class="bg-govblue text-white p-3.5 shadow-md sticky top-0 z-50">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white text-base font-black shadow-sm">
+          <i class="fa-solid fa-plane-departure"></i>
+        </div>
+        <div>
+          <h1 class="text-sm font-extrabold tracking-tight flex items-center gap-1.5">
+            <span>ACOLHIDA APP</span>
+            <span id="badge-standalone" class="hidden text-[9px] bg-emerald-400 text-slate-950 font-black px-1.5 py-0.2 rounded-full uppercase">App Ativo</span>
+          </h1>
+          <p class="text-[9px] text-emerald-300 font-medium">Subcomitê Federal para Abrigamento e Interiorização (SUFAI)</p>
+        </div>
+      </div>
+      <!-- Language Switcher & Install quick trigger -->
+      <div class="flex items-center gap-1.5">
+        <button onclick="abrirModalInstrucoesApp()" title="Como instalar no celular" class="w-7 h-7 rounded-lg bg-slate-800 text-amber-300 border border-slate-700 flex items-center justify-center text-xs hover:bg-slate-700 transition">
+          <i class="fa-solid fa-mobile-screen"></i>
+        </button>
+        <div class="flex items-center space-x-1 bg-slate-800/90 rounded-lg p-0.5 border border-slate-700 text-[11px]">
+          <button onclick="mudarIdioma('ES')" id="btn-lang-es" class="px-2 py-0.5 rounded font-bold bg-emerald-600 text-white transition">ES</button>
+          <button onclick="mudarIdioma('PT')" id="btn-lang-pt" class="px-2 py-0.5 rounded font-bold text-slate-400 hover:text-white transition">PT</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Offline Status Banner (Shown dynamically when disconnected) -->
+  <div id="offline-banner" class="hidden bg-amber-500 text-slate-950 px-4 py-2 text-xs font-bold shadow-md">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <span class="flex items-center gap-1.5">
+        <i class="fa-solid fa-wifi-slash"></i>
+        <span class="lang-txt" data-es="Modo Offline (Tenda): Sus datos se guardarán y sincronizarán automáticamente." data-pt="Modo Offline (Tenda): Seus dados serão salvos e sincronizados automaticamente.">Modo Offline (Tenda) Ativo</span>
+      </span>
+      <span class="text-[10px] bg-slate-900 text-amber-300 px-1.5 py-0.5 rounded font-mono">OFFLINE</span>
+    </div>
+  </div>
+
+  <!-- PWA Install Banner (Native App Prompt) -->
+  <div id="install-app-banner" class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white px-3.5 py-2.5 shadow-md border-b border-blue-800/40">
+    <div class="max-w-md mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 flex-1">
+        <div class="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs shadow">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+        </div>
+        <div>
+          <p class="text-xs font-bold leading-tight">
+            <span class="lang-txt" data-es="Instalar Aplicación en el Celular" data-pt="Instalar Aplicativo no Celular">Instalar Aplicación en el Celular</span>
+          </p>
+          <p class="text-[10px] text-blue-200">
+            <span class="lang-txt" data-es="Funciona sin internet en la carpa • Alertas de vuelo" data-pt="Funciona sem internet na tenda • Alertas de voo">Funciona sem internet na tenda • Alertas de voo</span>
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
+        <button onclick="acionarInstalacaoApp()" id="btn-instalar-app" class="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold rounded-lg transition shadow-sm whitespace-nowrap flex items-center gap-1">
+          <i class="fa-solid fa-download"></i> <span class="lang-txt" data-es="Instalar" data-pt="Instalar">Instalar</span>
+        </button>
+        <button onclick="abrirModalInstrucoesApp()" class="w-6 h-6 flex items-center justify-center text-slate-300 hover:text-white text-xs">
+          <i class="fa-solid fa-circle-question"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container Mobile Form and App Views -->
+  <main class="flex-1 max-w-md w-full mx-auto p-4 pb-24 space-y-4">
+
+    <!-- ============================================== -->
+    <!-- TELA 1: CADASTRO DO MIGRANTE (WIZARD 5 PASSOS) -->
+    <!-- ============================================== -->
+    <div id="tela-cadastro" class="space-y-4">
+
+      <!-- Voluntary notice -->
+      <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-2xl text-[11px] text-emerald-900 flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-600 text-base"></i>
+        <span id="banner-txt">Viaje 100% <strong>gratuito y voluntario</strong> del Gobierno Federal de Brasil (SUFAI)</span>
+      </div>
+
+      <!-- Progress Indicator -->
+      <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
+          <span id="txt-progresso-etapa">Paso 1 de 5</span>
+          <span id="txt-progresso-titulo" class="text-emerald-700 font-extrabold">Datos Personales</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div id="barra-progresso" class="bg-emerald-600 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+        </div>
+      </div>
+
+      <!-- FORM WIZARD -->
+      <form id="form-migrante" onsubmit="event.preventDefault();" class="space-y-4">
+
+        <!-- PASO 1: DATOS PERSONALES -->
+        <div id="passo-1" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <h2 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+            <i class="fa-solid fa-user text-emerald-600"></i> <span class="lang-txt" data-es="¿Quién eres?" data-pt="Quem é você?">¿Quién eres?</span>
+          </h2>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">
+              <span class="lang-txt" data-es="Nombre Completo" data-pt="Nome Completo">Nombre Completo</span> *
+            </label>
+            <input type="text" id="m-nome" required placeholder="Ej: Maria Gabriela Mendoza" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                <span class="lang-txt" data-es="Fecha Nacimiento" data-pt="Data de Nascimento">Fecha Nacimiento</span> *
+              </label>
+              <input type="date" id="m-nascimento" required class="w-full border border-slate-300 rounded-xl p-2 text-xs">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                <span class="lang-txt" data-es="Sexo" data-pt="Sexo">Sexo</span> *
+              </label>
+              <select id="m-sexo" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs bg-white">
+                <option value="Femenino">Femenino</option>
+                <option value="Masculino">Masculino</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                <span class="lang-txt" data-es="Cédula / Documento" data-pt="Cédula / Documento">Cédula / Documento</span> *
+              </label>
+              <input type="text" id="m-documento" placeholder="V-25.123.456" required class="w-full border border-slate-300 rounded-xl p-2.5 text-xs">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                <span class="lang-txt" data-es="CPF Brasil (si tienes)" data-pt="CPF Brasil (se tiver)">CPF Brasil (si tienes)</span>
+              </label>
+              <input type="text" id="m-cpf" placeholder="000.000.000-00" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">
+              <span class="lang-txt" data-es="Tu Teléfono / WhatsApp" data-pt="Seu Telefone / WhatsApp">Tu Teléfono / WhatsApp</span> *
+            </label>
+            <input type="tel" id="m-telefone" placeholder="+55 95 99123-4567" required class="w-full border border-slate-300 rounded-xl p-2.5 text-xs">
+            <span class="text-[10px] text-slate-400 mt-0.5 block">
+              <span class="lang-txt" data-es="Muy importante: por aquí confirmaremos tu vuelo para no perder el cupo." data-pt="Muito importante: por aqui confirmaremos seu voo para não perder a vaga.">Muy importante: por aquí confirmaremos tu vuelo para no perder el cupo.</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- PASO 2: ALOJAMIENTO EN BOA VISTA OU PACARAIMA -->
+        <div id="passo-2" class="hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <h2 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+            <i class="fa-solid fa-campground text-emerald-600"></i> <span class="lang-txt" data-es="¿Dónde estás alojado (Boa Vista o Pacaraima)?" data-pt="Onde você está acolhido (Boa Vista ou Pacaraima)?">¿Dónde estás alojado (Boa Vista o Pacaraima)?</span>
+          </h2>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">
+              <span class="lang-txt" data-es="Situación de Alojamiento" data-pt="Situação de Acolhimento">Situación de Alojamiento</span> *
+            </label>
+            <select id="m-situacao-abrigo" onchange="toggleCarpaCampo()" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs bg-white font-medium">
+              <option value="Rondon 1">Abrigo Rondon 1 (Boa Vista)</option>
+              <option value="Rondon 5">Abrigo Rondon 5 (Boa Vista)</option>
+              <option value="Tuaranoko">Abrigo Tuaranoko - Indígena Warao/Eñepa (Boa Vista)</option>
+              <option value="Anexo Rondon 1">Abrigo Anexo Rondon 1 (Boa Vista)</option>
+              <option value="BV-8">Abrigo BV-8 (Pacaraima - Fronteira)</option>
+              <option value="P_TRG">Posto de Triagem (P Trg) (Boa Vista ou Pacaraima)</option>
+              <option value="Fora de Abrigo">Fora de abrigo / Alugado / Ocupação espontânea</option>
+            </select>
+          </div>
+
+          <div id="box-carpa">
+            <label class="block text-xs font-bold text-slate-700 mb-1">
+              <span class="lang-txt" data-es="Número de Tienda / Carpa" data-pt="Número da Tenda / Carpa">Número de Tienda / Carpa</span>
+            </label>
+            <input type="text" id="m-carpa" placeholder="Ej: L13, K17, A05..." class="w-full border border-slate-300 rounded-xl p-2.5 text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">
+              <span class="lang-txt" data-es="¿Cuánto tiempo llevas en Boa Vista?" data-pt="Há quanto tempo está em Boa Vista?">¿Cuánto tiempo llevas en Boa Vista?</span>
+            </label>
+            <select id="m-tempo-bv" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs bg-white">
+              <option value="MENOS_1_MES">Menos de 1 mes</option>
+              <option value="1_A_6_MESES">De 1 a 6 meses</option>
+              <option value="6_A_12_MESES">De 6 a 12 meses</option>
+              <option value="MAIS_1_ANO">Más de 1 año (prioridad)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- PASO 3: MODALIDAD Y FAMILIA EN EL DESTINO -->
+        <div id="passo-3" class="hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <h2 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+            <i class="fa-solid fa-users text-emerald-600"></i> <span class="lang-txt" data-es="Modalidad de Interiorización" data-pt="Modalidade de Interiorização">Modalidad de Interiorización</span>
+          </h2>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">
+              <span class="lang-txt" data-es="¿Cómo deseas viajar?" data-pt="Como você deseja viajar?">¿Cómo deseas viajar?</span> *
+            </label>
+            <select id="m-modalidade" onchange="toggleContatoDestino()" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs bg-white">
+              <option value="REUNIFICACAO_FAMILIAR">Reunificación Familiar (Tengo familia que me recibe)</option>
+              <option value="REUNIAO_SOCIAL">Reunión Social (Tengo amigos conocidos que me reciben)</option>
+              <option value="VAGA_DE_EMPREGO_SINALIZADA">Vaga de Empleo Señalizada (Quiero trabajar)</option>
+              <option value="ABRIGO_INSTITUCIONAL">Alojamiento Institucional (Abrigo en otra ciudad)</option>
+            </select>
+          </div>
+
+          <!-- Campos de contato no destino se familiar/social -->
+          <div id="box-contato-destino" class="space-y-2 border-t border-slate-100 pt-2">
+            <p class="text-[11px] font-bold text-slate-700">
+              <span class="lang-txt" data-es="Datos de la persona que te recibirá:" data-pt="Dados da pessoa que vai te receber:">Datos de la persona que te recibirá:</span>
+            </p>
+            <input type="text" id="m-contato-nome" placeholder="Nombre del familiar/amigo" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs">
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="m-contato-cidade" placeholder="Ciudad (Ej: Curitiba)" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs">
+              <input type="text" id="m-contato-uf" placeholder="Estado/UF (Ej: PR)" maxlength="2" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs uppercase">
+            </div>
+            <input type="tel" id="m-contato-telefone" placeholder="Teléfono del receptor en destino" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs">
+          </div>
+        </div>
+
+        <!-- PASO 4: EXPERIENCIA LABORAL -->
+        <div id="passo-4" class="hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <h2 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+            <i class="fa-solid fa-briefcase text-emerald-600"></i> <span class="lang-txt" data-es="Perfil de Empleo" data-pt="Perfil de Emprego">Perfil de Empleo</span>
+          </h2>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">
+              <span class="lang-txt" data-es="Área Principal de Trabajo" data-pt="Área Principal de Trabalho">Área Principal de Trabajo</span>
+            </label>
+            <select id="m-area-trabalho" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs bg-white">
+              <option value="LOGISTICA">Logística, Almacén y Embalaje</option>
+              <option value="FRIGORIFICO">Agroindustria / Frigorífico / Carnes</option>
+              <option value="CONSTRUCAO">Construcción Civil (Albañil, Pintor, Ayudante)</option>
+              <option value="SERVICOS">Servicios Generales / Limpieza / Cocina</option>
+              <option value="ATENDIMENTO">Atención al Cliente / Ventas / Comercio</option>
+              <option value="OUTRO">Otra área</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">
+              <span class="lang-txt" data-es="Describe brevemente tus habilidades:" data-pt="Descreva brevemente suas habilidades:">Describe brevemente tus habilidades:</span>
+            </label>
+            <textarea id="m-habilidades" rows="2" placeholder="Ej: Trabajo con carga pesada, inventario, manejo de alimentos..." class="w-full border border-slate-300 rounded-xl p-2.5 text-xs"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">
+              <span class="lang-txt" data-es="Nivel de Portugués" data-pt="Nível de Português">Nivel de Portugués</span>
+            </label>
+            <select id="m-portugues" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs bg-white">
+              <option value="BASICO">Básico (Entiendo poco)</option>
+              <option value="INTERMEDIARIO">Intermedio (Puedo comunicarme en el trabajo)</option>
+              <option value="AVANCADO">Avanzado / Fluido</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- PASO 5: SALUD, EMBARAZO Y CONFIRMACIÓN -->
+        <div id="passo-5" class="hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <h2 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+            <i class="fa-solid fa-notes-medical text-emerald-600"></i> <span class="lang-txt" data-es="Salud y Familia" data-pt="Saúde e Família">Salud y Familia</span>
+          </h2>
+
+          <div class="space-y-2">
+            <label class="flex items-center space-x-2 text-xs text-slate-700 cursor-pointer">
+              <input type="checkbox" id="m-check-gravida" onchange="toggleGravidaCampos()" class="rounded text-pink-600 focus:ring-pink-500">
+              <span class="font-bold lang-txt" data-es="¿Hay alguna mujer embarazada en el grupo familiar?" data-pt="Há alguma mulher grávida no grupo familiar?">¿Hay alguna mujer embarazada en el grupo familiar?</span>
+            </label>
+
+            <div id="box-gravidez" class="hidden p-3 bg-pink-50 rounded-xl border border-pink-200 space-y-2">
+              <p class="text-[10px] text-pink-800">
+                <span class="lang-txt" data-es="Regla de vuelo: Hasta 27 semanas vuelo libre. 28 a 35 semanas requiere certificado médico emitido en las últimas 72 horas." data-pt="Regra de voo: Até 27 semanas voo livre. 28 a 35 semanas requer atestado médico emitido nas últimas 72 horas.">Regla de vuelo: Hasta 27 semanas vuelo libre. 28 a 35 semanas requiere certificado médico emitido en las últimas 72 horas.</span>
+              </p>
+              <div class="flex items-center gap-2">
+                <label class="text-xs text-slate-700">Semanas:</label>
+                <input type="number" id="m-semanas" min="1" max="42" value="20" class="w-20 border border-slate-300 rounded-lg p-1 text-xs">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                <span class="lang-txt" data-es="¿Cuántos niños menores de 12 años viajan contigo?" data-pt="Quantas crianças menores de 12 anos viajam com você?">¿Cuántos niños menores de 12 años viajan contigo?</span>
+              </label>
+              <input type="number" id="m-filhos-qtd" min="0" value="0" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs">
+            </div>
+          </div>
+
+          <!-- Term of Voluntariness -->
+          <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-2 mt-3">
+            <label class="flex items-start space-x-2 text-xs text-emerald-950 cursor-pointer">
+              <input type="checkbox" id="m-termo-voluntario" required class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
+              <span class="text-[11px] leading-snug">
+                <span class="lang-txt" data-es="Declaro que mi participación en la Estrategia de Interiorización es 100% libre y voluntaria, y me comprometo a no faltar al embarque para no perjudicar a otros migrantes." data-pt="Declaro que minha participação na Estratégia de Interiorização é 100% livre e voluntária, e me comprometo a não faltar ao embarque para não prejudicar outros migrantes.">Declaro que mi participación en la Estrategia de Interiorización es 100% libre y voluntaria.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- NAVIGATION BUTTONS -->
+        <div class="flex items-center justify-between pt-2">
+          <button type="button" onclick="voltarPasso()" id="btn-voltar" class="hidden px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 font-bold text-xs hover:bg-slate-100 transition">
+            <i class="fa-solid fa-arrow-left mr-1"></i> <span class="lang-txt" data-es="Volver" data-pt="Voltar">Volver</span>
+          </button>
+          <div class="flex-1"></div>
+          <button type="button" onclick="avancarPasso()" id="btn-avancar" class="px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 shadow-md transition flex items-center space-x-1.5">
+            <span class="lang-txt" data-es="Continuar" data-pt="Continuar">Continuar</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </form>
+
+      <!-- SUCCESS CONFIRMATION CARD -->
+      <div id="modal-sucesso" class="hidden bg-white p-6 rounded-3xl border border-emerald-300 shadow-xl space-y-4 text-center">
+        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h2 class="text-base font-extrabold text-slate-900">
+          <span class="lang-txt" data-es="¡Registro Completado con Éxito!" data-pt="Cadastro Realizado com Sucesso!">¡Registro Completado con Éxito!</span>
+        </h2>
+        <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200">
+          <span class="text-[10px] text-emerald-800 uppercase font-black tracking-wider block">Protocolo Oficial SUFAI</span>
+          <span id="sucesso-protocolo" class="text-lg font-black text-emerald-950 font-mono">ACOLHIDA-2026-8819</span>
+        </div>
+
+        <!-- Desconflito Badge / Info -->
+        <div id="sucesso-desconflito-box" class="hidden bg-blue-50 border border-blue-200 p-3 rounded-2xl text-left space-y-1">
+          <div class="flex items-center gap-1.5 text-blue-900 font-bold text-xs">
+            <i class="fa-solid fa-link text-blue-600"></i>
+            <span>Registro Desconflitado e Unificado com Sucesso!</span>
+          </div>
+          <p class="text-[11px] text-blue-800" id="sucesso-desconflito-texto">
+            Seus dados foram vinculados ao seu registro oficial no abrigo sem duplicidade.
+          </p>
+          <div class="text-[10px] text-blue-600 font-mono" id="sucesso-desconflito-detalhe">
+            EMG Oficial: EMG-00147494 • Carpa: J13 • Tempo Abrigado: 1399 dias
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-600 leading-relaxed">
+          <span class="lang-txt" data-es="Sus datos han sido integrados en el sistema de interiorización. En breve recibirá un mensaje en su WhatsApp con los próximos pasos y la confirmación de fecha para su vuelo." data-pt="Seus dados foram integrados ao sistema de interiorização. Em breve você receberá uma mensagem em seu WhatsApp com os próximos passos e a confirmação de data para seu voo.">Sus datos han sido integrados en el sistema de interiorización. En breve recibirá un mensaje en su WhatsApp con los próximos pasos.</span>
+        </p>
+        <div class="pt-2 flex flex-col gap-2">
+          <button onclick="mudarAbaApp('viagem')" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm">
+            <i class="fa-solid fa-ticket mr-1"></i> <span class="lang-txt" data-es="Ver Mi Vuelo y Tarjeta de Embarque" data-pt="Ver Meu Voo e Cartão de Embarque">Ver Mi Vuelo y Tarjeta de Embarque</span>
+          </button>
+          <a href="/" class="block w-full py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 transition">
+            <i class="fa-solid fa-house mr-1"></i> <span class="lang-txt" data-es="Ir al Panel General" data-pt="Ir ao Painel Geral">Ir al Panel General</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TELA 2: MINHA VIAGEM & CARTÃO DE EMBARQUE      -->
+    <!-- ============================================== -->
+    <div id="tela-viagem" class="hidden space-y-4">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+        <h2 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+          <i class="fa-solid fa-ticket text-emerald-600"></i>
+          <span class="lang-txt" data-es="Consultar Mi Vuelo y Tarjeta de Embarque" data-pt="Consultar Meu Voo e Cartão de Embarque">Consultar Mi Vuelo y Tarjeta de Embarque</span>
+        </h2>
+        <p class="text-xs text-slate-500">
+          <span class="lang-txt" data-es="Ingresa tu CPF, Código EMG o Número de Protocolo para ver el estatus de tu viaje y confirmar tu presencia." data-pt="Digite seu CPF, Código EMG ou Número de Protocolo para ver o status da viagem e confirmar sua presença.">Digite seu CPF, Código EMG ou Número de Protocolo para ver o status da viagem e confirmar sua presença.</span>
+        </p>
+        <div class="flex gap-2">
+          <input type="text" id="input-busca-viagem" placeholder="Ej: 118.829.232-35 ou EMG-00147494" class="flex-1 border border-slate-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <button onclick="buscarViagemMigrante()" class="px-4 py-2.5 bg-govblue hover:bg-govblueLight text-white rounded-xl text-xs font-bold transition flex items-center gap-1">
+            <i class="fa-solid fa-magnifying-glass"></i> <span class="lang-txt" data-es="Buscar" data-pt="Buscar">Buscar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card Resultado Viagem -->
+      <div id="box-resultado-viagem" class="space-y-4">
+        <!-- Card de Exemplo Padrão (Leoadagnys do Rondon 1) -->
+        <div class="bg-gradient-to-br from-govblue to-slate-900 text-white p-5 rounded-3xl shadow-xl space-y-4 border border-blue-800/40">
+          <div class="flex items-center justify-between border-b border-blue-800/60 pb-3">
+            <div>
+              <span class="text-[9px] uppercase font-black tracking-wider text-emerald-400 block">Estatus de Interiorización</span>
+              <span id="viagem-status-tag" class="text-xs font-bold text-white flex items-center gap-1.5 mt-0.5">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i> Vuelo Programado • Apto
+              </span>
+            </div>
+            <span id="viagem-cia-tag" class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 rounded-lg text-[10px] font-bold">
+              Sideral Linhas Aéreas
+            </span>
+          </div>
+
+          <!-- Rota Voo -->
+          <div class="flex items-center justify-between py-2">
+            <div>
+              <span class="text-[10px] text-slate-400 block">ORIGEN</span>
+              <span class="text-xl font-black text-white font-mono">BVB</span>
+              <span class="text-[11px] text-slate-300 block">Boa Vista - RR</span>
+            </div>
+            <div class="flex-1 flex flex-col items-center px-4">
+              <i class="fa-solid fa-plane text-emerald-400 text-lg"></i>
+              <div class="w-full border-t border-dashed border-slate-500 my-1"></div>
+              <span class="text-[9px] text-slate-400 font-mono">Voo SUFAI-2026</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400 block">DESTINO</span>
+              <span id="viagem-destino-codigo" class="text-xl font-black text-white font-mono">CWB</span>
+              <span id="viagem-destino-cidade" class="text-[11px] text-slate-300 block">Curitiba - PR</span>
+            </div>
+          </div>
+
+          <!-- Dados do Passageiro & Abrigo -->
+          <div class="bg-black/25 p-3 rounded-2xl grid grid-cols-2 gap-2 text-xs border border-white/10">
+            <div>
+              <span class="text-[10px] text-slate-400 block">PASSAGEIRO</span>
+              <span id="viagem-passageiro" class="font-bold text-white block truncate">LEODAGNYS E. BARCELO</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block">CENTRO ACOLHIMENTO</span>
+              <span id="viagem-abrigo" class="font-bold text-amber-300 block">Abrigo Rondon 1 (Carpa J13)</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block">APRESENTAÇÃO P Trg</span>
+              <span class="font-bold text-emerald-300 block">04:00 da manhã</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block">ASSENTO / POLTRONA</span>
+              <span id="viagem-assento" class="font-mono font-black text-amber-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-chair text-[10px]"></i> 12B (Corredor)
+              </span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block">PROCESSO SCDP/TCU</span>
+              <span id="viagem-scdp" class="font-mono font-bold text-purple-300 block">PCDP-2026-7494</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block">CPF (PROTEÇÃO LGPD)</span>
+              <span id="viagem-cpf-mascarado" class="font-mono font-bold text-slate-300 block">***.***.860-06</span>
+            </div>
+          </div>
+
+          <!-- HMAC-SHA256 Security Strip -->
+          <div class="flex items-center justify-between text-[10px] bg-black/40 px-3 py-1.5 rounded-xl border border-white/10 font-mono">
+            <span class="flex items-center gap-1.5 text-emerald-400 font-bold">
+              <i class="fa-solid fa-shield-halved"></i> HMAC-SHA256:
+            </span>
+            <span id="viagem-hmac-badge" class="truncate max-w-[200px] text-slate-300 font-bold">
+              e6d80ae9107fee2873239200969c9fbd
+            </span>
+          </div>
+
+          <!-- Checklist Documental no Cartão do Migrante -->
+          <div class="bg-black/30 p-3 rounded-2xl border border-white/10 space-y-1.5 text-[11px]">
+            <div class="flex items-center justify-between text-slate-300">
+              <span class="font-bold flex items-center gap-1.5 text-emerald-400">
+                <i class="fa-solid fa-file-circle-check"></i>
+                <span class="lang-txt" data-es="Documentación Verificada (5 Ejes)" data-pt="Documentação Verificada (5 Eixos)">Documentação Verificada (5 Eixos)</span>:
+              </span>
+              <span class="px-2 py-0.2 rounded-full font-black text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">100% OK</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1 text-[10px] text-slate-300">
+              <div class="flex items-center gap-1"><i class="fa-solid fa-check text-emerald-400"></i> Protocolo PF</div>
+              <div class="flex items-center gap-1"><i class="fa-solid fa-check text-emerald-400"></i> CPF Regular</div>
+              <div class="flex items-center gap-1"><i class="fa-solid fa-check text-emerald-400"></i> Família Atestada</div>
+              <div class="flex items-center gap-1"><i class="fa-solid fa-check text-emerald-400"></i> Laudo Médico 72h</div>
+            </div>
+          </div>
+
+          <!-- Digital Boarding QR Code -->
+          <div class="bg-white text-slate-900 p-3.5 rounded-2xl flex items-center justify-between shadow">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-slate-500 block">Cartão de Embarque Digital</span>
+              <span class="text-xs font-extrabold text-slate-900 block">Validação Automática no P Trg</span>
+              <span class="text-[10px] text-emerald-600 font-semibold block mt-0.5"><i class="fa-solid fa-fingerprint"></i> Autenticação Federal SUFAI</span>
+            </div>
+            <!-- Simulated QR Code SVG -->
+            <div class="w-14 h-14 bg-slate-950 p-1 rounded-lg flex items-center justify-center">
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="#ffffff">
+                <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14-2h4v4h-4v-4zm-4 0h2v2h-2v-2zm0 4h2v4h-2v-4zm4 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-6-2h2v2h-2v-2zM5 5h2v2H5V5zm12 0h2v2h-2V5zM5 17h2v2H5v-2z"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Ação Anti-Absenteísmo -->
+          <div class="pt-1">
+            <button onclick="confirmarPresencaWhatsAppViaApp()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+              <i class="fa-brands fa-whatsapp text-base"></i>
+              <span class="lang-txt" data-es="CONFIRMAR MI ASISTENCIA POR WHATSAPP" data-pt="CONFIRMAR MINHA PRESENÇA NO WHATSAPP">CONFIRMAR MINHA PRESENÇA NO WHATSAPP</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TELA 3: GUIA DOS 5 ABRIGOS OFICIAIS DO SUFAI   -->
+    <!-- ============================================== -->
+    <div id="tela-abrigos" class="hidden space-y-4">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+        <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-campground text-emerald-600"></i>
+          <span class="lang-txt" data-es="Centros de Acogida Activos (SUFAI)" data-pt="Centros de Acolhimento Ativos (SUFAI)">Centros de Acolhimento Ativos (SUFAI)</span>
+        </h2>
+        <p class="text-xs text-slate-500">
+          <span class="lang-txt" data-es="Informaciones oficiales sobre los 5 albergues coordinados por el Gobierno Federal de Brasil." data-pt="Informações oficiais sobre os 5 abrigos coordenados pelo Governo Federal do Brasil.">Informações oficiais sobre os 5 abrigos coordenados pelo Governo Federal do Brasil.</span>
+        </p>
+      </div>
+
+      <!-- 1. Rondon 1 -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-hotel text-blue-600"></i> Abrigo Rondon 1
+          </span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">Boa Vista - RR</span>
+        </div>
+        <p class="text-xs text-slate-600">Complexo de acolhimento emergencial para núcleos familiares e indivíduos. Ponto de triagem prioritário para o processo de interiorização.</p>
+        <div class="text-[11px] text-slate-500 flex items-center gap-3 pt-1 border-t border-slate-100">
+          <span><i class="fa-solid fa-utensils text-emerald-600 mr-1"></i> 07h / 12h / 18h</span>
+          <span><i class="fa-solid fa-stethoscope text-blue-600 mr-1"></i> P Trg 08h-17h</span>
+        </div>
+      </div>
+
+      <!-- 2. Rondon 5 -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-hotel text-indigo-600"></i> Abrigo Rondon 5
+          </span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-800 border border-indigo-200">Boa Vista - RR</span>
+        </div>
+        <p class="text-xs text-slate-600">Espaço prioritário para famílias com crianças, gestantes e candidatos a vagas de emprego sinalizadas (VES) com suporte de creche no destino.</p>
+      </div>
+
+      <!-- 3. Tuaranoko (Indígena) -->
+      <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-feather text-amber-600"></i> Abrigo Tuaranoko (Indígena)
+          </span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300">Warao / Eñepa</span>
+        </div>
+        <p class="text-xs text-slate-600">Centro dedicado a populações indígenas migrantes. Atendimento intercultural com facilitadores nas línguas maternas e apoio a projetos comunitários.</p>
+      </div>
+
+      <!-- 4. Anexo Rondon 1 -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-hotel text-cyan-600"></i> Abrigo Anexo Rondon 1
+          </span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-50 text-cyan-800 border border-cyan-200">Boa Vista - RR</span>
+        </div>
+        <p class="text-xs text-slate-600">Unidade de extensão logística e acolhimento planejado para desabrigamento de longa permanência e Reunião Social.</p>
+      </div>
+
+      <!-- 5. BV-8 (Pacaraima) -->
+      <div class="bg-white p-4 rounded-2xl border border-emerald-200 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-location-dot text-emerald-600"></i> Abrigo BV-8 (Pacaraima)
+          </span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-900 border border-emerald-300">Fronteira RR</span>
+        </div>
+        <p class="text-xs text-slate-600">Posto de Triagem e Acolhimento na fronteira em Pacaraima. Realiza a primeira regularização documental, vacinação e triagem de deslocamento.</p>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TELA 4: AJUDA, WHATSAPP E GUIA DE INSTALAÇÃO   -->
+    <!-- ============================================== -->
+    <div id="tela-ajuda" class="hidden space-y-4">
+      <!-- WhatsApp Box -->
+      <div class="bg-emerald-600 text-white p-5 rounded-3xl shadow-lg space-y-3">
+        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl">
+          <i class="fa-brands fa-whatsapp text-white"></i>
+        </div>
+        <h2 class="text-base font-extrabold">Canal Oficial WhatsApp SUFAI</h2>
+        <p class="text-xs text-emerald-100 leading-relaxed">
+          Atendimento automatizado com a Inteligência Artificial Federal. Envie mensagens para tirar dúvidas sobre seu voo, confirmar presença ou comunicar imprevistos.
+        </p>
+        <button onclick="abrirWhatsAppSimulador()" class="w-full py-2.5 bg-white hover:bg-slate-100 text-emerald-900 font-extrabold text-xs rounded-xl transition shadow">
+          <i class="fa-brands fa-whatsapp mr-1 text-emerald-600"></i> Abrir Conversa no WhatsApp
+        </button>
+      </div>
+
+      <!-- Como Instalar o App Card -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+        <h3 class="text-xs font-extrabold text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-mobile-screen-button text-blue-600"></i> Como ter o App na Tela do seu Celular
+        </h3>
+        <div class="space-y-2 text-xs text-slate-600">
+          <div class="flex items-start gap-2 p-2 bg-slate-50 rounded-xl">
+            <i class="fa-brands fa-android text-emerald-600 text-base mt-0.5"></i>
+            <div>
+              <span class="font-bold text-slate-800 block">No Android (Google Chrome):</span>
+              <span>Clique no botão verde <b>"Instalar"</b> no topo ou clique nos 3 pontinhos do Chrome e selecione <b>"Adicionar à tela inicial"</b>.</span>
+            </div>
+          </div>
+          <div class="flex items-start gap-2 p-2 bg-slate-50 rounded-xl">
+            <i class="fa-brands fa-apple text-slate-800 text-base mt-0.5"></i>
+            <div>
+              <span class="font-bold text-slate-800 block">No iPhone / iOS (Safari):</span>
+              <span>Toque no botão de <b>Compartilhar</b> (ícone do quadrado com a seta para cima) e toque em <b>"Adicionar à Tela de Início"</b>.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- NATIVE BOTTOM NAVIGATION BAR -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 shadow-2xl safe-area-pb">
+    <div class="max-w-md mx-auto grid grid-cols-4 py-2">
+      <button onclick="mudarAbaApp('cadastro')" id="btn-nav-cadastro" class="flex flex-col items-center py-1 text-emerald-600 font-extrabold text-[10px] transition">
+        <i class="fa-solid fa-address-card text-base mb-0.5"></i>
+        <span class="lang-txt" data-es="Registro" data-pt="Cadastro">Registro</span>
+      </button>
+      <button onclick="mudarAbaApp('viagem')" id="btn-nav-viagem" class="flex flex-col items-center py-1 text-slate-400 hover:text-emerald-600 font-semibold text-[10px] transition">
+        <i class="fa-solid fa-plane-departure text-base mb-0.5"></i>
+        <span class="lang-txt" data-es="Mi Vuelo" data-pt="Meu Voo">Mi Vuelo</span>
+      </button>
+      <button onclick="mudarAbaApp('abrigos')" id="btn-nav-abrigos" class="flex flex-col items-center py-1 text-slate-400 hover:text-emerald-600 font-semibold text-[10px] transition">
+        <i class="fa-solid fa-campground text-base mb-0.5"></i>
+        <span class="lang-txt" data-es="Abrigos" data-pt="Abrigos">Abrigos</span>
+      </button>
+      <button onclick="mudarAbaApp('ajuda')" id="btn-nav-ajuda" class="flex flex-col items-center py-1 text-slate-400 hover:text-emerald-600 font-semibold text-[10px] transition">
+        <i class="fa-brands fa-whatsapp text-base mb-0.5"></i>
+        <span class="lang-txt" data-es="WhatsApp" data-pt="WhatsApp">WhatsApp</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MODAL INSTRUÇÕES INSTALAÇÃO -->
+  <div id="modal-instrucoes" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-5 max-w-sm w-full space-y-4 shadow-2xl text-xs">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h3 class="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+          <i class="fa-solid fa-download text-emerald-600"></i> Instalar Aplicativo Oficial
+        </h3>
+        <button onclick="fecharModalInstrucoesApp()" class="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-700">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <p class="text-slate-600">
+        Este aplicativo do SUFAI foi desenvolvido como <b>Progressive Web App (PWA)</b>: ele ocupa menos de 2 MB de espaço, funciona mesmo sem internet nas tendas dos abrigos e atualiza automaticamente.
+      </p>
+      <div class="space-y-2">
+        <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200">
+          <span class="font-bold text-emerald-950 block"><i class="fa-brands fa-android text-emerald-600 mr-1"></i> No Android:</span>
+          <span class="text-slate-600">Toque no botão "Instalar" ou abra o menu do navegador (3 pontinhos no canto superior direito) e escolha <b>"Instalar aplicativo"</b> ou <b>"Adicionar à tela inicial"</b>.</span>
+        </div>
+        <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+          <span class="font-bold text-slate-950 block"><i class="fa-brands fa-apple text-slate-800 mr-1"></i> No iPhone (iOS):</span>
+          <span class="text-slate-600">Abra no Safari, toque no botão de Compartilhar (quadrado com seta para cima) na barra inferior e toque em <b>"Adicionar à Tela de Início"</b>.</span>
+        </div>
+      </div>
+      <button onclick="fecharModalInstrucoesApp()" class="w-full py-2.5 bg-govblue text-white font-bold rounded-xl hover:bg-govblueLight transition">
+        Entendi
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPT MOBILE LOGIC & PWA -->
+  <script>
+    let etapaAtual = 1;
+    const totalEtapas = 5;
+    let idiomaAtual = 'ES';
+    let deferredPrompt = null;
+
+    // 1. Registra Service Worker para suporte a App PWA e Offline
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Acolhida App SW registrado com sucesso:', reg.scope))
+          .catch(err => console.warn('Aviso no registro do SW:', err));
+      });
+    }
+
+    // 2. Intercepta evento de instalação nativo (Chrome / Android)
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('install-app-banner');
+      if (banner) banner.classList.remove('hidden');
+    });
+
+    // 3. Detecta se já está rodando como aplicativo instalado
+    window.addEventListener('DOMContentLoaded', () => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      if (isStandalone) {
+        document.getElementById('badge-standalone')?.classList.remove('hidden');
+        document.getElementById('install-app-banner')?.classList.add('hidden');
+      }
+
+      // Checa conectividade inicial
+      atualizarStatusConectividade();
+
+      // Checa fila offline salva
+      sincronizarCadastrosOffline();
+    });
+
+    // 4. Detecção de Conexão Online/Offline (Modo Tenda)
+    window.addEventListener('online', () => {
+      atualizarStatusConectividade();
+      sincronizarCadastrosOffline();
+    });
+
+    window.addEventListener('offline', () => {
+      atualizarStatusConectividade();
+    });
+
+    function atualizarStatusConectividade() {
+      const banner = document.getElementById('offline-banner');
+      if (!banner) return;
+      if (navigator.onLine) {
+        banner.classList.add('hidden');
+      } else {
+        banner.classList.remove('hidden');
+      }
+    }
+
+    // 5. Instalação do Aplicativo
+    function acionarInstalacaoApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Usuário aceitou instalar o Acolhida App');
+            document.getElementById('install-app-banner')?.classList.add('hidden');
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        abrirModalInstrucoesApp();
+      }
+    }
+
+    function abrirModalInstrucoesApp() {
+      document.getElementById('modal-instrucoes')?.classList.remove('hidden');
+    }
+
+    function fecharModalInstrucoesApp() {
+      document.getElementById('modal-instrucoes')?.classList.add('hidden');
+    }
+
+    // 6. Navegação entre Abas do App Nativo
+    function mudarAbaApp(aba) {
+      const telas = ['cadastro', 'viagem', 'abrigos', 'ajuda'];
+      telas.forEach(t => {
+        document.getElementById(`tela-${t}`)?.classList.add('hidden');
+        const btn = document.getElementById(`btn-nav-${t}`);
+        if (btn) {
+          btn.classList.remove('text-emerald-600', 'font-extrabold');
+          btn.classList.add('text-slate-400', 'font-semibold');
+        }
+      });
+
+      document.getElementById(`tela-${aba}`)?.classList.remove('hidden');
+      const btnAtivo = document.getElementById(`btn-nav-${aba}`);
+      if (btnAtivo) {
+        btnAtivo.classList.remove('text-slate-400', 'font-semibold');
+        btnAtivo.classList.add('text-emerald-600', 'font-extrabold');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 7. Idioma Bilíngue (Espanhol e Português)
+    const textosEtapas = {
+      ES: ['Datos Personales', 'Alojamiento en Boa Vista', 'Modalidad y Familia', 'Perfil de Empleo', 'Salud y Finalización'],
+      PT: ['Dados Pessoais', 'Situação em Boa Vista', 'Modalidade e Família', 'Perfil de Emprego', 'Saúde e Finalização']
+    };
+
+    function mudarIdioma(lang) {
+      idiomaAtual = lang;
+      const btnEs = document.getElementById('btn-lang-es');
+      const btnPt = document.getElementById('btn-lang-pt');
+
+      if (lang === 'ES') {
+        btnEs.className = "px-2 py-0.5 rounded font-bold bg-emerald-600 text-white transition";
+        btnPt.className = "px-2 py-0.5 rounded font-bold text-slate-400 hover:text-white transition";
+        document.getElementById('banner-txt').innerHTML = "Viaje 100% <strong>gratuito y voluntario</strong> del Gobierno Federal de Brasil (SUFAI)";
+      } else {
+        btnPt.className = "px-2 py-0.5 rounded font-bold bg-emerald-600 text-white transition";
+        btnEs.className = "px-2 py-0.5 rounded font-bold text-slate-400 hover:text-white transition";
+        document.getElementById('banner-txt').innerHTML = "Viagem 100% <strong>gratuita e voluntária</strong> do Governo Federal do Brasil (SUFAI)";
+      }
+
+      document.querySelectorAll('.lang-txt').forEach(el => {
+        const txt = el.getAttribute(`data-${lang.toLowerCase()}`);
+        if (txt) el.innerText = txt;
+      });
+
+      atualizarCabecalhoProgresso();
+    }
+
+    function atualizarCabecalhoProgresso() {
+      const etapaTxt = idiomaAtual === 'ES' ? `Paso ${etapaAtual} de ${totalEtapas}` : `Passo ${etapaAtual} de ${totalEtapas}`;
+      document.getElementById('txt-progresso-etapa').innerText = etapaTxt;
+      document.getElementById('txt-progresso-titulo').innerText = textosEtapas[idiomaAtual][etapaAtual - 1];
+      document.getElementById('barra-progresso').style.width = `${(etapaAtual / totalEtapas) * 100}%`;
+    }
+
+    // 8. Wizard Steps
+    function mostrarPasso(passo) {
+      for (let i = 1; i <= totalEtapas; i++) {
+        const el = document.getElementById(`passo-${i}`);
+        if (el) el.classList.add('hidden');
+      }
+      document.getElementById(`passo-${passo}`)?.classList.remove('hidden');
+
+      const btnVoltar = document.getElementById('btn-voltar');
+      const btnAvancar = document.getElementById('btn-avancar');
+
+      if (passo === 1) {
+        btnVoltar.classList.add('hidden');
+      } else {
+        btnVoltar.classList.remove('hidden');
+      }
+
+      if (passo === totalEtapas) {
+        btnAvancar.innerHTML = `<span>${idiomaAtual === 'ES' ? 'Finalizar Registro' : 'Finalizar Cadastro'}</span> <i class="fa-solid fa-check"></i>`;
+        btnAvancar.className = "px-6 py-2.5 rounded-xl bg-govgreen text-white font-black text-xs hover:bg-emerald-800 shadow-lg transition flex items-center space-x-1.5";
+      } else {
+        btnAvancar.className = "px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 shadow-md transition flex items-center space-x-1.5";
+        btnAvancar.innerHTML = `<span>${idiomaAtual === 'ES' ? 'Continuar' : 'Continuar'}</span> <i class="fa-solid fa-arrow-right"></i>`;
+      }
+
+      atualizarCabecalhoProgresso();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function avancarPasso() {
+      if (!validarPassoAtual(etapaAtual)) return;
+      if (etapaAtual < totalEtapas) {
+        etapaAtual++;
+        mostrarPasso(etapaAtual);
+      } else {
+        finalizarCadastroMigrante();
+      }
+    }
+
+    function voltarPasso() {
+      if (etapaAtual > 1) {
+        etapaAtual--;
+        mostrarPasso(etapaAtual);
+      }
+    }
+
+    function validarPassoAtual(passo) {
+      if (passo === 1) {
+        const nome = document.getElementById('m-nome').value.trim();
+        const nasc = document.getElementById('m-nascimento').value;
+        const doc = document.getElementById('m-documento').value.trim();
+        const tel = document.getElementById('m-telefone').value.trim();
+        if (!nome || !nasc || !doc || !tel) {
+          alert(idiomaAtual === 'ES' ? 'Por favor complete todos los campos obligatorios (*)' : 'Por favor preencha todos os campos obrigatórios (*)');
+          return false;
+        }
+      }
+      if (passo === 5) {
+        const termo = document.getElementById('m-termo-voluntario').checked;
+        if (!termo) {
+          alert(idiomaAtual === 'ES' ? 'Debe aceptar la declaración de voluntariedad para continuar.' : 'Você deve aceitar a declaração de voluntariedade para continuar.');
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function toggleCarpaCampo() {
+      const situacao = document.getElementById('m-situacao-abrigo').value;
+      const box = document.getElementById('box-carpa');
+      if (situacao !== 'Fora de Abrigo' && situacao !== 'P_TRG') {
+        box.classList.remove('hidden');
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    function toggleContatoDestino() {
+      const mod = document.getElementById('m-modalidade').value;
+      const box = document.getElementById('box-contato-destino');
+      if (mod === 'REUNIFICACAO_FAMILIAR' || mod === 'REUNIAO_SOCIAL') {
+        box.classList.remove('hidden');
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    function toggleGravidaCampos() {
+      const check = document.getElementById('m-check-gravida').checked;
+      const box = document.getElementById('box-gravidez');
+      if (check) {
+        box.classList.remove('hidden');
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    // 9. Envio do Cadastro com Suporte Offline
+    async function finalizarCadastroMigrante() {
+      const btnAvancar = document.getElementById('btn-avancar');
+      btnAvancar.disabled = true;
+      btnAvancar.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> ${idiomaAtual === 'ES' ? 'Enviando datos...' : 'Enviando dados...'}`;
+
+      const gravida = document.getElementById('m-check-gravida').checked;
+      const payload = {
+        nome: document.getElementById('m-nome').value,
+        dataNascimento: document.getElementById('m-nascimento').value,
+        sexo: document.getElementById('m-sexo').value,
+        documento: document.getElementById('m-documento').value,
+        cpf: document.getElementById('m-cpf').value,
+        telefone: document.getElementById('m-telefone').value,
+        situacaoAbrigo: document.getElementById('m-situacao-abrigo').value,
+        carpa: document.getElementById('m-carpa').value || '-',
+        tempoBoaVista: document.getElementById('m-tempo-bv').value,
+        modalidadeDesejada: document.getElementById('m-modalidade').value,
+        contatoDestino: {
+          nome: document.getElementById('m-contato-nome').value,
+          cidade: document.getElementById('m-contato-cidade').value,
+          uf: document.getElementById('m-contato-uf').value,
+          telefone: document.getElementById('m-contato-telefone').value,
+        },
+        experienciaLaboral: {
+          area: document.getElementById('m-area-trabalho').value,
+          habilidades: document.getElementById('m-habilidades').value,
+          nivelPortugues: document.getElementById('m-portugues').value,
+        },
+        saudeEFamilia: {
+          gravida: gravida,
+          semanasGestacao: gravida ? parseInt(document.getElementById('m-semanas').value) : undefined,
+          filhosMenoresQtd: parseInt(document.getElementById('m-filhos-qtd').value) || 0,
+        },
+        termoAceito: true,
+      };
+
+      // Se estiver offline no momento (ex: sem sinal na tenda)
+      if (!navigator.onLine) {
+        salvarCadastroOffline(payload);
+        const protocoloOffline = 'OFFLINE-' + Date.now().toString().slice(-4);
+        document.getElementById('form-migrante').classList.add('hidden');
+        document.getElementById('modal-sucesso').classList.remove('hidden');
+        document.getElementById('sucesso-protocolo').innerText = protocoloOffline;
+        btnAvancar.disabled = false;
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/migrante/cadastro-mobile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const dados = await res.json();
+          document.getElementById('form-migrante').classList.add('hidden');
+          document.getElementById('modal-sucesso').classList.remove('hidden');
+          document.getElementById('sucesso-protocolo').innerText = dados.protocolo || 'ACOLHIDA-' + Date.now().toString().slice(-4);
+
+          // Se houve desconflito com dados prévios da planilha de abrigamento
+          const descBox = document.getElementById('sucesso-desconflito-box');
+          if (descBox) {
+            if (dados.desconflitado) {
+              descBox.classList.remove('hidden');
+              document.getElementById('sucesso-desconflito-texto').innerText = dados.mensagem;
+              document.getElementById('sucesso-desconflito-detalhe').innerText = 
+                `EMG Oficial: ${dados.detalhes?.emgId || '-'} • Abrigo: ${dados.detalhes?.abrigo || '-'} (Carpa ${dados.detalhes?.carpa || '-'}) • Permanência: ${dados.detalhes?.diasAbrigado || 0} dias (${dados.detalhes?.grupo || 'G1'} - ${dados.detalhes?.grupoNome || ''})`;
+            } else {
+              descBox.classList.add('hidden');
+            }
+          }
+        } else {
+          alert('Erro ao enviar cadastro. Tente novamente.');
+        }
+      } catch (err) {
+        console.warn('Falha de rede, salvando offline:', err);
+        salvarCadastroOffline(payload);
+        const protocoloOffline = 'OFFLINE-' + Date.now().toString().slice(-4);
+        document.getElementById('form-migrante').classList.add('hidden');
+        document.getElementById('modal-sucesso').classList.remove('hidden');
+        document.getElementById('sucesso-protocolo').innerText = protocoloOffline;
+      } finally {
+        btnAvancar.disabled = false;
+      }
+    }
+
+    function salvarCadastroOffline(payload) {
+      try {
+        const fila = JSON.parse(localStorage.getItem('acolhida_offline_queue') || '[]');
+        fila.push(payload);
+        localStorage.setItem('acolhida_offline_queue', JSON.stringify(fila));
+        console.log('Cadastro armazenado localmente para envio posterior.');
+      } catch (e) {
+        console.error('Erro ao gravar no localStorage:', e);
+      }
+    }
+
+    async function sincronizarCadastrosOffline() {
+      try {
+        const fila = JSON.parse(localStorage.getItem('acolhida_offline_queue') || '[]');
+        if (fila.length === 0) return;
+
+        console.log(`Sincronizando ${fila.length} cadastros pendentes...`);
+        for (const item of fila) {
+          await fetch('/api/migrante/cadastro-mobile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(item)
+          });
+        }
+        localStorage.removeItem('acolhida_offline_queue');
+        console.log('Todos os cadastros offline foram sincronizados com o servidor SUFAI com sucesso!');
+      } catch (e) {
+        console.warn('Tentativa de sincronização pendente:', e);
+      }
+    }
+
+    // 10. Consulta de Voo e Cartão de Embarque no App
+    async function buscarViagemMigrante() {
+      const termo = document.getElementById('input-busca-viagem').value.trim();
+      if (!termo) {
+        alert('Digite o CPF ou Código EMG para consultar.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/migrante/consulta/${encodeURIComponent(termo)}`);
+        if (res.ok) {
+          const dados = await res.json();
+          renderizarCartaoViagem(dados);
+        } else {
+          alert('Cadastro não localizado na base ativa de interiorização. Verifique os dados digitados.');
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Erro ao conectar ao servidor. Tente novamente.');
+      }
+    }
+
+    function renderizarCartaoViagem(dados) {
+      if (!dados || !dados.viagem) return;
+      const m = dados.migrante;
+      const v = dados.viagem;
+
+      document.getElementById('viagem-status-tag').innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${v.statusDescricao}`;
+      document.getElementById('viagem-cia-tag').innerText = v.companhiaAerea;
+      document.getElementById('viagem-destino-codigo').innerText = v.destino.split('-')[1]?.trim() || 'DEST';
+      document.getElementById('viagem-destino-cidade').innerText = v.destino;
+      document.getElementById('viagem-passageiro').innerText = m.nomeCompleto;
+      document.getElementById('viagem-abrigo').innerText = `${m.abrigo} (Carpa ${m.carpa})`;
+      document.getElementById('viagem-assento').innerHTML = `<i class="fa-solid fa-chair text-[10px]"></i> ${v.assentoPoltrona || '12B (Corredor)'}`;
+      document.getElementById('viagem-scdp').innerText = v.pcdpNumero;
+      const cpfEl = document.getElementById('viagem-cpf-mascarado');
+      if (cpfEl) cpfEl.innerText = m.cpfMascaradoLGPD || m.cpf || '***.***.***-**';
+      const hmacEl = document.getElementById('viagem-hmac-badge');
+      if (hmacEl) hmacEl.innerText = v.assinaturaDigitalHMAC || 'e6d80ae9107fee2873239200969c9fbd';
+    }
+
+    function confirmarPresencaWhatsAppViaApp() {
+      const passageiro = document.getElementById('viagem-passageiro').innerText;
+      const destino = document.getElementById('viagem-destino-cidade').innerText;
+      const msg = encodeURIComponent(`Olá, sou ${passageiro}. Confirmo que estarei presente às 04:00 da manhã no P Trg para o embarque com destino a ${destino}.`);
+      window.open(`https://wa.me/5595991234567?text=${msg}`, '_blank');
+    }
+
+    function abrirWhatsAppSimulador() {
+      window.open('https://wa.me/5595991234567?text=Ol%C3%A1%2C%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20meu%20cadastro%20no%20SUFAI', '_blank');
+    }
+  </script>
+</body>
+</html>

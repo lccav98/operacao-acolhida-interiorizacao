@@ -1,0 +1,95 @@
+name: Auditoria de Segurança e Vulnerabilidades - SUFAI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master]
+  schedule:
+    # Executa varredura de segurança semanalmente toda segunda-feira às 06:00 UTC
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  # 1. Auditoria de Dependências e CVEs (SCA)
+  dependency-audit:
+    name: Software Composition Analysis (SCA)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar Dependências
+        run: npm ci
+
+      - name: Executar npm audit (Bloqueia vulnerabilidades Moderate ou High)
+        run: npm audit --audit-level=moderate
+
+  # 2. Varredura Estática de Código (SAST - Semgrep com OWASP Top 10)
+  sast-semgrep:
+    name: SAST - Semgrep OWASP Top 10
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Executar Semgrep Scan
+        run: |
+          semgrep scan --config=p/owasp-top-ten --config=p/typescript --config=p/security-audit --error --json -o semgrep-results.json
+
+      - name: Publicar Artefato de Resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-semgrep
+          path: semgrep-results.json
+
+  # 3. Análise Profunda com GitHub CodeQL (Taint Analysis)
+  codeql-analysis:
+    name: CodeQL Security Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Inicializar CodeQL para TypeScript/JavaScript
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-extended,security-and-quality
+
+      - name: Compilar Código TypeScript
+        run: |
+          npm ci
+          npm run build
+
+      - name: Executar Análise CodeQL
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript-typescript"
+
+  # 4. Detecção de Segredos e Chaves Expostas (Gitleaks)
+  secret-scan:
+    name: Secret Scanning (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Completo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Executar Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

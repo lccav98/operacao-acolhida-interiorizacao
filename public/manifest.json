@@ -1,0 +1,64 @@
+{
+  "name": "Operação Acolhida - SUFAI Interiorização",
+  "short_name": "Acolhida App",
+  "description": "Aplicativo Oficial do Subcomitê Federal para Abrigamento e Interiorização (SUFAI) da Operação Acolhida. Cadastro de migrantes, acompanhamento de voos, confirmação de embarque e suporte.",
+  "start_url": "/portal-migrante.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b1b3a",
+  "theme_color": "#002b49",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["government", "humanitarian", "travel", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Cadastrar Migrante",
+      "short_name": "Cadastro",
+      "description": "Formulário inicial de acolhimento e interiorização",
+      "url": "/portal-migrante.html",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Consultar Minha Viagem",
+      "short_name": "Minha Viagem",
+      "description": "Acompanhar voo e cartão de embarque",
+      "url": "/portal-migrante.html#minha-viagem",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Painel Administrativo SUFAI",
+      "short_name": "Painel SUFAI",
+      "description": "Gestão da equipe de campo e triagem",
+      "url": "/index.html",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "prefer_related_applications": false
+}

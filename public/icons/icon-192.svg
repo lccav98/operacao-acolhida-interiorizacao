@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="192" height="192">
+  <defs>
+    <linearGradient id="bgGrad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002b49"/>
+      <stop offset="50%" stop-color="#0b1b3a"/>
+      <stop offset="100%" stop-color="#040d1a"/>
+    </linearGradient>
+    <linearGradient id="goldGrad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="greenGrad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad192)"/>
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="url(#goldGrad192)" stroke-width="8" opacity="0.65"/>
+  <circle cx="256" cy="240" r="148" fill="#00182b" stroke="url(#goldGrad192)" stroke-width="6"/>
+
+  <path d="M 170 300 L 256 120 L 342 300 L 256 260 Z" fill="#ffffff"/>
+  <path d="M 256 120 L 256 260 L 342 300 Z" fill="#cbd5e1"/>
+
+  <polygon points="256,70 262,85 278,85 265,94 270,110 256,100 242,110 247,94 234,85 250,85" fill="url(#goldGrad192)"/>
+  <path d="M 220 330 L 256 280 L 292 330 Z" fill="url(#goldGrad192)"/>
+
+  <rect x="80" y="385" width="352" height="60" rx="16" fill="#001f3f" stroke="#0284c7" stroke-width="3"/>
+  <text x="256" y="416" font-family="system-ui, sans-serif" font-size="22" font-weight="900" fill="#ffffff" text-anchor="middle">ACOLHIDA</text>
+  <text x="256" y="435" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#fbbf24" text-anchor="middle">SUFAI</text>
+</svg>
