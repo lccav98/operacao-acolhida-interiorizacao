@@ -22,6 +22,7 @@ import { ImportadorPlanilhaAbrigados } from './modules/abrigados/importador-plan
 import { MotorDesconflitoCadastros } from './modules/abrigados/motor-desconflito';
 import { MonitorSaudeEResiliencia } from './modules/resiliencia/monitor-saude';
 import { SentinelaSegurancaELGPD } from './modules/seguranca/sentinela-lgpd';
+import { PaperclipOrchestrator } from './modules/paperclip/paperclip-orchestrator';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -54,6 +55,7 @@ app.get('/aplicativo', (_req: Request, res: Response) => {
 const typesafeService = new TypeSafeAcolhidaService();
 const workflowRunner = new WorkflowInteriorizacaoRunner();
 const metaWhatsAppService = new MetaWhatsAppService(typesafeService);
+const paperclipOrchestrator = new PaperclipOrchestrator();
 
 // Base consolidada representativa dos 5 abrigos oficiais ativos do SUFAI
 const baseAbrigosOficiais: RegistroAbrigadoRondon[] = [
@@ -942,9 +944,75 @@ app.post('/api/seguranca/auditar-integridade', (_req: Request, res: Response) =>
   });
 });
 
+// ==========================================
+// ENDPOINTS DE ORQUESTRAÇÃO PAPERCLIP AI
+// Repositório: https://github.com/paperclipai/paperclip
+// ==========================================
+
+// 23. Endpoint: Status Geral e Métricas da Organização Paperclip
+app.get('/api/paperclip/status', (_req: Request, res: Response) => {
+  res.json(paperclipOrchestrator.getStatus());
+});
+
+// 24. Endpoint: Organograma Hierárquico dos Agentes Autônomos
+app.get('/api/paperclip/org-chart', (_req: Request, res: Response) => {
+  res.json(paperclipOrchestrator.getOrgChart());
+});
+
+// 25. Endpoint: Execução de Ciclo de Heartbeat (Batimento Cardíaco)
+app.post('/api/paperclip/heartbeat', async (req: Request, res: Response) => {
+  try {
+    const { agentId } = req.body;
+    const resultado = await paperclipOrchestrator.executeHeartbeat(agentId);
+    res.json({
+      sucesso: true,
+      mensagem: `Heartbeat executado com sucesso para o agente [${resultado.agentName}].`,
+      resultado,
+      statusAtualizado: paperclipOrchestrator.getStatus(),
+    });
+  } catch (error: any) {
+    res.status(500).json({ sucesso: false, erro: error.message });
+  }
+});
+
+// 26. Endpoint: Criação de Nova Tarefa Autônoma
+app.post('/api/paperclip/tasks', (req: Request, res: Response) => {
+  try {
+    const { title, description, agentId } = req.body;
+    if (!title || !description) {
+      res.status(400).json({ sucesso: false, erro: 'Título e descrição são obrigatórios.' });
+      return;
+    }
+    const tarefa = paperclipOrchestrator.createTask(title, description, agentId);
+    res.status(201).json({
+      sucesso: true,
+      mensagem: 'Tarefa cadastrada no Paperclip Orchestrator.',
+      tarefa,
+    });
+  } catch (error: any) {
+    res.status(500).json({ sucesso: false, erro: error.message });
+  }
+});
+
+// 27. Endpoint: Execução de Tarefa Autônoma pelo Agente
+app.post('/api/paperclip/tasks/:id/execute', async (req: Request, res: Response) => {
+  try {
+    const id = String(req.params.id);
+    const tarefaExecutada = await paperclipOrchestrator.executeTask(id);
+    res.json({
+      sucesso: true,
+      mensagem: `Tarefa ${id} processada com sucesso.`,
+      tarefa: tarefaExecutada,
+    });
+  } catch (error: any) {
+    res.status(404).json({ sucesso: false, erro: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`\n======================================================`);
   console.log(`🚀 SERVIDOR OPERAÇÃO ACOLHIDA ATIVO NA PORTA ${PORT}`);
   console.log(`📡 Dashboard Web: http://localhost:${PORT}`);
+  console.log(`📎 Orquestração Paperclip: http://localhost:${PORT}/api/paperclip/status`);
   console.log(`======================================================\n`);
 });

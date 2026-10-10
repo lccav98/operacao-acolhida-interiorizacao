@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Sistema Integrado de Gestão e Interiorização (SIGA-Acolhida)
+  siga-acolhida:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: siga-acolhida-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - PAPERCLIP_API_URL=http://paperclip:3100
+      - SUFAI_SECRET_KEY=SUFAI-ACOLHIDA-SEGURANCA-FEDERAL-2026-CHAVE-MESTRE
+    networks:
+      - acolhida-network
+    depends_on:
+      - paperclip
+
+  # Paperclip AI Server (Orquestrador de Agentes Autônomos)
+  # Repositório GitHub: https://github.com/paperclipai/paperclip
+  paperclip:
+    image: ghcr.io/paperclipai/paperclip:latest
+    container_name: paperclip-orchestrator
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    environment:
+      - PORT=3100
+      - DATABASE_URL=postgresql://paperclip:acolhida2026@postgres:5432/paperclip_db
+      - TELEMETRY_ENABLED=false
+      - PAPERCLIP_DEFAULT_ORG=Operacao-Acolhida-SUFAI
+      - TARGET_APP_URL=http://siga-acolhida:3000
+    volumes:
+      - paperclip_data:/data
+      - ./paperclip.config.json:/app/paperclip.config.json:ro
+      - ./.agents/skills:/app/skills:ro
+    networks:
+      - acolhida-network
+    depends_on:
+      - postgres
+
+  # Banco de Dados PostgreSQL do Paperclip AI
+  postgres:
+    image: postgres:16-alpine
+    container_name: paperclip-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=paperclip
+      - POSTGRES_PASSWORD=acolhida2026
+      - POSTGRES_DB=paperclip_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - acolhida-network
+
+networks:
+  acolhida-network:
+    driver: bridge
+
+volumes:
+  paperclip_data:
+  postgres_data:

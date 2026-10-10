@@ -26,6 +26,17 @@ Plataforma inteligente desenvolvida para automatizar e blindar a **Estratégia d
    - Termo de **Aquiescência Voluntária** digital (conforme Decreto nº 9.288/2018).
    - **Cartão de Embarque Digital** com QR Code óptico, CPF mascarado sob a LGPD (`***.***.860-06`) e **Assinatura Criptográfica HMAC-SHA256**.
 
+3. **Orquestração Paperclip AI (`/` aba "Orquestração Paperclip AI")**:
+   - Baseado na plataforma open-source [Paperclip AI](https://github.com/paperclipai/paperclip).
+   - Organograma *Company-as-Code* com **5 Agentes Autônomos de IA**:
+     - **Cel. Coordenador SUFAI (CEO Agent)**: Orquestração e governança da missão.
+     - **Major Gestor Aéreo (Operations Agent)**: Gestão de assentos FAB/Sideral e Trava de Erário.
+     - **Auditor Federal SCDP (Compliance Agent)**: Formalização de PCDPs e trilha TCU/CGU.
+     - **Sentinela de Proteção & LGPD (Protection Agent)**: Salvaguarda anti-tráfico de menores e anonimização.
+     - **Coordenador P Trg & WhatsApp (Field Agent)**: Anti-absenteísmo D-7/D-3/D-1 e acionamento de suplentes.
+   - **Protocolo de Heartbeat**: Ciclos autônomos periódicos avaliando integridade, regras e orçamentos de tokens.
+   - Endpoints REST dedicados em `/api/paperclip/*` e suporte nativo ao Docker Compose com Paperclip Server.
+
 ---
 
 ## 🏛️ Integração Automática com o SCDP (TCU e CGU)
@@ -74,7 +85,7 @@ Acesse no navegador:
 * **Dashboard Principal**: `http://localhost:3000`
 * **App do Migrante**: `http://localhost:3000/app`
 
-### Testes e Auditoria
+### Testes, Auditoria e Paperclip AI
 
 ```bash
 # Executar auditoria de dependências (0 vulnerabilidades)
@@ -82,6 +93,15 @@ npm run security:audit
 
 # Testar simulações do fluxo completo
 npm run start
+
+# Executar ciclo de Heartbeat do Paperclip AI (Orquestração de Agentes)
+npm run paperclip:heartbeat
+
+# Consultar status dos agentes e orçamentos via CLI
+npm run paperclip:status
+
+# Iniciar ambiente integrado via Docker Compose (SIGA-Acolhida + Paperclip Server + PostgreSQL)
+docker compose -f docker-compose.paperclip.yml up
 ```
 
 ---

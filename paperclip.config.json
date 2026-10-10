@@ -1,0 +1,162 @@
+{
+  "name": "Operacao-Acolhida-SUFAI",
+  "version": "1.0.0",
+  "description": "Orquestrador Paperclip AI para a Estratégia de Interiorização da Operação Acolhida (SUFAI / Casa Civil / MDS / MD)",
+  "sourceUrl": "https://github.com/paperclipai/paperclip",
+  "projectUrl": "https://github.com/lccav98/operacao-acolhida-interiorizacao",
+  "company": {
+    "name": "Operação Acolhida — SUFAI",
+    "mission": "Automatizar e blindar a Estratégia de Interiorização de Refugiados e Migrantes venezuelanos (Lei nº 13.684/2018), garantindo 100% de ocupação dos voos, prevenção a dano ao erário, conformidade estrita com TCU/CGU (SCDP) e salvaguarda absoluta dos direitos humanos e LGPD.",
+    "budgets": {
+      "monthlyTokenBudget": 50000000,
+      "maxMonthlySpendUSD": 1500.0,
+      "warningThresholdPercent": 80,
+      "hardStopPercent": 95,
+      "currency": "BRL"
+    },
+    "governance": {
+      "requireApprovalForMinorTravel": true,
+      "requireTcuAuditTrail": true,
+      "strictLgpdMasking": true,
+      "maxAllowedEmptySeatsPercent": 0.0
+    }
+  },
+  "agents": [
+    {
+      "id": "agente-diretor-interiorizacao",
+      "name": "Cel. Coordenador SUFAI (CEO Agent)",
+      "title": "Coordenador Geral da Estratégia de Interiorização",
+      "reportsTo": null,
+      "role": "Orquestração Estratégica & Gestão da Missão",
+      "model": "gemini-2.5-pro",
+      "runtime": "typesafe-ai-runner",
+      "skills": [
+        "resiliencia-alta-disponibilidade",
+        "seguranca-lgpd-acolhida",
+        "auditoria-confiabilidade-voo"
+      ],
+      "budget": {
+        "monthlyTokens": 15000000,
+        "maxSpendBRL": 2500
+      },
+      "heartbeat": {
+        "intervalMinutes": 15,
+        "enabled": true
+      }
+    },
+    {
+      "id": "agente-logistica-aerea",
+      "name": "Major Gestor Aéreo (Operations Agent)",
+      "title": "Gerente de Logística Aérea e Assentos Contíguos",
+      "reportsTo": "agente-diretor-interiorizacao",
+      "role": "Otimização de Malha Aérea (FAB KC-390 e Boeing 737 Sideral), Alocação de Assentos e Trava de Erário",
+      "model": "gemini-2.5-flash",
+      "runtime": "typesafe-ai-runner",
+      "skills": [
+        "auditoria-confiabilidade-voo",
+        "resiliencia-alta-disponibilidade"
+      ],
+      "budget": {
+        "monthlyTokens": 10000000,
+        "maxSpendBRL": 1500
+      },
+      "heartbeat": {
+        "intervalMinutes": 10,
+        "enabled": true
+      }
+    },
+    {
+      "id": "agente-auditor-scdp",
+      "name": "Auditor Federal de Conformidade (Compliance Agent)",
+      "title": "Inspetor de Prestação de Contas SCDP (TCU/CGU)",
+      "reportsTo": "agente-diretor-interiorizacao",
+      "role": "Formalização de PCDPs, Bilhetagem Eletrônica, Comprovação de Viagem e Trilha TCU",
+      "model": "gemini-2.5-flash",
+      "runtime": "typesafe-ai-runner",
+      "skills": [
+        "auditoria-vulnerabilidades-owasp",
+        "auditoria-confiabilidade-voo"
+      ],
+      "budget": {
+        "monthlyTokens": 8000000,
+        "maxSpendBRL": 1200
+      },
+      "heartbeat": {
+        "intervalMinutes": 30,
+        "enabled": true
+      }
+    },
+    {
+      "id": "agente-sentinela-protecao",
+      "name": "Sentinela de Proteção & LGPD (Legal/Protection Agent)",
+      "title": "Auditor de Salvaguarda de Menores e Anonimização de Dados",
+      "reportsTo": "agente-diretor-interiorizacao",
+      "role": "Prevenção Anti-Tráfico de Pessoas, Validação Documental DPU/PF e Blindagem LGPD",
+      "model": "gemini-2.5-pro",
+      "runtime": "typesafe-ai-runner",
+      "skills": [
+        "seguranca-lgpd-acolhida",
+        "auditoria-vulnerabilidades-owasp"
+      ],
+      "budget": {
+        "monthlyTokens": 9000000,
+        "maxSpendBRL": 1400
+      },
+      "heartbeat": {
+        "intervalMinutes": 20,
+        "enabled": true
+      }
+    },
+    {
+      "id": "agente-engajamento-ptrg",
+      "name": "Coordenador de Solo e P Trg (Field Agent)",
+      "title": "Supervisor de Engajamento, WhatsApp e Catraca do P Trg",
+      "reportsTo": "agente-logistica-aerea",
+      "role": "Prevenção Preditiva de No-Show, Disparos D-7/D-3/D-1 via Meta WhatsApp Cloud e Convocação de Standby",
+      "model": "gemini-2.5-flash",
+      "runtime": "typesafe-ai-runner",
+      "skills": [
+        "resiliencia-alta-disponibilidade",
+        "auditoria-confiabilidade-voo"
+      ],
+      "budget": {
+        "monthlyTokens": 8000000,
+        "maxSpendBRL": 1000
+      },
+      "heartbeat": {
+        "intervalMinutes": 5,
+        "enabled": true
+      }
+    }
+  ],
+  "routines": [
+    {
+      "id": "rotina-auditoria-diaria-voos",
+      "name": "Auditoria de Confiabilidade e Ocupação 100%",
+      "cron": "0 22 * * *",
+      "assignedTo": "agente-logistica-aerea",
+      "description": "Verifica se todos os voos programados atingiram 100% de ocupação ou se há necessidade de convocar suplentes do P Trg."
+    },
+    {
+      "id": "rotina-homologacao-scdp",
+      "name": "Conformidade SCDP e Comprovação Eletrônica de Viagem",
+      "cron": "30 23 * * *",
+      "assignedTo": "agente-auditor-scdp",
+      "description": "Gera os hashes SHA-256 dos cartões de embarque e envia comprovantes ao SCDP dentro do prazo de 5 dias exigido pelo TCU."
+    },
+    {
+      "id": "rotina-varredura-anti-trafico",
+      "name": "Varredura de Salvaguarda de Menores em Abrigos",
+      "cron": "0 */4 * * *",
+      "assignedTo": "agente-sentinela-protecao",
+      "description": "Cruza os cadastros de menores nos 5 abrigos oficiais contra registros da DPU e Polícia Federal para coibir tráfico infantil."
+    },
+    {
+      "id": "rotina-anti-absenteismo-diurna",
+      "name": "Monitoramento Ativo de No-Show e WhatsApp",
+      "cron": "*/15 * * * *",
+      "assignedTo": "agente-engajamento-ptrg",
+      "description": "Recebe respostas de migrantes nos marcos temporais e aciona banco reserva em caso de desistência antes do fechamento do gate."
+    }
+  ]
+}

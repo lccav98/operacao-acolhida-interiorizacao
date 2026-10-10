@@ -111,6 +111,9 @@
       <button onclick="trocarAba('seguranca-resiliencia')" id="tab-btn-seguranca-resiliencia" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
         <i class="fa-solid fa-shield-halved text-emerald-600"></i> Sentinela LGPD & Resiliência
       </button>
+      <button onclick="trocarAba('paperclip')" id="tab-btn-paperclip" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-paperclip text-purple-600"></i> Orquestração Paperclip AI
+      </button>
     </div>
   </header>
 
@@ -1330,6 +1333,185 @@
       </div>
     </div>
 
+    <!-- ABA 8: ORQUESTRAÇÃO PAPERCLIP AI (COMPANY-AS-CODE & AGENT WORKFORCE) -->
+    <div id="aba-paperclip" class="hidden space-y-6">
+      <!-- Paperclip Header Banner -->
+      <div class="bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 text-white p-6 rounded-2xl border border-purple-800 shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <div class="flex items-center space-x-3 mb-2">
+            <span class="w-10 h-10 rounded-xl bg-purple-600/30 border border-purple-500/50 flex items-center justify-center text-purple-300 text-xl">
+              <i class="fa-solid fa-paperclip"></i>
+            </span>
+            <div>
+              <h2 class="text-xl font-bold flex items-center gap-2">
+                Orquestração Paperclip AI
+                <span class="text-[11px] bg-purple-500/20 text-purple-300 border border-purple-400/40 px-2.5 py-0.5 rounded-full font-semibold">
+                  Company-as-Code
+                </span>
+              </h2>
+              <p class="text-xs text-purple-200">
+                Gestão da Força de Trabalho Autônoma de Agentes de IA da Operação Acolhida (SUFAI) • 
+                <a href="https://github.com/paperclipai/paperclip" target="_blank" class="underline hover:text-white font-mono">
+                  github.com/paperclipai/paperclip <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                </a>
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 text-[11px] mt-3">
+            <span class="bg-purple-900/60 text-purple-200 px-2.5 py-1 rounded-md border border-purple-700/60 flex items-center gap-1.5">
+              <i class="fa-solid fa-heart-pulse text-rose-400"></i> Protocolo de Heartbeat Ativo
+            </span>
+            <span class="bg-indigo-900/60 text-indigo-200 px-2.5 py-1 rounded-md border border-indigo-700/60 flex items-center gap-1.5">
+              <i class="fa-solid fa-sitemap text-cyan-400"></i> Organograma 5 Agentes
+            </span>
+            <span class="bg-emerald-900/60 text-emerald-200 px-2.5 py-1 rounded-md border border-emerald-700/60 flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved text-emerald-400"></i> Governança TCU & LGPD
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="executarHeartbeatPaperclip('agente-diretor-interiorizacao')" id="btn-heartbeat-master" class="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-2 border border-purple-400">
+            <i class="fa-solid fa-heart-pulse animate-pulse text-rose-300"></i> Disparar Heartbeat Geral
+          </button>
+          <button onclick="carregarPaperclipStatus()" class="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold shadow transition flex items-center gap-1.5 border border-slate-700">
+            <i class="fa-solid fa-rotate"></i> Atualizar Status
+          </button>
+        </div>
+      </div>
+
+      <!-- Métricas da Organização Paperclip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Agentes Autônomos</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          </div>
+          <p class="text-2xl font-black text-slate-800" id="paperclip-kpi-agentes">5 / 5</p>
+          <p class="text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1">
+            <i class="fa-solid fa-circle-check"></i> Todos Online & Sincronizados
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Orçamento Consumido</span>
+            <i class="fa-solid fa-coins text-amber-500"></i>
+          </div>
+          <p class="text-2xl font-black text-slate-800" id="paperclip-kpi-orcamento">3.2%</p>
+          <p class="text-[11px] text-slate-500 font-medium mt-1">
+            R$ 284 / R$ 7.500 mensal
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ocupação Blindada</span>
+            <i class="fa-solid fa-plane-circle-check text-purple-600"></i>
+          </div>
+          <p class="text-2xl font-black text-emerald-700" id="paperclip-kpi-ocupacao">100%</p>
+          <p class="text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1">
+            <i class="fa-solid fa-shield"></i> Trava de Dano ao Erário Ativa
+          </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Conformidade Legal</span>
+            <i class="fa-solid fa-scale-balanced text-indigo-600"></i>
+          </div>
+          <p class="text-2xl font-black text-slate-800">100% Auditável</p>
+          <p class="text-[11px] text-indigo-600 font-medium mt-1">
+            Trilha TCU, CGU, DPU e LGPD
+          </p>
+        </div>
+      </div>
+
+      <!-- Organograma dos Agentes Paperclip -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-slate-100 pb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-network-wired text-purple-600"></i> Organograma da Equipe de Agentes SUFAI (Paperclip Org Chart)
+            </h3>
+            <p class="text-xs text-slate-500">Hierarquia funcional, alocação de modelos e competências de cada funcionário de inteligência artificial.</p>
+          </div>
+          <span class="text-[11px] bg-slate-100 text-slate-600 px-3 py-1 rounded-lg font-mono">
+            Orquestrador: @typesafe-ai/sdk + Paperclip Runner
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="paperclip-agents-grid">
+          <!-- Carregado dinamicamente via Javascript -->
+          <div class="text-center py-8 text-slate-400 col-span-5">Carregando agentes do Paperclip...</div>
+        </div>
+      </div>
+
+      <!-- Painel Inferior: Terminal de Heartbeat e Tarefas Autônomas -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Terminal de Heartbeat & Relatório Tático -->
+        <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-white shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+              <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500 animate-pulse"></span>
+                <span class="text-xs font-bold font-mono text-purple-300">Terminal de Batimento Cardíaco (Heartbeat Log)</span>
+              </div>
+              <span id="paperclip-heartbeat-timestamp" class="text-[11px] text-slate-400 font-mono">Carregando...</span>
+            </div>
+            <div id="paperclip-heartbeat-output" class="h-64 overflow-y-auto bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-slate-300 text-xs font-mono space-y-2 custom-scrollbar">
+              <p class="text-slate-500">// Aguardando execução de heartbeat...</p>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-slate-800 flex justify-between items-center text-[11px] text-slate-400">
+            <span>Intervalo automático: 15 min</span>
+            <span class="text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-check"></i> Zero Falhas Críticas</span>
+          </div>
+        </div>
+
+        <!-- Gestão de Tarefas Autônomas e Despacho -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-indigo-600"></i> Fila de Tarefas dos Agentes (Paperclip Tasks)
+              </h4>
+              <span class="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md font-semibold font-mono" id="paperclip-tasks-counter">
+                0 Tarefas
+              </span>
+            </div>
+
+            <!-- Lista de tarefas recentes -->
+            <div id="paperclip-tasks-list" class="space-y-2.5 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
+              <div class="text-center py-6 text-slate-400 text-xs">Carregando tarefas...</div>
+            </div>
+
+            <!-- Formulário para despachar nova tarefa autônoma -->
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <p class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-paper-plane text-purple-600"></i> Despachar Nova Tarefa para a Equipe de IA
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                <input type="text" id="nova-tarefa-titulo" placeholder="Título da tarefa..." class="md:col-span-2 text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                <select id="nova-tarefa-agente" class="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-purple-500 bg-white">
+                  <option value="agente-diretor-interiorizacao">CEO / Coordenador</option>
+                  <option value="agente-logistica-aerea">Gestor Aéreo FAB/Sideral</option>
+                  <option value="agente-auditor-scdp">Auditor SCDP/TCU</option>
+                  <option value="agente-sentinela-protecao">Sentinela LGPD/Menores</option>
+                  <option value="agente-engajamento-ptrg">Engajamento P Trg</option>
+                </select>
+              </div>
+              <div class="flex gap-2">
+                <input type="text" id="nova-tarefa-desc" placeholder="Instrução detalhada ou verificação necessária..." class="flex-1 text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                <button onclick="criarTarefaPaperclip()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow-sm transition whitespace-nowrap">
+                  Despachar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- Federal Footer -->
@@ -1350,16 +1532,18 @@
   <script>
     // Tab switching
     function trocarAba(abaId) {
-      const abas = ['visao-geral', 'abrigados', 'simulador', 'anti-absenteismo', 'decisao-aerea', 'scdp', 'seguranca-resiliencia'];
+      const abas = ['visao-geral', 'abrigados', 'simulador', 'anti-absenteismo', 'decisao-aerea', 'scdp', 'seguranca-resiliencia', 'paperclip'];
       abas.forEach(id => {
-        document.getElementById(`aba-${id}`).classList.add('hidden');
+        const el = document.getElementById(`aba-${id}`);
+        if (el) el.classList.add('hidden');
         const btn = document.getElementById(`tab-btn-${id}`);
         if (btn) {
           btn.classList.remove('tab-active');
           btn.classList.add('text-slate-500');
         }
       });
-      document.getElementById(`aba-${abaId}`).classList.remove('hidden');
+      const targetAba = document.getElementById(`aba-${abaId}`);
+      if (targetAba) targetAba.classList.remove('hidden');
       const activeBtn = document.getElementById(`tab-btn-${abaId}`);
       if (activeBtn) {
         activeBtn.classList.add('tab-active');
@@ -1372,6 +1556,194 @@
       }
       if (abaId === 'scdp') carregarSCDP();
       if (abaId === 'seguranca-resiliencia') carregarSaudeResiliencia();
+      if (abaId === 'paperclip') carregarPaperclipStatus();
+    }
+
+    // ==========================================
+    // PAPERCLIP AI ORCHESTRATION CLIENT
+    // ==========================================
+
+    async function carregarPaperclipStatus() {
+      try {
+        const res = await fetch('/api/paperclip/status');
+        const data = await res.json();
+        if (!data || !data.company) return;
+
+        const elAgentes = document.getElementById('paperclip-kpi-agentes');
+        if (elAgentes) elAgentes.innerText = `${data.company.activeAgents} / ${data.company.totalAgents}`;
+
+        const elOrcamento = document.getElementById('paperclip-kpi-orcamento');
+        if (elOrcamento) elOrcamento.innerText = `${data.company.budgetThresholdPercent}%`;
+
+        const grid = document.getElementById('paperclip-agents-grid');
+        if (grid && data.agents) {
+          grid.innerHTML = data.agents.map(ag => {
+            const isCEO = ag.id === 'agente-diretor-interiorizacao';
+            const icon = isCEO ? 'fa-user-tie text-purple-600' :
+                         ag.id === 'agente-logistica-aerea' ? 'fa-jet-fighter text-blue-600' :
+                         ag.id === 'agente-auditor-scdp' ? 'fa-file-invoice-dollar text-emerald-600' :
+                         ag.id === 'agente-sentinela-protecao' ? 'fa-shield-halved text-amber-600' :
+                         'fa-walkie-talkie text-indigo-600';
+
+            const roleColor = isCEO ? 'bg-purple-100 text-purple-800 border-purple-200' :
+                              ag.id === 'agente-logistica-aerea' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                              ag.id === 'agente-auditor-scdp' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' :
+                              ag.id === 'agente-sentinela-protecao' ? 'bg-amber-100 text-amber-800 border-amber-200' :
+                              'bg-indigo-100 text-indigo-800 border-indigo-200';
+
+            return `
+              <div class="bg-slate-50 hover:bg-white transition p-4 rounded-xl border border-slate-200 hover:border-purple-300 hover:shadow-md flex flex-col justify-between space-y-3">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="w-8 h-8 rounded-lg bg-white border border-slate-200 shadow-xs flex items-center justify-center text-sm">
+                      <i class="fa-solid ${icon}"></i>
+                    </span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${roleColor}">
+                      ${ag.model}
+                    </span>
+                  </div>
+                  <h4 class="text-xs font-bold text-slate-900 leading-tight">${ag.name}</h4>
+                  <p class="text-[10px] text-slate-500 font-medium mt-0.5">${ag.title}</p>
+                  <p class="text-[11px] text-slate-600 mt-2 line-clamp-3 leading-snug">${ag.role}</p>
+                </div>
+
+                <div class="space-y-2 pt-2 border-t border-slate-200 text-[10px]">
+                  <div class="flex justify-between text-slate-500">
+                    <span>Heartbeat:</span>
+                    <span class="font-bold text-slate-700">a cada ${ag.heartbeat.intervalMinutes}m</span>
+                  </div>
+                  <div class="flex justify-between text-slate-500">
+                    <span>Tokens:</span>
+                    <span class="font-mono text-purple-700 font-semibold">${((ag.budget.tokensUsed || 0) / 1000).toFixed(0)}k</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1 mt-1">
+                    ${ag.skills.slice(0, 2).map(s => `<span class="bg-white border border-slate-200 text-slate-600 px-1.5 py-0.2 rounded text-[9px]">${s}</span>`).join('')}
+                  </div>
+                  <button onclick="executarHeartbeatPaperclip('${ag.id}')" class="w-full mt-2 py-1.5 bg-white hover:bg-purple-50 text-purple-700 border border-purple-200 rounded-lg font-bold text-[10px] transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-heart-pulse text-rose-500"></i> Heartbeat
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        if (data.recentHeartbeats && data.recentHeartbeats.length > 0) {
+          const hb = data.recentHeartbeats[0];
+          const hbTime = document.getElementById('paperclip-heartbeat-timestamp');
+          if (hbTime) hbTime.innerText = new Date(hb.timestamp).toLocaleTimeString();
+
+          const out = document.getElementById('paperclip-heartbeat-output');
+          if (out) {
+            out.innerHTML = `
+              <div class="border-b border-slate-800 pb-2 mb-2">
+                <span class="text-emerald-400 font-bold">[${new Date(hb.timestamp).toLocaleTimeString()}]</span>
+                <span class="text-purple-300 font-bold">${hb.agentName}</span>
+                <span class="text-slate-400">» STATUS: ${hb.status}</span>
+              </div>
+              <p class="text-indigo-400 font-semibold">// Ações do Ciclo:</p>
+              ${hb.acoesRealizadas.map(a => `<p class="text-slate-300 pl-2">✔ ${a}</p>`).join('')}
+              <p class="text-indigo-400 font-semibold mt-2">// Métricas Avaliadas:</p>
+              <p class="text-slate-400 pl-2">• Ocupação: ${hb.metricasAvaliadas.voosOcupacaoPercent}% | Assentos ociosos evitados: ${hb.metricasAvaliadas.assentosVagosEvitados}</p>
+              <p class="text-slate-400 pl-2">• PCDPs em conformidade: ${hb.metricasAvaliadas.pcdpsEmConformidade} | Cadastros LGPD: ${hb.metricasAvaliadas.cadastrosVarreduraLgpd}</p>
+              <p class="text-amber-300 font-semibold mt-2">// Diretrizes & Recomendações:</p>
+              ${hb.recomendacoes.map(r => `<p class="text-amber-200/90 pl-2">➜ ${r}</p>`).join('')}
+            `;
+          }
+        }
+
+        const tasksCount = document.getElementById('paperclip-tasks-counter');
+        if (tasksCount && data.recentTasks) tasksCount.innerText = `${data.recentTasks.length} Tarefas`;
+
+        const tasksList = document.getElementById('paperclip-tasks-list');
+        if (tasksList && data.recentTasks) {
+          tasksList.innerHTML = data.recentTasks.map(t => {
+            const statusBadge = t.status === 'CONCLUIDA' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' :
+                                t.status === 'EM_ANDAMENTO' ? 'bg-amber-100 text-amber-800 border-amber-200' :
+                                'bg-slate-100 text-slate-700 border-slate-200';
+            return `
+              <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-start justify-between gap-2 text-xs">
+                <div class="space-y-0.5">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-[10px] text-slate-400">${t.id}</span>
+                    <span class="text-[10px] font-semibold px-2 py-0.2 rounded-md border ${statusBadge}">${t.status}</span>
+                  </div>
+                  <p class="font-bold text-slate-800">${t.title}</p>
+                  <p class="text-slate-500 text-[11px]">${t.description}</p>
+                  ${t.resultSummary ? `<p class="text-emerald-700 text-[11px] font-medium mt-1">✓ ${t.resultSummary}</p>` : ''}
+                </div>
+                ${t.status === 'PENDENTE' ? `
+                  <button onclick="executarTarefaPaperclip('${t.id}')" class="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-[10px] font-bold whitespace-nowrap">
+                    Executar
+                  </button>
+                ` : ''}
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (e) {
+        console.error('Erro ao carregar Paperclip status:', e);
+      }
+    }
+
+    async function executarHeartbeatPaperclip(agentId) {
+      const btn = document.getElementById('btn-heartbeat-master');
+      if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-rose-300"></i> Processando...';
+
+      try {
+        const res = await fetch('/api/paperclip/heartbeat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ agentId })
+        });
+        const data = await res.json();
+        if (data.sucesso) {
+          await carregarPaperclipStatus();
+        }
+      } catch (e) {
+        console.error('Erro ao disparar heartbeat:', e);
+      } finally {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-heart-pulse animate-pulse text-rose-300"></i> Disparar Heartbeat Geral';
+      }
+    }
+
+    async function criarTarefaPaperclip() {
+      const titulo = document.getElementById('nova-tarefa-titulo').value.trim();
+      const desc = document.getElementById('nova-tarefa-desc').value.trim();
+      const agente = document.getElementById('nova-tarefa-agente').value;
+
+      if (!titulo || !desc) {
+        alert('Informe o título e a descrição da tarefa.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/paperclip/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: titulo, description: desc, agentId: agente })
+        });
+        const data = await res.json();
+        if (data.sucesso) {
+          document.getElementById('nova-tarefa-titulo').value = '';
+          document.getElementById('nova-tarefa-desc').value = '';
+          await carregarPaperclipStatus();
+        }
+      } catch (e) {
+        console.error('Erro ao criar tarefa:', e);
+      }
+    }
+
+    async function executarTarefaPaperclip(taskId) {
+      try {
+        const res = await fetch(`/api/paperclip/tasks/${taskId}/execute`, { method: 'POST' });
+        const data = await res.json();
+        if (data.sucesso) {
+          await carregarPaperclipStatus();
+        }
+      } catch (e) {
+        console.error('Erro ao executar tarefa:', e);
+      }
     }
 
     // Load Overview Metrics

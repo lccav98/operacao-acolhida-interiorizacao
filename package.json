@@ -8,7 +8,10 @@
     "start": "ts-node src/demo.ts",
     "serve": "node dist/server.js",
     "test": "ts-node src/demo.ts",
-    "security:audit": "npm audit --audit-level=moderate"
+    "security:audit": "npm audit --audit-level=moderate",
+    "paperclip:heartbeat": "ts-node src/modules/paperclip/paperclip-runner.ts",
+    "paperclip:status": "ts-node -e \"require('./src/modules/paperclip/paperclip-runner').exibirStatus()\"",
+    "paperclip:docker": "docker-compose -f docker-compose.paperclip.yml up"
   },
   "dependencies": {
     "@types/multer": "^2.2.0",
