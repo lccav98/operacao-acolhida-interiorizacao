@@ -23,6 +23,7 @@ import { MotorDesconflitoCadastros } from './modules/abrigados/motor-desconflito
 import { MonitorSaudeEResiliencia } from './modules/resiliencia/monitor-saude';
 import { SentinelaSegurancaELGPD } from './modules/seguranca/sentinela-lgpd';
 import { PaperclipOrchestrator } from './modules/paperclip/paperclip-orchestrator';
+import { GraphifyAIEngine } from './modules/graphify/graphify-engine';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -56,6 +57,7 @@ const typesafeService = new TypeSafeAcolhidaService();
 const workflowRunner = new WorkflowInteriorizacaoRunner();
 const metaWhatsAppService = new MetaWhatsAppService(typesafeService);
 const paperclipOrchestrator = new PaperclipOrchestrator();
+const graphifyEngine = new GraphifyAIEngine();
 
 // Base consolidada representativa dos 5 abrigos oficiais ativos do SUFAI
 const baseAbrigosOficiais: RegistroAbrigadoRondon[] = [
@@ -1009,10 +1011,52 @@ app.post('/api/paperclip/tasks/:id/execute', async (req: Request, res: Response)
   }
 });
 
+// ==========================================
+// ENDPOINTS DO GRAPHIFY AI (KNOWLEDGE GRAPH)
+// Repositório: https://github.com/safishamsi/graphify
+// ==========================================
+
+// 28. Endpoint: Grafo de Conhecimento Completo
+app.get('/api/graphify/graph', (_req: Request, res: Response) => {
+  res.json(graphifyEngine.buildGraph());
+});
+
+// 29. Endpoint: Métricas de Densidade e Categorias do Grafo
+app.get('/api/graphify/metrics', (_req: Request, res: Response) => {
+  res.json(graphifyEngine.getMetrics());
+});
+
+// 30. Endpoint: Consulta Relacional e Semântica no Grafo
+app.post('/api/graphify/query', (req: Request, res: Response) => {
+  try {
+    const { termo, tipo } = req.body;
+    const resultado = graphifyEngine.queryGraph(termo, tipo);
+    res.json({ sucesso: true, ...resultado });
+  } catch (error: any) {
+    res.status(500).json({ sucesso: false, erro: error.message });
+  }
+});
+
+// 31. Endpoint: Explicação Estruturada de Relacionamentos com IA
+app.post('/api/graphify/explain', (req: Request, res: Response) => {
+  try {
+    const { nodeId } = req.body;
+    if (!nodeId) {
+      res.status(400).json({ sucesso: false, erro: 'ID do nó é obrigatório.' });
+      return;
+    }
+    const explicacao = graphifyEngine.explainNode(nodeId);
+    res.json({ sucesso: true, nodeId, explicacao });
+  } catch (error: any) {
+    res.status(500).json({ sucesso: false, erro: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`\n======================================================`);
   console.log(`🚀 SERVIDOR OPERAÇÃO ACOLHIDA ATIVO NA PORTA ${PORT}`);
   console.log(`📡 Dashboard Web: http://localhost:${PORT}`);
   console.log(`📎 Orquestração Paperclip: http://localhost:${PORT}/api/paperclip/status`);
+  console.log(`🌐 Graphify AI Knowledge Graph: http://localhost:${PORT}/api/graphify/graph`);
   console.log(`======================================================\n`);
 });

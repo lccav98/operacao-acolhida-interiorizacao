@@ -11,7 +11,10 @@
     "security:audit": "npm audit --audit-level=moderate",
     "paperclip:heartbeat": "ts-node src/modules/paperclip/paperclip-runner.ts",
     "paperclip:status": "ts-node -e \"require('./src/modules/paperclip/paperclip-runner').exibirStatus()\"",
-    "paperclip:docker": "docker-compose -f docker-compose.paperclip.yml up"
+    "paperclip:docker": "docker-compose -f docker-compose.paperclip.yml up",
+    "graphify:build": "ts-node src/modules/graphify/graphify-runner.ts build",
+    "graphify:query": "ts-node src/modules/graphify/graphify-runner.ts query",
+    "graphify:explain": "ts-node src/modules/graphify/graphify-runner.ts explain"
   },
   "dependencies": {
     "@types/multer": "^2.2.0",

@@ -37,6 +37,11 @@ Plataforma inteligente desenvolvida para automatizar e blindar a **Estratégia d
    - **Protocolo de Heartbeat**: Ciclos autônomos periódicos avaliando integridade, regras e orçamentos de tokens.
    - Endpoints REST dedicados em `/api/paperclip/*` e suporte nativo ao Docker Compose com Paperclip Server.
 
+4. **Grafo de Conhecimento com Graphify AI (`/` aba "Grafo de Conhecimento (Graphify AI)")**:
+   - Baseado no ecossistema open-source [Graphify AI](https://github.com/safishamsi/graphify).
+   - Mapeamento determinístico em Knowledge Graph multidimensional conectando os 5 centros de abrigamento, grupos familiares, vagas de emprego (VES), malha aérea (FAB KC-390 / Sideral B737), trilhas do SCDP e agentes autônomos.
+   - Navegação relacional com visualizador interativo em SVG, filtragem por categorias e módulo semântico `/api/graphify/explain` para análise de contexto relacional.
+
 ---
 
 ## 🏛️ Integração Automática com o SCDP (TCU e CGU)
@@ -102,6 +107,15 @@ npm run paperclip:status
 
 # Iniciar ambiente integrado via Docker Compose (SIGA-Acolhida + Paperclip Server + PostgreSQL)
 docker compose -f docker-compose.paperclip.yml up
+
+# Construir Knowledge Graph da Operação Acolhida via Graphify AI
+npm run graphify:build
+
+# Consultar nós e vizinhança relacional de entidades
+npm run graphify:query -- "Rondon"
+
+# Explicar relacionamentos de uma entidade com IA
+npm run graphify:explain -- "ABRIGO-RONDON-1"
 ```
 
 ---

@@ -114,6 +114,9 @@
       <button onclick="trocarAba('paperclip')" id="tab-btn-paperclip" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
         <i class="fa-solid fa-paperclip text-purple-600"></i> Orquestração Paperclip AI
       </button>
+      <button onclick="trocarAba('graphify')" id="tab-btn-graphify" class="py-3 px-2 text-slate-500 hover:text-slate-900 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-circle-nodes text-cyan-600"></i> Grafo de Conhecimento (Graphify AI)
+      </button>
     </div>
   </header>
 
@@ -1512,6 +1515,178 @@
       </div>
     </div>
 
+    <!-- ABA 9: GRAFO DE CONHECIMENTO GRAPHIFY AI -->
+    <div id="aba-graphify" class="hidden space-y-6">
+      <!-- Graphify Header Banner -->
+      <div class="bg-gradient-to-r from-slate-900 via-cyan-950 to-slate-950 text-white p-6 rounded-2xl border border-cyan-800 shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <div class="flex items-center space-x-3 mb-2">
+            <span class="w-10 h-10 rounded-xl bg-cyan-600/30 border border-cyan-500/50 flex items-center justify-center text-cyan-300 text-xl">
+              <i class="fa-solid fa-circle-nodes"></i>
+            </span>
+            <div>
+              <h2 class="text-xl font-bold flex items-center gap-2">
+                Graphify AI Knowledge Graph
+                <span class="text-[11px] bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 px-2.5 py-0.5 rounded-full font-semibold">
+                  Mapeamento Relacional
+                </span>
+              </h2>
+              <p class="text-xs text-cyan-200">
+                Grafo de Conhecimento Multidimensional Determinístico da Operação Acolhida (SUFAI) • 
+                <a href="https://github.com/safishamsi/graphify" target="_blank" class="underline hover:text-white font-mono">
+                  github.com/safishamsi/graphify <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                </a>
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 text-[11px] mt-3">
+            <span class="bg-cyan-950/80 text-cyan-200 px-2.5 py-1 rounded-md border border-cyan-700/60 flex items-center gap-1.5">
+              <i class="fa-solid fa-diagram-project text-cyan-400"></i> Edge-Based Reasoning
+            </span>
+            <span class="bg-slate-800 text-slate-200 px-2.5 py-1 rounded-md border border-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-brain text-purple-400"></i> Sem Alucinações / Zero Vector RAG
+            </span>
+            <span class="bg-emerald-950/80 text-emerald-200 px-2.5 py-1 rounded-md border border-emerald-700/60 flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved text-emerald-400"></i> Trilha de Coesão Familiar & Voos
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="carregarGraphify()" class="px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-2 border border-cyan-400">
+            <i class="fa-solid fa-arrows-rotate"></i> Reconstruir Grafo
+          </button>
+        </div>
+      </div>
+
+      <!-- Graphify KPIs Ribbon -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Entidades Mapeadas</span>
+            <i class="fa-solid fa-circle-dot text-cyan-600"></i>
+          </div>
+          <p class="text-2xl font-black text-slate-800" id="graphify-kpi-nodes">--</p>
+          <p class="text-[11px] text-slate-500 font-medium mt-1">Nós no Knowledge Graph</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Relações Conectadas</span>
+            <i class="fa-solid fa-bezier-curve text-indigo-600"></i>
+          </div>
+          <p class="text-2xl font-black text-slate-800" id="graphify-kpi-edges">--</p>
+          <p class="text-[11px] text-indigo-600 font-medium mt-1">Arestas com contexto semântico</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Densidade Topológica</span>
+            <i class="fa-solid fa-chart-line text-emerald-600"></i>
+          </div>
+          <p class="text-2xl font-black text-emerald-700" id="graphify-kpi-density">--</p>
+          <p class="text-[11px] text-emerald-600 font-medium mt-1">Conectividade operacional</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Eixos Estruturados</span>
+            <i class="fa-solid fa-layer-group text-purple-600"></i>
+          </div>
+          <p class="text-2xl font-black text-slate-800">7 Categorias</p>
+          <p class="text-[11px] text-purple-600 font-medium mt-1">Abrigos, Voos, Emprego, SCDP e IA</p>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros e Busca Semântica -->
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+        <div class="flex items-center gap-2 w-full md:w-auto flex-1">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+            <input type="text" id="graphify-search-input" placeholder="Buscar no grafo (ex: Rondon, Sideral, Curitiba, EMG...)" class="w-full text-xs pl-8 pr-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-cyan-500">
+          </div>
+          <button onclick="buscarNoGraphify()" class="px-3.5 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap shadow-sm">
+            <i class="fa-solid fa-filter"></i> Filtrar Grafo
+          </button>
+          <button onclick="resetarGrafoGraphify()" class="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-medium transition" title="Exibir grafo completo">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+        </div>
+
+        <!-- Filtros rápidos de Tipo -->
+        <div class="flex flex-wrap gap-1 text-[11px]">
+          <button onclick="filtrarCategoriaGrafo('')" class="px-2 py-1 bg-slate-800 text-white rounded-md font-semibold">Todos</button>
+          <button onclick="filtrarCategoriaGrafo('ABRIGO')" class="px-2 py-1 bg-blue-100 text-blue-800 rounded-md font-semibold hover:bg-blue-200">Abrigos</button>
+          <button onclick="filtrarCategoriaGrafo('VOO')" class="px-2 py-1 bg-purple-100 text-purple-800 rounded-md font-semibold hover:bg-purple-200">Voos</button>
+          <button onclick="filtrarCategoriaGrafo('CIDADE_DESTINO')" class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-md font-semibold hover:bg-emerald-200">Destinos</button>
+          <button onclick="filtrarCategoriaGrafo('BENEFICIARIO')" class="px-2 py-1 bg-sky-100 text-sky-800 rounded-md font-semibold hover:bg-sky-200">Beneficiários</button>
+          <button onclick="filtrarCategoriaGrafo('AGENTE_IA')" class="px-2 py-1 bg-fuchsia-100 text-fuchsia-800 rounded-md font-semibold hover:bg-fuchsia-200">Agentes IA</button>
+        </div>
+      </div>
+
+      <!-- Visualizador Interativo e Painel de Explicação -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Visualizador Interativo do Grafo (Canvas / SVG Interativo) -->
+        <div class="lg:col-span-2 bg-slate-950 p-5 rounded-2xl border border-slate-800 shadow-md flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+              <span class="text-xs font-bold font-mono text-cyan-300">Topologia de Grafo Interativa (Graphify Canvas)</span>
+            </div>
+            <span class="text-[10px] text-slate-400 font-mono">Clique em qualquer nó para inspecionar</span>
+          </div>
+
+          <!-- Área gráfica interativa -->
+          <div id="graphify-viewport" class="relative w-full h-[460px] bg-slate-900/60 rounded-xl border border-slate-800/80 overflow-hidden flex items-center justify-center">
+            <svg id="graphify-svg" class="w-full h-full cursor-grab active:cursor-grabbing"></svg>
+          </div>
+
+          <!-- Legenda de Cores -->
+          <div class="pt-3 border-t border-slate-800 flex flex-wrap gap-3 text-[10px] text-slate-300">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Abrigos</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Voos</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Destinos</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Vagas VES</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-fuchsia-500"></span> Agentes IA</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Migrantes</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Vulneráveis (Gestante/PcD)</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-600"></span> Leis & SCDP</span>
+          </div>
+        </div>
+
+        <!-- Inspetor de Relacionamentos & Graphify Explain -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-magnifying-glass-chart text-cyan-600"></i> Inspetor de Relacionamentos
+              </h4>
+              <span id="graphify-selected-badge" class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-semibold">
+                Nenhum nó selecionado
+              </span>
+            </div>
+
+            <!-- Dados do Nó Selecionado -->
+            <div id="graphify-inspector-details" class="space-y-3">
+              <div class="text-center py-10 text-slate-400 text-xs">
+                <i class="fa-solid fa-circle-nodes text-3xl mb-2 text-slate-300"></i>
+                <p>Clique em um nó no grafo para ver suas propriedades e conexões adjacentes.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Caixa de Explicação com IA (Graphify Explain) -->
+          <div class="pt-3 border-t border-slate-100">
+            <button onclick="explicarNoComIA()" id="btn-graphify-explain" disabled class="w-full py-2 bg-slate-200 text-slate-400 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 cursor-not-allowed">
+              <i class="fa-solid fa-brain"></i> Explicar Relações com IA (Graphify Explain)
+            </button>
+            <div id="graphify-explain-box" class="hidden mt-3 p-3 bg-cyan-50 border border-cyan-200 rounded-xl text-slate-700 text-xs leading-relaxed max-h-48 overflow-y-auto custom-scrollbar font-sans">
+              <!-- Explicação dinâmica -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- Federal Footer -->
@@ -1532,7 +1707,7 @@
   <script>
     // Tab switching
     function trocarAba(abaId) {
-      const abas = ['visao-geral', 'abrigados', 'simulador', 'anti-absenteismo', 'decisao-aerea', 'scdp', 'seguranca-resiliencia', 'paperclip'];
+      const abas = ['visao-geral', 'abrigados', 'simulador', 'anti-absenteismo', 'decisao-aerea', 'scdp', 'seguranca-resiliencia', 'paperclip', 'graphify'];
       abas.forEach(id => {
         const el = document.getElementById(`aba-${id}`);
         if (el) el.classList.add('hidden');
@@ -1557,6 +1732,7 @@
       if (abaId === 'scdp') carregarSCDP();
       if (abaId === 'seguranca-resiliencia') carregarSaudeResiliencia();
       if (abaId === 'paperclip') carregarPaperclipStatus();
+      if (abaId === 'graphify') carregarGraphify();
     }
 
     // ==========================================
@@ -2987,6 +3163,319 @@
     function fecharModalAuditoriaDocumental() {
       const modal = document.getElementById('modal-auditoria-5eixos');
       if (modal) modal.classList.add('hidden');
+    }
+
+    // ==========================================
+    // GRAPHIFY AI KNOWLEDGE GRAPH CLIENT
+    // ==========================================
+
+    let graphifyDataCompleto = null;
+    let noSelecionadoGraphify = null;
+    let categoriaGrafoAtiva = '';
+
+    async function carregarGraphify() {
+      try {
+        const res = await fetch('/api/graphify/graph');
+        const data = await res.json();
+        if (!data || !data.nodes) return;
+
+        graphifyDataCompleto = data;
+
+        const elNodes = document.getElementById('graphify-kpi-nodes');
+        if (elNodes) elNodes.innerText = data.metadata.totalNodes;
+
+        const elEdges = document.getElementById('graphify-kpi-edges');
+        if (elEdges) elEdges.innerText = data.metadata.totalEdges;
+
+        const elDensity = document.getElementById('graphify-kpi-density');
+        if (elDensity) elDensity.innerText = (data.metadata.density * 100).toFixed(1) + '%';
+
+        renderizarGrafoSVG(data.nodes, data.edges);
+      } catch (e) {
+        console.error('Erro ao carregar Graphify AI:', e);
+      }
+    }
+
+    function renderizarGrafoSVG(nodes, edges) {
+      const svg = document.getElementById('graphify-svg');
+      if (!svg) return;
+
+      const viewport = document.getElementById('graphify-viewport');
+      const width = viewport ? viewport.clientWidth : 700;
+      const height = viewport ? viewport.clientHeight : 460;
+
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+      // Mapeamento posicional inteligente por categorias para máxima clareza
+      const positions = {};
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      // Agrupa nós por tipo para distribuição harmoniosa
+      const porTipo = {};
+      nodes.forEach(n => {
+        if (!porTipo[n.type]) porTipo[n.type] = [];
+        porTipo[n.type].push(n);
+      });
+
+      // Distribuição por anéis concêntricos e setores
+      const raioAgentes = Math.min(width, height) * 0.22;
+      const raioExterno = Math.min(width, height) * 0.42;
+
+      // Centro/Alto: Agentes IA
+      (porTipo['AGENTE_IA'] || []).forEach((n, i, arr) => {
+        const angulo = (-Math.PI / 2) + ((i - (arr.length - 1) / 2) * 0.4);
+        positions[n.id] = { x: centerX + Math.cos(angulo) * (raioAgentes * 0.8), y: centerY + Math.sin(angulo) * (raioAgentes * 0.8) };
+      });
+
+      // Superior Esquerdo: Abrigos
+      (porTipo['ABRIGO'] || []).forEach((n, i, arr) => {
+        const angulo = Math.PI * 0.9 + (i * 0.25);
+        positions[n.id] = { x: centerX + Math.cos(angulo) * raioExterno, y: centerY + Math.sin(angulo) * (raioExterno * 0.85) };
+      });
+
+      // Superior Direito: Voos
+      (porTipo['VOO'] || []).forEach((n, i, arr) => {
+        const angulo = -Math.PI * 0.25 + (i * 0.4);
+        positions[n.id] = { x: centerX + Math.cos(angulo) * (raioExterno * 0.8), y: centerY + Math.sin(angulo) * (raioExterno * 0.8) };
+      });
+
+      // Direita / Inferior: Cidades Destino & Vagas
+      (porTipo['CIDADE_DESTINO'] || []).forEach((n, i, arr) => {
+        const angulo = Math.PI * 0.1 + (i * 0.3);
+        positions[n.id] = { x: centerX + Math.cos(angulo) * raioExterno, y: centerY + Math.sin(angulo) * raioExterno };
+      });
+
+      (porTipo['EMPRESA_VAGA'] || []).forEach((n, i) => {
+        positions[n.id] = { x: width * 0.82, y: height * 0.72 + (i * 50) };
+      });
+
+      // Inferior Centro/Esquerda: Beneficiários e Famílias
+      const benefs = [...(porTipo['BENEFICIARIO'] || []), ...(porTipo['GRUPO_FAMILIAR'] || [])];
+      benefs.forEach((n, i, arr) => {
+        const angulo = Math.PI * 0.45 + ((i - (arr.length - 1) / 2) * 0.22);
+        positions[n.id] = { x: centerX + Math.cos(angulo) * (raioExterno * 0.95), y: centerY + Math.sin(angulo) * (raioExterno * 0.95) };
+      });
+
+      // Topo Centro: Leis e SCDP
+      (porTipo['CONFORMIDADE_LEGAL'] || []).forEach((n, i, arr) => {
+        positions[n.id] = { x: centerX + ((i - 1) * 110), y: 45 };
+      });
+
+      // Fallback para qualquer nó restante
+      nodes.forEach((n, i) => {
+        if (!positions[n.id]) {
+          positions[n.id] = { x: 50 + (i * 35) % (width - 100), y: 70 + (i * 45) % (height - 120) };
+        }
+      });
+
+      // Renderiza Arestas (Linhas)
+      let svgContent = `
+        <defs>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+      `;
+
+      edges.forEach(e => {
+        const s = positions[e.source];
+        const t = positions[e.target];
+        if (s && t) {
+          svgContent += `
+            <line x1="${s.x}" y1="${s.y}" x2="${t.x}" y2="${t.y}" stroke="#334155" stroke-width="1.4" stroke-opacity="0.6" stroke-dasharray="3,3">
+              <title>${e.label}</title>
+            </line>
+          `;
+        }
+      });
+
+      // Renderiza Nós (Círculos e Rótulos)
+      nodes.forEach(n => {
+        const pos = positions[n.id];
+        const r = (n.size || 20) * 0.65;
+        const shortLabel = n.label.length > 20 ? n.label.slice(0, 18) + '...' : n.label;
+
+        svgContent += `
+          <g class="cursor-pointer transition hover:opacity-100 group" onclick="selecionarNoGraphify('${n.id}')" transform="translate(${pos.x}, ${pos.y})">
+            <circle r="${r + 4}" fill="${n.color}" fill-opacity="0.2" class="group-hover:fill-opacity-50 transition"></circle>
+            <circle r="${r}" fill="${n.color}" stroke="#0f172a" stroke-width="2" class="group-hover:scale-110 transition"></circle>
+            <text y="${r + 14}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace" font-weight="600" class="group-hover:fill-white">
+              ${shortLabel}
+            </text>
+          </g>
+        `;
+      });
+
+      svg.innerHTML = svgContent;
+    }
+
+    function selecionarNoGraphify(nodeId) {
+      if (!graphifyDataCompleto) return;
+      noSelecionadoGraphify = nodeId;
+
+      const node = graphifyDataCompleto.nodes.find(n => n.id === nodeId);
+      if (!node) return;
+
+      const badge = document.getElementById('graphify-selected-badge');
+      if (badge) {
+        badge.innerText = node.type;
+        badge.style.backgroundColor = node.color + '22';
+        badge.style.color = node.color;
+      }
+
+      // Procura arestas conectadas
+      const arestas = graphifyDataCompleto.edges.filter(e => e.source === nodeId || e.target === nodeId);
+      const vizinhos = arestas.map(e => {
+        const outroId = e.source === nodeId ? e.target : e.source;
+        const outroNode = graphifyDataCompleto.nodes.find(n => n.id === outroId);
+        return {
+          relacao: e.label,
+          tipo: e.type,
+          no: outroNode || { label: outroId, category: 'N/A' }
+        };
+      });
+
+      const detailsContainer = document.getElementById('graphify-inspector-details');
+      if (detailsContainer) {
+        detailsContainer.innerHTML = `
+          <div class="space-y-3">
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">${node.category}</span>
+              <h4 class="text-sm font-black text-slate-900 leading-tight mt-0.5">${node.label}</h4>
+              <p class="text-[10px] font-mono text-slate-500 mt-1">ID: ${node.id}</p>
+            </div>
+
+            <!-- Propriedades Chave-Valor -->
+            <div class="space-y-1.5 text-xs">
+              <span class="font-bold text-slate-700 text-[11px] block">Propriedades da Entidade:</span>
+              <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 space-y-1 max-h-32 overflow-y-auto custom-scrollbar font-mono text-[10px] text-slate-700">
+                ${Object.entries(node.properties || {}).map(([k, v]) => `
+                  <div class="flex justify-between border-b border-slate-200/50 pb-0.5">
+                    <span class="text-slate-500">${k}:</span>
+                    <span class="font-bold">${v}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Conexões Relacionais (Arestas) -->
+            <div class="space-y-1.5">
+              <span class="font-bold text-slate-700 text-[11px] flex items-center justify-between">
+                <span>Relações de 1º Grau (${vizinhos.length}):</span>
+              </span>
+              <div class="space-y-1.5 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
+                ${vizinhos.map(v => `
+                  <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] flex items-center justify-between gap-1 hover:bg-slate-100 transition cursor-pointer" onclick="selecionarNoGraphify('${v.no.id}')">
+                    <div class="truncate">
+                      <span class="text-indigo-600 font-semibold block leading-tight">↳ ${v.relacao}</span>
+                      <span class="font-bold text-slate-800 truncate">${v.no.label}</span>
+                    </div>
+                    <span class="text-[9px] bg-white border border-slate-200 px-1.5 py-0.5 rounded text-slate-500 shrink-0">${v.no.category || 'Entidade'}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Habilita botão de explicação com IA
+      const btnExplain = document.getElementById('btn-graphify-explain');
+      if (btnExplain) {
+        btnExplain.disabled = false;
+        btnExplain.classList.remove('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
+        btnExplain.classList.add('bg-cyan-600', 'hover:bg-cyan-700', 'text-white', 'cursor-pointer');
+      }
+
+      // Reseta caixa de explicação
+      const explainBox = document.getElementById('graphify-explain-box');
+      if (explainBox) explainBox.classList.add('hidden');
+    }
+
+    async function explicarNoComIA() {
+      if (!noSelecionadoGraphify) return;
+
+      const btn = document.getElementById('btn-graphify-explain');
+      if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analisando Topologia com IA...';
+
+      try {
+        const res = await fetch('/api/graphify/explain', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nodeId: noSelecionadoGraphify })
+        });
+        const data = await res.json();
+        if (data.sucesso) {
+          const box = document.getElementById('graphify-explain-box');
+          if (box) {
+            box.classList.remove('hidden');
+            box.innerHTML = `
+              <div class="space-y-2">
+                <div class="flex items-center gap-1.5 text-cyan-800 font-bold">
+                  <i class="fa-solid fa-brain"></i> Diagnóstico de Contexto Relacional (Graphify AI):
+                </div>
+                <div class="text-[11px] text-slate-700 leading-relaxed whitespace-pre-line">${data.explicacao}</div>
+              </div>
+            `;
+          }
+        }
+      } catch (e) {
+        console.error('Erro ao explicar nó:', e);
+      } finally {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-brain"></i> Explicar Relações com IA (Graphify Explain)';
+      }
+    }
+
+    async function buscarNoGraphify() {
+      const termo = document.getElementById('graphify-search-input').value.trim();
+      if (!termo) {
+        resetarGrafoGraphify();
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/graphify/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ termo, tipo: categoriaGrafoAtiva || undefined })
+        });
+        const data = await res.json();
+        if (data.sucesso && data.nodes) {
+          renderizarGrafoSVG(data.nodes, data.edges);
+          if (data.nodes.length > 0) {
+            selecionarNoGraphify(data.nodes[0].id);
+          }
+        }
+      } catch (e) {
+        console.error('Erro na busca Graphify:', e);
+      }
+    }
+
+    function filtrarCategoriaGrafo(tipo) {
+      categoriaGrafoAtiva = tipo;
+      if (!graphifyDataCompleto) return;
+
+      if (!tipo) {
+        renderizarGrafoSVG(graphifyDataCompleto.nodes, graphifyDataCompleto.edges);
+        return;
+      }
+
+      const nodesFiltrados = graphifyDataCompleto.nodes.filter(n => n.type === tipo);
+      const nodeIds = new Set(nodesFiltrados.map(n => n.id));
+      const edgesFiltradas = graphifyDataCompleto.edges.filter(e => nodeIds.has(e.source) || nodeIds.has(e.target));
+
+      renderizarGrafoSVG(nodesFiltrados, edgesFiltradas);
+    }
+
+    function resetarGrafoGraphify() {
+      const input = document.getElementById('graphify-search-input');
+      if (input) input.value = '';
+      categoriaGrafoAtiva = '';
+      if (graphifyDataCompleto) {
+        renderizarGrafoSVG(graphifyDataCompleto.nodes, graphifyDataCompleto.edges);
+      }
     }
 
     // Initial Load
