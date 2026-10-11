@@ -177,7 +177,7 @@ export class GraphifyAIEngine {
       baseAbrigados = [
         {
           emgId: 'EMG-00147494',
-          nomeCompleto: 'LEODAGNYS ELADIO BARCELO GARRIDO',
+          nomeCompleto: 'Beneficiário Protegido (LGPD)',
           cpf: '603.068.860-06',
           idade: 50,
           sexo: 'Male',
@@ -196,7 +196,7 @@ export class GraphifyAIEngine {
         },
         {
           emgId: 'EMG-116169197',
-          nomeCompleto: 'GENESIS CAROLINA MOTA VELASQUEZ',
+          nomeCompleto: 'Beneficiária Protegida (LGPD)',
           cpf: '118.829.232-35',
           idade: 34,
           sexo: 'Female',
@@ -215,7 +215,7 @@ export class GraphifyAIEngine {
         },
         {
           emgId: 'EMG-00984122',
-          nomeCompleto: 'YELENA VALENTINA MARQUEZ',
+          nomeCompleto: 'Beneficiária Protegida (LGPD)',
           cpf: '542.119.870-11',
           idade: 28,
           sexo: 'Female',
@@ -234,7 +234,7 @@ export class GraphifyAIEngine {
         },
         {
           emgId: 'EMG-00742119',
-          nomeCompleto: 'CARLOS MANUEL SILVA',
+          nomeCompleto: 'Beneficiário Protegido (LGPD)',
           cpf: '712.981.440-92',
           idade: 42,
           sexo: 'Male',
@@ -252,7 +252,7 @@ export class GraphifyAIEngine {
         },
         {
           emgId: 'EMG-00332145',
-          nomeCompleto: 'OKANAMU WARAO PEDRO',
+          nomeCompleto: 'Beneficiário Protegido (LGPD)',
           cpf: '883.102.390-50',
           idade: 36,
           sexo: 'Male',
@@ -278,13 +278,15 @@ export class GraphifyAIEngine {
       const bNodeId = `BENEF-${b.emgId}`;
       const cpfMascarado = SentinelaSegurancaELGPD.mascararCpf(b.cpf);
 
+      // Proteção de Pessoas Reais (LGPD / SUFAI): Nome ocultado, exibindo apenas o CPF mascarado (ex: ***.***.860-06)
       addNode({
         id: bNodeId,
-        label: `${b.nomeCompleto} (${b.emgId})`,
+        label: cpfMascarado,
         type: 'BENEFICIARIO',
-        category: 'Refugiado / Migrante',
+        category: 'Beneficiário Protegido (LGPD)',
         properties: {
           cpf: cpfMascarado,
+          codigoEmg: b.emgId,
           idade: b.idade,
           genero: b.sexo,
           perfilFamiliar: b.perfilFamiliar,
