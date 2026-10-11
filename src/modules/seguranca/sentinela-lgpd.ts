@@ -70,8 +70,12 @@ export class SentinelaSegurancaELGPD {
     },
     tokenRecebido: string
   ): boolean {
+    if (!tokenRecebido || typeof tokenRecebido !== 'string') return false;
     const assinaturaEsperada = this.gerarAssinaturaBilhete(dados);
-    return crypto.timingSafeEqual(Buffer.from(assinaturaEsperada), Buffer.from(tokenRecebido));
+    const bufEsperado = Buffer.from(assinaturaEsperada);
+    const bufRecebido = Buffer.from(tokenRecebido);
+    if (bufEsperado.length !== bufRecebido.length) return false;
+    return crypto.timingSafeEqual(bufEsperado, bufRecebido);
   }
 
   /**
