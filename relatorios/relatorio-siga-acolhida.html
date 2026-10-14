@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>SIGA-Acolhida — Relatório Executivo e Manual Técnico de Integrações</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 15mm 18mm 15mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      line-height: 1.5;
+      font-size: 10.5pt;
+      margin: 0;
+      padding: 0;
+    }
+
+    .cover {
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 96vh;
+      box-sizing: border-box;
+      padding: 30px 20px;
+    }
+
+    .header-bar {
+      border-bottom: 4px solid #0284c7;
+      padding-bottom: 20px;
+    }
+
+    .gov-badge {
+      font-size: 8.5pt;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #0369a1;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    h1.doc-title {
+      font-size: 24pt;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1.15;
+      margin: 0 0 10px 0;
+    }
+
+    .doc-subtitle {
+      font-size: 12pt;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    .cover-meta-grid {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      font-size: 9pt;
+    }
+
+    .meta-item strong {
+      display: block;
+      color: #64748b;
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .meta-item span {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 8pt;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .section-title {
+      font-size: 14pt;
+      font-weight: 800;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      page-break-after: avoid;
+    }
+
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 18px;
+      background: #0284c7;
+      border-radius: 3px;
+      margin-right: 10px;
+    }
+
+    h3 {
+      font-size: 11pt;
+      font-weight: 800;
+      color: #1e293b;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      page-break-after: avoid;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 10px;
+      text-align: justify;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      page-break-inside: avoid;
+    }
+
+    .card-highlight {
+      background: #f0f9ff;
+      border-left: 4px solid #0284c7;
+    }
+
+    .card-alert {
+      background: #fef2f2;
+      border-left: 4px solid #ef4444;
+    }
+
+    .card-success {
+      background: #f0fdf4;
+      border-left: 4px solid #22c55e;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0 25px 0;
+      font-size: 8.5pt;
+      page-break-inside: avoid;
+    }
+
+    table th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 800;
+      text-align: left;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      text-transform: uppercase;
+      font-size: 7.5pt;
+      letter-spacing: 0.5px;
+    }
+
+    table td {
+      padding: 8px 10px;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+
+    table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .flow-step {
+      display: flex;
+      margin-bottom: 12px;
+      page-break-inside: avoid;
+    }
+
+    .flow-num {
+      width: 26px;
+      height: 26px;
+      background: #0284c7;
+      color: white;
+      border-radius: 50%;
+      font-weight: 800;
+      font-size: 9pt;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-right: 12px;
+      margin-top: 2px;
+    }
+
+    .flow-body {
+      flex: 1;
+    }
+
+    .flow-body strong {
+      color: #0f172a;
+      display: block;
+      font-size: 9.5pt;
+    }
+
+    .flow-body span {
+      font-size: 8.5pt;
+      color: #475569;
+    }
+
+    ul, ol {
+      margin-top: 4px;
+      margin-bottom: 12px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 5px;
+      font-size: 9.5pt;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .footer-note {
+      font-size: 7.5pt;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      margin-top: 30px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CAPA -->
+  <div class="cover">
+    <div class="header-bar">
+      <div class="gov-badge">República Federativa do Brasil • Subcomitê Federal para Abrigamento e Interiorização (SUFAI)</div>
+      <h1 class="doc-title">SIGA-Acolhida</h1>
+      <div class="doc-subtitle">Sistema Integrado de Gestão, Interiorização, Governança e Inteligência Operacional</div>
+      <div style="margin-top: 12px;">
+        <span class="badge-pill">Documento Técnico Oficial</span>
+        <span class="badge-pill" style="background:#fef3c7; color:#92400e; border-color:#fde68a;">Conformidade TCU / CGU / LGPD</span>
+        <span class="badge-pill" style="background:#f3e8ff; color:#6b21a8; border-color:#e9d5ff;">Arquitetura Paperclip & Graphify AI</span>
+      </div>
+    </div>
+
+    <div>
+      <h2 style="font-size: 14pt; color: #0f172a; margin-bottom: 12px;">Visão Geral do Relatório Executivo</h2>
+      <p style="font-size: 10pt; color: #475569; text-align: justify;">
+        Este documento apresenta o mapeamento ponta a ponta dos microprocessos, salvaguardas de proteção social e infantil, 
+        integrações governamentais obrigatórias, mecanismos de blindagem orçamentária contra dano ao erário e as inovações tecnológicas 
+        incorporadas à plataforma oficial de apoio à Operação Acolhida (Força-Tarefa Logística Humanitária).
+      </p>
+    </div>
+
+    <div class="cover-meta-grid">
+      <div class="meta-item">
+        <strong>Coordenação Central</strong>
+        <span>Casa Civil / SUFAI / MDS / MJSP / Ministério da Defesa</span>
+      </div>
+      <div class="meta-item">
+        <strong>Agências Internacionais Parceiras</strong>
+        <span>OIM (ONU Migração) e ACNUR (ONU Refugiados)</span>
+      </div>
+      <div class="meta-item">
+        <strong>Marcos Legais de Suporte</strong>
+        <span>Lei nº 13.684/2018 • Dec. nº 9.288/2018 • Lei nº 13.709/2018 (LGPD)</span>
+      </div>
+      <div class="meta-item">
+        <strong>Versão do Sistema / Data</strong>
+        <span>Versão 1.0.0 (Produção Homologada) • Outubro de 2026</span>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Documento gerado para órgãos de controle (TCU, CGU, DPU), ministérios setoriais e gestores operacionais da Operação Acolhida.
+    </div>
+  </div>
+
+  <!-- PÁGINA 1: ARQUITETURA GERAL E CENTROS DE ABRIGAMENTO -->
+  <div>
+    <div class="section-title">1. Contexto e Estrutura Operacional dos 5 Centros</div>
+    
+    <p>
+      A Estratégia de Interiorização da <strong>Operação Acolhida</strong> tem como meta primordial a realocação voluntária, digna e segura 
+      de pessoas migrantes e refugiadas venezuelanas a partir do Estado de Roraima para outros municípios do território nacional. 
+      O SIGA-Acolhida centraliza a gestão populacional e as trilhas de saída dos <strong>5 centros de abrigamento oficiais</strong>:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Centro de Abrigamento</th>
+          <th>Localização</th>
+          <th>Capacidade</th>
+          <th>Perfil Predominante</th>
+          <th>Dinâmica Tática</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Abrigo Rondon 1</strong></td>
+          <td>Boa Vista / RR</td>
+          <td>850 pax</td>
+          <td>Famílias com Crianças (FMCA) e Adultos</td>
+          <td>Setores de carpas A a L; principal polo de abordagem tática para vagas e reunificação.</td>
+        </tr>
+        <tr>
+          <td><strong>Abrigo Rondon 5</strong></td>
+          <td>Boa Vista / RR</td>
+          <td>620 pax</td>
+          <td>Famílias e grupos vulneráveis</td>
+          <td>Setores M a T; monitoramento contínuo de tempo de abrigamento (> 1 ano).</td>
+        </tr>
+        <tr>
+          <td><strong>Abrigo Tuaranoko</strong></td>
+          <td>Boa Vista / RR</td>
+          <td>430 pax</td>
+          <td>Indígenas da etnia Warao</td>
+          <td>Acomodação comunitária culturalmente adaptada com mediação de lideranças tradicionais.</td>
+        </tr>
+        <tr>
+          <td><strong>Abrigo Anexo Rondon 1</strong></td>
+          <td>Boa Vista / RR</td>
+          <td>480 pax</td>
+          <td>Unipessoais e casais sem filhos</td>
+          <td>Módulos habitacionais individuais voltados à pronta empregabilidade.</td>
+        </tr>
+        <tr>
+          <td><strong>Abrigo BV-8</strong></td>
+          <td>Pacaraima / RR</td>
+          <td>460 pax</td>
+          <td>Posto de Fronteira / Recepção Inicial</td>
+          <td>Triagem documental imediata, emissão de CPF, vacinação e triagem de vulnerabilidade extrema.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card card-highlight">
+      <strong>Desconflito Cadastral em 4 Níveis:</strong> O motor de sincronização higieniza planilhas manuais (OIM/Exército) 
+      e entradas móveis em quatro estágios consecutivos: <em>(1) Chave Primária EMG/UNHCR; (2) Algoritmo de Validação de CPF com dígitos verificadores; 
+      (3) Fonética Levenshtein para nomes em espanhol; (4) Vínculo Coeso de Matriz Familiar (evitando cisão de núcleos monoparentais).</em>
+    </div>
+  </div>
+
+  <!-- PÁGINA 2: AS 4 MODALIDADES DE INTERIORIZAÇÃO E O PROTOCOLO DE RECEPTOR -->
+  <div class="page-break">
+    <div class="section-title">2. As 4 Modalidades de Interiorização e Validação de Receptores</div>
+
+    <p>
+      O deslocamento interestadual é operacionalizado exclusivamente sob 4 modalidades homologadas pelo SUFAI:
+    </p>
+
+    <div class="card">
+      <h3>I. Acolhimento Institucional (Abrigo para Abrigo)</h3>
+      <p>
+        Destinada a famílias e indivíduos que necessitam de acolhida subsidiada na cidade de destino em abrigos municipais ou de organizações da sociedade civil (OSC), 
+        com prazo padrão de acolhimento de até 3 meses e articulação imediata para inserção no mercado de trabalho e moradia autônoma.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>II. Vaga de Emprego Sinalizada (VES)</h3>
+      <p>
+        Viabilizada por empresas empregadoras cadastradas que oferecem contrato formal prévio de trabalho (CLT), salário de mercado e, 
+        obrigatoriamente no primeiro mês, moradia assistida. O sistema audita o CNPJ contra o <strong>Cadastro de Empregadores que tenham submetido trabalhadores a condições análogas às de escravo (Lista Suja do MTE)</strong> 
+        e aos cadastros <strong>CEIS/CNEP</strong> da CGU.
+      </p>
+    </div>
+
+    <div class="card card-highlight">
+      <h3>III & IV. Reunificação Familiar (RF) e Reunião Social (RS)</h3>
+      <p>
+        Modalidades onde uma pessoa já estabelecida no município de destino (o <strong>Receptor</strong>) se responsabiliza por receber, 
+        acomodar e prestar apoio inicial ao beneficiário ou núcleo familiar que está em Roraima.
+      </p>
+      <div style="font-size: 9pt; background: #ffffff; padding: 10px; border-radius: 8px; border: 1px solid #bae6fd; margin-top: 8px;">
+        <strong>Distinção Jurídica Obrigatória:</strong>
+        <ul>
+          <li><strong>Reunificação Familiar:</strong> Exige vínculo de parentesco formalmente comprovado (cônjuge, pais, filhos, irmãos).</li>
+          <li><strong>Reunião Social:</strong> Destinada a amigos ou parentes sem prova documental direta, sujeita a critérios mais rígidos de idade e proteção.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Como o Sistema Confirma a Identidade do Receptor e Protege contra Vulnerabilidades?</h3>
+    <p>
+      Para prevenir fraudes, coação, tráfico de pessoas, exploração sexual ou desamparo socioeconômico no destino, 
+      o SIGA-Acolhida executa um <strong>Protocolo de Verificação em 5 Barreiras</strong>:
+    </p>
+
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-body">
+        <strong>Exigência Documental Estrita (ValidadorDocumental)</strong>
+        <span>
+          Para Reunificação Familiar, o sistema exige obrigatoriamente a apresentação prévia de certidões civis (nascimento, casamento ou tutela judicial averbada). 
+          Na Reunião Social, o receptor deve ter idade mínima de 21 anos completos e comprovante de residência regular em seu próprio nome.
+        </span>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-body">
+        <strong>Checagem de Capacidade Habitacional e Renda</strong>
+        <span>
+          O sistema calcula a relação entre a quantidade de pessoas que o receptor declara acomodar e o tamanho real da família que viaja. 
+          Se a capacidade for inferior ao grupo, é disparado alerta de <em>Risco de Inadequação Habitacional</em>, impedindo a aprovação automática.
+        </span>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-body">
+        <strong>Entrevista Ativa de Checagem Cruzada (OIM / MDS)</strong>
+        <span>
+          As equipes de proteção em solo realizam contato direto com o receptor no destino para confirmar: (a) aquiescência em receber a família; 
+          (b) endereço físico confirmado; (c) ciência de que o acolhimento não enseja contraprestação de trabalho servil ou doméstico não remunerado.
+        </span>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-body">
+        <strong>Trava Anti-Tráfico de Menores com Envio à DPU</strong>
+        <span>
+          Qualquer menor de 18 anos que não esteja acompanhado de pai ou mãe comprovados tem seu embarque bloqueado pelo <code>SentinelaSegurancaELGPD</code>. 
+          O caso é compulsoriamente remetido à Defensoria Pública da União (DPU) e ao Juizado da Infância para homologação judicial antes de qualquer bilhete aéreo ser emitido.
+        </span>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">5</div>
+      <div class="flow-body">
+        <strong>Referenciamento Prévio à Rede Socioassistencial (CRAS / CREAS / UBS)</strong>
+        <span>
+          Antes do embarque, o módulo <code>GestorNURIN</code> encaminha eletronicamente o dossiê da família ao CRAS e à Secretaria de Assistência Social da cidade receptora, 
+          assegurando acompanhamento pelo PAIF, inclusão no CadÚnico e matrícula escolar dos dependentes.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PÁGINA 3: MICROPROCESSOS DE PONTA A PONTA (PRÉ, VOO E PÓS) -->
+  <div class="page-break">
+    <div class="section-title">3. Trilha Operacional dos Microprocessos (Ponta a Ponta)</div>
+
+    <p>O ciclo de vida de um beneficiário na Estratégia de Interiorização é segmentado em 3 macroetapas e 12 microprocessos integrados:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Fase</th>
+          <th>Microprocesso</th>
+          <th>Módulo Responsável</th>
+          <th>Regra de Negócio / Trava Automática</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="5" style="background:#f0f9ff; font-weight:bold; color:#0369a1;">Pré-Deslocamento</td>
+          <td>1. Censo e Priorização</td>
+          <td><code>ClassificadorGrupos</code></td>
+          <td>Calcula peso tático: dias de abrigo, gestação, PcD e tempo de espera no Brasil.</td>
+        </tr>
+        <tr>
+          <td>2. Abordagem Tática</td>
+          <td><code>RelatorioDiarioTatico</code></td>
+          <td>Gera meta diária de entrevistas ativas por abrigo e carpa.</td>
+        </tr>
+        <tr>
+          <td>3. Conformidade Documental</td>
+          <td><code>ValidadorDocumental</code></td>
+          <td>Protocolo migratório ativo (solicitação de refúgio ou residência temporária).</td>
+        </tr>
+        <tr>
+          <td>4. Triagem Médica (Fit-for-Travel)</td>
+          <td><code>TriagemMedicaSaude</code></td>
+          <td>Vacinas febre amarela (≥ 10 dias) e tríplice viral; trava obstétrica > 32 semanas sem laudo 72h.</td>
+        </tr>
+        <tr>
+          <td>5. Termo de Aquiescência Voluntária</td>
+          <td><code>SentinelaSegurancaELGPD</code></td>
+          <td>Assinatura digital bilateral conforme Decreto nº 9.288/2018 (princípio do não-retorno forçado).</td>
+        </tr>
+
+        <tr>
+          <td rowspan="4" style="background:#fdf4ff; font-weight:bold; color:#7e22ce;">Logística e Deslocamento</td>
+          <td>6. Motor de Decisão Aérea</td>
+          <td><code>MotorDecisaoAerea</code></td>
+          <td>Compara custos comerciais vs voo fretado (Boeing 737 Sideral vs Embraer KC-390 da FAB).</td>
+        </tr>
+        <tr>
+          <td>7. Mapa de Assentos Humanizado</td>
+          <td><code>DistribuidorAssentosHumanizado</code></td>
+          <td>Alocação contígua de núcleos familiares e prioridade nas primeiras fileiras para PcD e gestantes.</td>
+        </tr>
+        <tr>
+          <td>8. Trava de Dano ao Erário</td>
+          <td><code>TravaDanoErario</code></td>
+          <td>Exige 100% de ocupação; se houver desistência no P Trg, aciona Banco Reserva de Prontidão.</td>
+        </tr>
+        <tr>
+          <td>9. Formalização SCDP / TCU</td>
+          <td><code>IntegradorSCDPTCU</code></td>
+          <td>Geração eletrônica de PCDP, vinculação de e-Ticket e comprovação fiscal de deslocamento.</td>
+        </tr>
+
+        <tr>
+          <td rowspan="3" style="background:#f0fdf4; font-weight:bold; color:#15803d;">Embarque e Pós-Deslocamento</td>
+          <td>10. Terminal Óptico no P Trg</td>
+          <td><code>EmbarqueTerminalCatraca</code></td>
+          <td>Leitura de QR Code criptografado (HMAC-SHA256) na catraca física do Posto de Triagem.</td>
+        </tr>
+        <tr>
+          <td>11. Recepção e Contingência</td>
+          <td><code>SalaSituacaoVoos</code></td>
+          <td>Acompanhamento em tempo real com acionamento de Casas de Passagem em caso de atrasos/desvios.</td>
+        </tr>
+        <tr>
+          <td>12. Integração Socioeconômica</td>
+          <td><code>GestorNURIN</code></td>
+          <td>Encaminhamento aos CRAS/CREAS locais, matrícula de menores na rede pública e CadÚnico.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card card-success">
+      <strong>Mecanismo Anti-Absenteísmo Multicanal (D-7, D-3, D-1, H-4):</strong>
+      Para blindar os voos contra vagas ociosas, o sistema dispara mensagens automáticas oficiais via WhatsApp Cloud API e App do Migrante. 
+      Se o beneficiário não confirmar presença até D-1 às 12h00, o sistema promove automaticamente a família suplente com documentação pré-auditada.
+    </div>
+  </div>
+
+  <!-- PÁGINA 4: INTEGRAÇÕES GOVERNAMENTAIS E ARQUITETURA DE IA -->
+  <div class="page-break">
+    <div class="section-title">4. Integrações Governamentais e Ecossistema de IA</div>
+
+    <p>O SIGA-Acolhida conecta os principais barramentos de dados federais e utiliza arquiteturas avançadas de inteligência artificial:</p>
+
+    <h3>Barramentos e APIs Externas Integradas</h3>
+    <ul>
+      <li><strong>SCDP (Sistema de Concessão de Diárias e Passagens):</strong> Barramento federal do Ministério da Gestão e da Inovação em Serviços Públicos (MGI) para emissão de PCDP e prestação de contas auditada pelo TCU.</li>
+      <li><strong>Receita Federal do Brasil (RFB):</strong> Validação cadastral de CPF e cruzamento com CadÚnico.</li>
+      <li><strong>Polícia Federal (STI / SisMigra):</strong> Checagem de regularidade do Registro Nacional Migratório (RNM) e protocolos de refúgio (Conare).</li>
+      <li><strong>Meta WhatsApp Cloud API:</strong> Comunicação bidirecional com migrantes em área de fronteira sob templates pré-aprovados e resiliência via Circuit Breaker.</li>
+      <li><strong>Ministério do Trabalho e Emprego (MTE):</strong> Consulta automática à Lista de Trabalho Escravo para homologação de vagas VES.</li>
+    </ul>
+
+    <div class="card card-highlight">
+      <h3>Orquestração Company-as-Code com Paperclip AI</h3>
+      <p style="font-size: 9pt;">
+        Inspirado no framework open-source <strong>Paperclip AI</strong>, o sistema implementa uma força de trabalho autônoma de 5 agentes 
+        especializados que operam em ciclos periódicos de <em>Heartbeat</em> para governança contínua:
+      </p>
+      <ul style="font-size: 8.5pt;">
+        <li><strong>Cel. Coordenador SUFAI (CEO Agent):</strong> Alinhamento com Casa Civil e organismos internacionais.</li>
+        <li><strong>Major Gestor Aéreo (Operations Agent):</strong> Alocação de aeronaves FAB / Sideral e aplicação da Trava de Erário.</li>
+        <li><strong>Auditor Federal SCDP (Compliance Agent):</strong> Fiscalização de bilhetes e conformidade com acórdãos do TCU.</li>
+        <li><strong>Sentinela de Proteção & LGPD (Protection Agent):</strong> Rastreamento anti-tráfico e anonimização de CPF/PII.</li>
+        <li><strong>Coordenador P Trg & WhatsApp (Field Agent):</strong> Gestão da catraca do Posto de Triagem e anti-absenteísmo.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="background: #faf5ff; border-left: 4px solid #a855f7;">
+      <h3>Knowledge Graph Relacional com Graphify AI</h3>
+      <p style="font-size: 9pt;">
+        Utilizando o paradigma de <em>Edge-Based Reasoning</em> do <strong>Graphify AI</strong>, o programa constrói um grafo de conhecimento 
+        determinístico e auditável que conecta abrigos, famílias, carpas, vagas, voos e legislações. 
+        Essa topologia permite realizar investigações complexas (ex: identificar padrões suspeitos de aliciamento ou duplicidade de registros) 
+        com explicações automáticas em linguagem natural e zero alucinação vetorial.
+      </p>
+    </div>
+
+    <div class="footer-note">
+      SIGA-Acolhida • Plataforma Desenvolvida para a Operação Acolhida / SUFAI • Impresso em 13 de Outubro de 2026
+    </div>
+  </div>
+
+</body>
+</html>
